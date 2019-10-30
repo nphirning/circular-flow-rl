@@ -1,7 +1,7 @@
-import Agent from agent
+from agent import Agent
 from constants import *
 
-class HumanAgent(Agent):
+class PersonAgent(Agent):
     def __init__(self, money, skill):
         super(FirmAgent).__init__(money)
         self.skill = skill # goods per hour

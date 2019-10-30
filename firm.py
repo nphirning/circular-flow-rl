@@ -1,4 +1,4 @@
-import Agent from agent
+from agent import Agent
 
 class FirmAgent(Agent):
     def __init__(self, money):
@@ -9,6 +9,7 @@ class FirmAgent(Agent):
         self.price_per_good = None
         self.num_goods_for_sale = None
         self.labor_demand_curve = None
+    
     
 
     
