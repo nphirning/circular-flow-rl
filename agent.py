@@ -13,7 +13,7 @@ class Agent(ABC):
         return self.money
 
     @abstractmethod
-    def get_action(state):
+    def get_action(state=None):
         # determines the action to be taken (maybe random)
         # presumably references some policy function
         # returns an Action object
