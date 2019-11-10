@@ -29,11 +29,20 @@ class Model:
         for i in range(num_timesteps):
             self.run_one_step()
 
+    def run_n_steps(self, n):
+        for _ in range(n): self.run_one_step()
+
     def run_one_step(self):
 
-        # Extract actions. TODO: should total state be passed in here?
-        firm_actions = [f.get_action() for f in self.firms]
-        person_actions = [p.get_action() for p in self.people]
+        # Create state
+        person_money = [p.money for p in self.people]
+        firm_money = [f.money for f in self.firms]
+        firm_goods = [f.num_goods for f in self.firms]
+        state = person_money + firm_money + firm_goods 
+
+        # Extract actions.
+        firm_actions = [f.get_action(state) for f in self.firms]
+        person_actions = [p.get_action(state) for p in self.people]
 
         # Run markets and get results.
         person_labor_updates, firm_labor_updates = 
@@ -42,16 +51,26 @@ class Model:
             self.run_goods_market_step(person_actions, firm_actions)
         
         # Update firms and people with new results.
-        # TODO
-
-        pass
+        for i in range(len(self.firms)):
+            money_paid, goods_recv = firm_labor_updates[i]
+            money_recv, goods_sold = firm_good_updates[i]
+            action = firm_actions[i]
+            result = (money_paid, money_recv, goods_recv, goods_sold)
+            self.firms[i].update(state, action, result)
+        
+        for i in range(len(self.people)):
+            money_paid, goods_recv = person_good_updates[i]
+            money_recv, hours_worked = person_labor_updates[i]
+            action = person_actions[i]
+            result = (money_paid, money_recv, goods_recv, hours_worked)
+            self.people[i].update(state, action)
 
     def run_labor_market_step(self, person_actions, firm_actions):
         """
         Runs a single iteration of the labor market given the actions of all
         people and firms. 
 
-        The general algorithm is to go through all firsm, selecting at random,
+        The general algorithm is to go through all firms, selecting at random,
         and each selected firm gets to choose the best person to produce their
         next good (as long as the price is within their budget). This is 
         repeated until no more firms can buy and/or no more people can sell.
@@ -68,7 +87,7 @@ class Model:
         """
         people_updates = [(0, 0)] * len(person_actions)
         firm_updates = [(0, 0)] * len(firm_actions)
-        possible_firms = range(len(person_actions))
+        possible_firms = range(len(self.firms))
 
         # Create a list of the possible people, ordered by price per good.
         # Entries are ($ per good, total # of goods to sell, person index).
@@ -85,18 +104,24 @@ class Model:
             # If the person has something to sell, insert in order.
             if num_goods < 1.0: continue
             entry = (price_per_good, num_goods, i)
-            bisect.insort(possible_people, entry)
+            possible_people.append(entry)
+        possible_people.sort()
 
 
         while (len(possible_firms) != 0 and len(possible_people) != 0):
             firm_index = random.choice(possible_firms)
-            price_per_good, num_goods, i = possible_people.pop(0)
+            price_per_good, num_goods, i = possible_people[0]
             hours_worked, money_received = people_updates[i]
             firm_money_paid, firm_goods_received = firm_updates[firm_index]
             firm_demand_curve = firm_actions[firm_index].demand_curve
 
             # Check if firm is willing to buy.
             if firm_demand_curve[firm_goods_received] < price_per_good:
+                del possible_firms[firm_index]
+                continue
+
+            # Check if firm has enough money
+            if self.firms[firm_index].money < firm_money_paid + price_per_good:
                 del possible_firms[firm_index]
                 continue
 
@@ -107,6 +132,7 @@ class Model:
                 del possible_firms[firm_index]
             
             # Update person.
+            possible_people.pop(0)
             person_entry = (price_per_good, num_goods - 1.0, i)
             if (num_goods >= 2.0):
                 possible_people.insert(0, person_entry)

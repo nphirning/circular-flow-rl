@@ -5,10 +5,14 @@ class FirmAgent(Agent):
         super(FirmAgent).__init__(money)
         self.num_goods = 0
 
-        # Per-turn state.
-        self.price_per_good = None
-        self.num_goods_for_sale = None
-        self.labor_demand_curve = None
+    def get_action(state):
+        pass
+
+    def update(state, action, result):
+        """
+        @param result - (money paid, money recv, goods recv, goods sold)
+        """
+        pass
     
     
 
