@@ -98,6 +98,7 @@ class Model:
             person = self.people[i]
             hourly_rate = person_actions[i].price_to_offer
             hours_to_work = person_actions[i].units_to_offer
+            if hours_to_work < 1.0 / person.skill: continue
             price_per_good = hourly_rate / person.skill
             num_goods = hours_to_work * person.skill
 
@@ -106,7 +107,7 @@ class Model:
             entry = (price_per_good, num_goods, i)
             possible_people.append(entry)
         possible_people.sort()
-
+        
 
         while (len(possible_firms) != 0 and len(possible_people) != 0):
             firm_index = random.choice(possible_firms)
@@ -125,12 +126,6 @@ class Model:
                 del possible_firms[firm_index]
                 continue
 
-            # Check if person has enough hours to make another good.
-            hours_to_work = person_actions[i].units_to_offer
-            if hours_to_work < hours_worked + 1.0 / self.people[i].skill:
-                del possible_people[i]
-                continue
-
             # Update firm.
             firm_updates[firm_index] = 
                 (firm_money_paid + price_per_good, firm_goods_received + 1)
@@ -139,12 +134,13 @@ class Model:
             
             # Update person.
             possible_people.pop(0)
-            person_entry = (price_per_good, num_goods - 1.0, i)
-            if (num_goods >= 2.0):
+            new_num_goods = num_goods - 1.0
+            new_hours_worked = hours_worked + 1.0 / self.people[i].skill
+            person_entry = (price_per_good, new_num_goods, i)
+            if (new_num_goods >= 1.0 and new_hours_worked >= 1.0 / self.people[i].skill):
                 possible_people.insert(0, person_entry)
-            hours_worked += 1.0 / self.people[i].skill
             people_updates[i] = 
-                (hours_worked, money_received + 1.0 * price_per_good)
+                (new_hours_worked, money_received + 1.0 * price_per_good)
             
         return people_updates, firm_updates
             
