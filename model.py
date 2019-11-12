@@ -144,8 +144,89 @@ class Model:
             
 
     def run_goods_market_step(self, person_actions, firm_actions):
-        # Runs matching algorithm
-        pass
+        """
+        Runs a single iteration of the goods market given the actions of all
+        people and firms. 
+
+        The general algorithm is to go through all people, selecting at random,
+        and each selected person gets to choose the best firm from which to buy their
+        next good (as long as the price is within their budget). This is 
+        repeated until no more people can buy and/or no more firms can sell.
+
+        Params:
+            @person_actions [Action]    List of actions for each person
+            @firm_actions   [Action]    List of actions for each firm
+
+        Returns: tuple of two lists containing the following information:
+            (
+                [(money paid out, goods received) for all people],
+                [(money received, goods delivered) for all firms]
+            )
+        """
+
+        people_updates = [(0, 0)] * len(person_actions)
+        firm_updates = [(0, 0)] * len(firm_actions)
+        possible_people = range(len(self.people))
+
+        # Create a list of the possible firms, ordered by price per good.
+        # Entries are ($ per good, total # of goods to sell, person index).
+        possible_firms = []
+        for i in range(len(firm_actions)):
+
+            # Compute various statistics per person.
+            firm = self.firms[i]
+
+            price_per_good = person_actions[i].price_to_offer
+            num_goods = person_actions[i].units_to_offer
+
+            # If the firm has something to sell, insert in order.
+            if num_goods < 1.0: continue
+            entry = (price_per_good, num_goods, i)
+            possible_firms.append(entry)
+        possible_firms.sort()
+
+
+        while (len(possible_people) != 0 and len(possible_firms) != 0):
+            person_index = random.choice(possible_people)
+            price_per_good, num_goods, i = possible_firms[0]
+            firm_money_paid, firm_goods_received = firm_updates[i]
+            hours_worked, money_received = people_updates[person_index]
+            person_demand_curve = person_actions[person_index].demand_curve
+
+            # Check if person is willing to buy.
+            if person_demand_curve[0] < price_per_good: # not sure
+                del possible_people[person_index]
+                continue
+
+            # Check if person has enough money
+            if self.people[person_index].money < money_received + price_per_good: # ?
+                del possible_people[person_index]
+                continue
+
+            # Update person.
+            person_updates[person_index] = (price_per_good, 1.0)
+            # if len(demand_curve) == ... ??
+            #   del possible_person[firm_index]
+            
+            # # Update person.
+            # possible_people.pop(0)
+            # person_entry = (price_per_good, num_goods - 1.0, i)
+            # if (num_goods >= 2.0):
+            #     possible_people.insert(0, person_entry)
+            # hours_worked += 1.0 / self.people[i].skill
+            # people_updates[i] = 
+            #     (hours_worked, money_received + 1.0 * price_per_good)
+
+            # Update firm.
+            possible_firm.pop(0)
+            firm_entry = (price_per_good, num_goods - 1.0, i)
+            if (num_goods >= 2.0):
+                possible_firms.insert(0, firm_entry)
+            # (money received, goods delivered) for all firms]
+            goods_delivered 
+
+            
+        return people_updates, firm_updates
 
     
         
