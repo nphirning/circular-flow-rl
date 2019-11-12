@@ -125,6 +125,12 @@ class Model:
                 del possible_firms[firm_index]
                 continue
 
+            # Check if person has enough hours to make another good.
+            hours_to_work = person_actions[i].units_to_offer
+            if hours_to_work < hours_worked + 1.0 / self.people[i].skill:
+                del possible_people[i]
+                continue
+
             # Update firm.
             firm_updates[firm_index] = 
                 (firm_money_paid + price_per_good, firm_goods_received + 1)
