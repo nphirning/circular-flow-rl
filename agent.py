@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 
 class Agent(ABC):
 
-    def __init__(self, money):
+    def __init__(self, money, rltype):
         self.total_reward = 0
+        self.rltype = rltype
         self.money = money
 
     def get_total_reward(self):
@@ -19,18 +20,18 @@ class Agent(ABC):
         # returns an Action object
         pass
 
-    @abstractmethod
-    # TODO: figure out how to convey price information
-    def reward_from_labor(self, goods_amounts, good_prices):
-        # For a person, we'd convert num_goods to hours worked
-        # For a firm, we'd have positive utility
-        # goods_amounts should be an array, one amount for each good
-        #   (in V1, this will just be one number)
-        pass
+    # @abstractmethod
+    # # TODO: figure out how to convey price information
+    # def reward_from_labor(self, goods_amounts, good_prices):
+    #     # For a person, we'd convert num_goods to hours worked
+    #     # For a firm, we'd have positive utility
+    #     # goods_amounts should be an array, one amount for each good
+    #     #   (in V1, this will just be one number)
+    #     pass
 
-    @abstractmethod
-    def reward_from_goods(self, goods_amounts, good_prices):
-        pass
+    # @abstractmethod
+    # def reward_from_goods(self, goods_amounts, good_prices):
+    #     pass
 
 # Idea is that an agent will always have the following components of an action:
 #   - Price to offer (float)
