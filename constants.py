@@ -7,6 +7,8 @@ TOTAL_MONEY_PEOPLE = 100
 
 MAX_DEMAND = 20
 
+DISCOUNT = 0.9
+
 class RLType(Enum):
     TRIVIAL = 1
     DEEPQ = 2
