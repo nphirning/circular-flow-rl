@@ -20,7 +20,6 @@ class FirmAgent(Agent):
         if self.rltype == RLType.TRIVIAL:
             self.money += money_recv - money_paid
             self.num_goods += goods_recv - goods_sold
-        print(self.num_goods, self.money)
         assert(self.num_goods >= 0 and self.money >= 0)
     
     

@@ -108,8 +108,7 @@ class Model:
             if num_goods < 1.0: continue
             entry = (price_per_good, num_goods, i)
             possible_people.append(entry)
-        possible_people.sort()
-        
+        possible_people.sort()        
 
         while (len(possible_firms) != 0 and len(possible_people) != 0):
             firm_index = random.choice(possible_firms)
@@ -167,7 +166,6 @@ class Model:
                 [(goods sold, money received) for all firms]
             )
         """
-
         people_updates = [(0, 0)] * len(person_actions)
         firm_updates = [(0, 0)] * len(firm_actions)
         possible_people = list(range(len(self.people)))
@@ -178,19 +176,20 @@ class Model:
         for i in range(len(firm_actions)):
 
             # Various statistics for firm.
-            price_per_good = person_actions[i].price_to_offer
-            num_goods = person_actions[i].units_to_offer
+            price_per_good = firm_actions[i].price_to_offer
+            num_goods_offered = firm_actions[i].units_to_offer
+            num_goods_total = self.firms[i].num_goods
+            num_goods_offered = min(num_goods_offered, num_goods_total)
 
             # If the firm has something to sell, insert in order.
-            if num_goods < 1.0: continue
-            entry = (price_per_good, num_goods, i)
+            if num_goods_offered < 1.0: continue
+            entry = (price_per_good, num_goods_offered, i)
             possible_firms.append(entry)
         possible_firms.sort()
 
-
         while (len(possible_people) != 0 and len(possible_firms) != 0):
             person_index = random.choice(possible_people)
-            price_per_good, num_goods, i = possible_firms[0]
+            price_per_good, num_goods_offered, i = possible_firms[0]
             person_money_paid, person_goods_bought = people_updates[person_index]
             firm_goods_sold, firm_money_received = firm_updates[i]
             person_demand_curve = person_actions[person_index].demand_curve
@@ -213,8 +212,8 @@ class Model:
                 possible_people.remove(person_index)
 
             # Update firm.
-            possible_people.pop(0)
-            new_num_goods = num_goods - 1
+            possible_firms.pop(0) 
+            new_num_goods = num_goods_offered - 1
             new_goods_sold = firm_goods_sold + 1
             new_firm_money_recv = firm_money_received + 1.0 * price_per_good
             firm_entry = (price_per_good, new_num_goods, i)
