@@ -52,18 +52,19 @@ class Model:
             self.run_labor_market_step(person_actions, firm_actions)
         person_good_updates, firm_good_updates = \
             self.run_goods_market_step(person_actions, firm_actions)
+        print(person_good_updates, firm_good_updates)
         
         # Update firms and people with new results.
         for i in range(len(self.firms)):
             money_paid, goods_recv = firm_labor_updates[i]
-            money_recv, goods_sold = firm_good_updates[i]
+            goods_sold, money_recv = firm_good_updates[i]
             action = firm_actions[i]
             result = (money_paid, money_recv, goods_recv, goods_sold)
             self.firms[i].update(state, action, result)
         
         for i in range(len(self.people)):
             money_paid, goods_recv = person_good_updates[i]
-            money_recv, hours_worked = person_labor_updates[i]
+            hours_worked, money_recv = person_labor_updates[i]
             action = person_actions[i]
             result = (money_paid, money_recv, goods_recv, hours_worked)
             self.people[i].update(state, action, result)
