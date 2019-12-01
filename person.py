@@ -22,6 +22,9 @@ class PersonAgent(Agent):
         if self.rltype == RLType.TRIVIAL:
             self.money += money_recv - money_paid
         assert(self.money >= 0)
+
+        # TODO: add updates to policy gradient net, 
+        # and if end of episode, update params
     
     
     

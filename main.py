@@ -3,8 +3,8 @@ from constants import *
 
 def main():
     m = model.Model(1000)
-    m.create_firms(5, rltype=RLType.TRIVIAL)
-    m.create_people(10, rltype=RLType.TRIVIAL)
+    m.create_firms(NUM_FIRMS, rltype=RLType.TRIVIAL)
+    m.create_people(NUM_PEOPLE, rltype=RLType.TRIVIAL)
     m.run(1)
 
     for firm in m.firms:

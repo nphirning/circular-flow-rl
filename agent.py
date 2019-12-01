@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from policy_grad import ReinforcePolicyGradient
 
 class Agent(ABC):
 
@@ -13,10 +14,23 @@ class Agent(ABC):
     def get_money(self):
         return self.money
 
+    def deconstruct_state(self, env):
+        # First, all firms' number of goods 
+        state_input = [firm.num_goods for firm in env.firms]
+        # Second, all firms' amount of money
+        state_input += [firm.money for firm in env.firms]
+        # Third, all people's amount of money
+        state_input += [person.money for person in env.people]
+        return np.array(state_input)
+
+    # Given a categorical number,
+    # returns an Action object for the agents to use
+    def construct_action(self, action_num):
+        pass
+
     @abstractmethod
     def get_action(state=None):
         # determines the action to be taken (maybe random)
-        # presumably references some policy function
         # returns an Action object
         pass
 

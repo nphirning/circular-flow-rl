@@ -9,7 +9,7 @@ from torch.distributions import Categorical
 
 from constants import *
 
-# Heavily adoped from here: 
+# Heavily adopted from here: 
 # https://medium.com/@ts1829/policy-gradient-reinforcement-learning-in-pytorch-df1383ea0baf
 class ReinforcePolicyGradient(object):
     def __init__(self, state_dim, action_dim, activation=F.Tanh, learning_rate=0.01):
@@ -37,12 +37,6 @@ class ReinforcePolicyGradient(object):
         x = self.activation(self.out_layer(x))
         return F.log_softmax(x)
 
-    # THIS depends on the environment
-    def construct_state(self):
-        pass
-
-    def deconstruct_action(self):
-        pass
 
     def choose_action(self, state):
         state = torch.from_numpy(state).type(torch.FloatTensor)
