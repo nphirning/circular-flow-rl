@@ -67,7 +67,14 @@ class Model:
         stats['firm_first_entries'] = firm_demand_curve_first_entries
         stats['firm_avg_first_entries'] = firm_avg_demand_curve_first_entry
 
-
+        # Firm money accumulated over time.
+        firm_money_gained_over_time = []
+        for i in range(len(firm_money_recv)):
+            firm_recv = firm_money_recv[i]
+            firm_paid = firm_money_paid[i]
+            firm_profit = [firm_recv[j] - firm_paid[j] for j in range(len(firm_recv))]
+            firm_money_gained_over_time.append(np.cumsum(firm_profit))
+        stats['firm_money_over_time'] = firm_money_gained_over_time
 
         return stats
 
@@ -99,6 +106,7 @@ class Model:
             print("Firm Avg. Profit: ", end='')
             pp(stats['firm_avg_profit'])
             pp(stats['firm_avg_first_entries'])
+            pp(stats['firm_money_over_time'])
 
         # End episode and reset agents.
         firm_losses = []
@@ -118,6 +126,8 @@ class Model:
             firm_data = (np.mean(firm_losses), np.std(firm_losses))
             print("P Loss: mean %s stdev %s" % person_data)
             print("F Loss: mean %s stdev %s" % firm_data)
+
+        return stats['firm_avg_profit']
 
     def run(self, num_timesteps=100):
         for _ in range(num_timesteps): self.run_one_step()

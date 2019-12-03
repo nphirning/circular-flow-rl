@@ -1,7 +1,9 @@
 import numpy as np 
+import math
 from policy_grad import ReinforcePolicyGradient
 from agent import Agent, Action
 from constants import *
+
 
 class FirmAgent(Agent):
     def __init__(self, money, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.RECIPROCAL):
@@ -55,10 +57,11 @@ class FirmAgent(Agent):
         @param result - (money paid, money recv, goods recv, goods sold)
         """
         money_paid, money_recv, goods_recv, goods_sold = result
-        self.money += money_recv - money_paid
+        profit = money_recv - money_paid
+        self.money += profit
         self.num_goods += goods_recv - goods_sold
         if self.rltype == RLType.REINFORCE:
-            self.policy_net.record_reward(money_recv - money_paid)
+            self.policy_net.record_reward(profit)
         assert(self.num_goods >= 0 and self.money >= 0)
 
         self.money_recv.append(money_recv)
