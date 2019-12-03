@@ -4,7 +4,7 @@ import itertools
 
 # These are constants because I use them to initialize 
 # the policy network's input dimension
-NUM_FIRMS = 5
+NUM_FIRMS = 1
 NUM_PEOPLE = 10
 
 NUM_GOODS_MAX_BUY = 20
@@ -42,7 +42,7 @@ def constant(n):
 
 ## RL ACTION PARAMETERS
 POSSIBLE_UNITS_FIRM = np.arange(10)
-POSSIBLE_PRICES_FIRM = np.arange(5, 16)
+POSSIBLE_PRICES_FIRM = np.arange(5, 25)
 POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array(list(itertools.product(range(5, 30, 4), range(0, 20, 4))))
 
 POSSIBLE_UNITS_PERSON = np.arange(WORK_HOURS_PER_PERSON - 9, WORK_HOURS_PER_PERSON + 1)

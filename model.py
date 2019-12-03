@@ -84,24 +84,27 @@ class Model:
         
         # Logging GDP-esque info.
         if verbose:
-            total_num_goods_purchased = 0
-            total_num_goods_produced = 0
-            total_money_paid_to_people = 0
-            total_money_paid_to_firms = 0
-            for i in range(len(self.firms)):
-                money_paid, goods_recv = firm_labor_updates[i]
-                goods_sold, money_recv = firm_good_updates[i]
-                total_num_goods_produced += goods_recv
-                total_num_goods_purchased += goods_sold
-                total_money_paid_to_people += money_paid 
-                total_money_paid_to_firms += money_recv
-            data = (
-                str(round(total_num_goods_purchased, 1)),
-                str(round(total_num_goods_produced, 1)),
-                str(round(total_money_paid_to_people, 1)),
-                str(round(total_money_paid_to_firms, 1))
-            )
-            print("TGPu %s TGPr %s TMPP %s TMPF %s" % data)
+            # total_num_goods_purchased = 0
+            # total_num_goods_produced = 0
+            # total_money_paid_to_people = 0
+            # total_money_paid_to_firms = 0
+            # for i in range(len(self.firms)):
+            #     money_paid, goods_recv = firm_labor_updates[i]
+            #     goods_sold, money_recv = firm_good_updates[i]
+            #     total_num_goods_produced += goods_recv
+            #     total_num_goods_purchased += goods_sold
+            #     total_money_paid_to_people += money_paid 
+            #     total_money_paid_to_firms += money_recv
+            # data = (
+            #     str(round(total_num_goods_purchased, 1)),
+            #     str(round(total_num_goods_produced, 1)),
+            #     str(round(total_money_paid_to_people, 1)),
+            #     str(round(total_money_paid_to_firms, 1))
+            # )
+            # print("TGPu %s TGPr %s TMPP %s TMPF %s" % data)
+
+            # Print out the price offered by the firm
+            print('Price from firm: {}'.format(firm_actions[0].price_to_offer))
 
         # Update firms and people with new results.
         for i in range(len(self.firms)):

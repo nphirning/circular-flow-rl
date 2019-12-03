@@ -42,7 +42,8 @@ class PersonAgent(Agent):
         self.money = self.init_money
 
     def end_episode(self):
-        self.policy_net.update_policy()
+        if self.rltype == RLType.REINFORCE:
+            self.policy_net.update_policy()
 
     def update(self, state, action, result):
         """
@@ -55,6 +56,8 @@ class PersonAgent(Agent):
         assert(self.money >= 0)
     
     def get_loss(self):
+        if self.rltype == RLType.TRIVIAL:
+            return 0
         if len(self.policy_net.loss_hist) == 0: return None
         return self.policy_net.loss_hist[-1]
     

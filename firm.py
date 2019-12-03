@@ -7,6 +7,7 @@ class FirmAgent(Agent):
     def __init__(self, money, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.RECIPROCAL):
         super().__init__(money, rltype, demand_curve_shape)
         self.num_goods = 0
+        self.epis_actions = []
 
         if self.rltype == RLType.REINFORCE:
             state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
@@ -39,9 +40,11 @@ class FirmAgent(Agent):
     def reset(self):
         self.money = self.init_money
         self.num_goods = 0
+        self.epis_actions = []
 
     def end_episode(self):
-        self.policy_net.update_policy()
+        if self.rltype == RLType.REINFORCE:
+            self.policy_net.update_policy()
 
     def update(self, state, action, result):
         """
@@ -53,6 +56,8 @@ class FirmAgent(Agent):
         if self.rltype == RLType.REINFORCE:
             self.policy_net.record_reward(self.money)
         assert(self.num_goods >= 0 and self.money >= 0)
+
+        self.epis_actions.append(action)
     
     def get_loss(self):
         if len(self.policy_net.loss_hist) == 0: return None

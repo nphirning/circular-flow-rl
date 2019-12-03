@@ -19,6 +19,7 @@ class ReinforcePolicyGradient(nn.Module):
         self.state_dim = state_dim 
         # Should be (choices of hours/goods produced) * (choices of prices) * (demand curve parameters)
         self.action_dim = action_dim
+
         self.learning_rate = learning_rate
 
         self.activation = activation
