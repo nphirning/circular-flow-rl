@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
 from policy_grad import ReinforcePolicyGradient
+from constants import *
 
 class Agent(ABC):
 
-    def __init__(self, money, rltype):
+    def __init__(self, money, rltype, demand_curve_shape):
         self.total_reward = 0
         self.rltype = rltype
         self.money = money
+        self.demand_curve_shape = demand_curve_shape
 
     def get_total_reward(self):
         return self.total_reward

@@ -1,9 +1,11 @@
+import numpy as np 
+
 from agent import Agent, Action
 from constants import *
 
 class FirmAgent(Agent):
-    def __init__(self, money, rltype=RLType.REINFORCE):
-        super().__init__(money, rltype)
+    def __init__(self, money, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.RECIPROCAL):
+        super().__init__(money, rltype, demand_curve_shape)
         self.num_goods = 0
 
         if self.rltype == RLType.REINFORCE:
@@ -15,7 +17,14 @@ class FirmAgent(Agent):
     # Given a categorical number,
     # returns an Action object for the agents to use
     def deconstruct_action(self, action_num):
-        pass
+        if self.demand_curve_shape == DemandCurveShape.RECIPROCAL:
+            indices = np.unravel_index(action_num, (POSSIBLE_UNITS_FIRM.dim[0], 
+                POSSIBLE_PRICES_FIRM.dim[0], POSSIBLE_RECIP_DEMAND_PARAMS_FIRM.dim[0]))
+            units = POSSIBLE_UNITS_FIRM[indices[0]]
+            price = POSSIBLE_PRICES_FIRM[indices[1]]
+            demand_curve = reciprocal(POSSIBLE_RECIP_DEMAND_PARAMS_FIRM[indices[2]])
+            return Action(price, units, demand_curve)
+
 
     def get_action(self, state):
         if self.rltype == RLType.TRIVIAL:

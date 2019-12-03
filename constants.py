@@ -21,6 +21,10 @@ class RLType(Enum):
     DEEPQ = 2
     REINFORCE = 3
 
+class DemandCurveShape(Enum):
+    CONSTANT = 1
+    RECIPROCAL = 2
+
 ## DISTRIBUTIONS
 #
 # Each distribution returns a L1-normalized vector of length `n` of the desired
@@ -45,7 +49,8 @@ POSSIBLE_RECIP_DEMAND_PARAMS_PERSON = np.array(itertools.product(range(5, 30, 3)
 
 
 
-def reciprocal(a, b):
+def reciprocal(params):
+    (a, b) = params
     def c(length):
         return np.maximum((a / np.arange(1, length + 1)) + b, 0)
     return c
