@@ -76,6 +76,12 @@ class Model:
             firm_money_gained_over_time.append(np.cumsum(firm_profit))
         stats['firm_money_over_time'] = firm_money_gained_over_time
 
+        # People goods accumulated over time.
+        people_goods_gained_over_time = []
+        for person_gr in person_goods_recv:
+            people_goods_gained_over_time.append(np.cumsum(person_gr))
+        stats['people_goods_over_time'] = people_goods_gained_over_time
+
         return stats
 
 
@@ -107,6 +113,7 @@ class Model:
             pp(stats['firm_avg_profit'])
             pp(stats['firm_avg_first_entries'])
             pp(stats['firm_money_over_time'])
+            pp(stats['people_goods_over_time'])
 
         # End episode and reset agents.
         firm_losses = []
@@ -125,7 +132,10 @@ class Model:
             person_data = (np.mean(person_losses), np.std(person_losses))
             firm_data = (np.mean(firm_losses), np.std(firm_losses))
             print("P Loss: mean %s stdev %s" % person_data)
+            print("Raw: %s" % str(person_losses))
             print("F Loss: mean %s stdev %s" % firm_data)
+            print("Raw: %s" % str(firm_losses))
+            
 
         return stats['firm_avg_profit']
 

@@ -13,7 +13,7 @@ from constants import *
 # Heavily adopted from here: 
 # https://medium.com/@ts1829/policy-gradient-reinforcement-learning-in-pytorch-df1383ea0baf
 class ReinforcePolicyGradient(nn.Module):
-    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=0.01):
+    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=0.1):
         super(ReinforcePolicyGradient, self).__init__()
         # Should be (2 * number of firms) + (number of people)
         self.state_dim = state_dim 
