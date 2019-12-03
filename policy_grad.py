@@ -23,7 +23,9 @@ class ReinforcePolicyGradient(nn.Module):
         self.learning_rate = learning_rate
 
         self.activation = activation
-        self.out_layer = nn.Linear(state_dim, action_dim)
+        hidden_dim = 1000
+        self.layer1 = nn.Linear(state_dim, hidden_dim)
+        self.layer2 = nn.Linear(hidden_dim, action_dim)
 
         self.gamma = DISCOUNT
 
@@ -36,8 +38,15 @@ class ReinforcePolicyGradient(nn.Module):
             lr=self.learning_rate)
 
     def forward(self, x):
-        x = self.activation(self.out_layer(x))
-        return F.log_softmax(x, dim=0)
+        model = torch.nn.Sequential(
+            self.layer1,
+            nn.Tanh(),
+            self.layer2
+        )
+        return F.log_softmax(model(x), dim=0)
+        # ll1 = self.layer1(x)
+        # x = self.activation(self.layer2(x))
+        # return F.log_softmax(x, dim=0)
 
     def choose_action(self, state):
         state = torch.from_numpy(state).type(torch.FloatTensor)

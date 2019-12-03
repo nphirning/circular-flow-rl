@@ -18,9 +18,9 @@ def reinforce_test():
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
     m.create_people(NUM_PEOPLE, rltype=RLType.TRIVIAL)
     # m.run_episode(1000, very_verbose=False)
-    for _ in range(1000):
-        m.run_episode(100)
-    m.run_episode(1000, very_verbose=True)
+    for i in range(1000):
+        m.run_episode(100, verbose=i%10==0)
+    m.run_episode(1000)
 
 # NOTE: actually, just run reinforce_test with NUM_FIRMS = 1
 # def monopoly_test():

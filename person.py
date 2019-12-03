@@ -8,6 +8,10 @@ class PersonAgent(Agent):
         super().__init__(money, rltype, demand_curve_shape)
         self.skill = skill # goods per hour
 
+        self.epis_actions = []
+        self.goods_recv = []
+        self.hours_worked = []
+
         # Per-turn state.
         self.num_hours_to_work = WORK_HOURS_PER_PERSON
 
@@ -40,6 +44,9 @@ class PersonAgent(Agent):
 
     def reset(self):
         self.money = self.init_money
+        self.goods_recv = []
+        self.epis_actions = []
+        self.hours_worked = []
 
     def end_episode(self):
         if self.rltype == RLType.REINFORCE:
@@ -54,6 +61,10 @@ class PersonAgent(Agent):
         if self.rltype == RLType.REINFORCE:
             self.policy_net.record_reward(goods_recv)
         assert(self.money >= 0)
+
+        self.epis_actions.append(action)
+        self.goods_recv.append(goods_recv)
+        self.hours_worked.append(hours_worked)
     
     def get_loss(self):
         if self.rltype == RLType.TRIVIAL:

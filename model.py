@@ -2,7 +2,7 @@ from constants import *
 from firm import FirmAgent
 from person import PersonAgent
 from pprint import pprint as pp
-
+from collections import Counter
 import random
 import bisect
 
@@ -33,9 +33,74 @@ class Model:
             )
             self.people.append(p)
 
-    def run_episode(self, num_timesteps, verbose=True, very_verbose=False):
-        self.run(num_timesteps, verbose=very_verbose)
+    def compute_stats(self, firm_action_hist, person_action_hist, 
+        firm_money_recv, firm_money_paid, person_goods_recv):
+        stats = {}
 
+        # Frequency of prices offered by firms.
+        price_hists = []
+        for firm_hist in firm_action_hist:
+            price_hists.append(dict(Counter([x.price_to_offer for x in firm_hist])))
+        stats['firm_price_hists'] = price_hists
+
+        # Average money received by a firm.
+        firm_avg_money = []
+        for firm_money in firm_money_recv:
+            firm_avg_money.append(np.mean(firm_money))
+        stats['firm_avg_money_recv'] = firm_avg_money
+
+        # Average profit for a firm.
+        firm_avg_profit = []
+        for i in range(len(firm_money_recv)):
+            firm_recv = firm_money_recv[i]
+            firm_paid = firm_money_paid[i]
+            firm_profit = [firm_recv[j] - firm_paid[j] for j in range(len(firm_recv))]
+            firm_avg_profit.append(np.mean(firm_profit))
+        stats['firm_avg_profit'] = firm_avg_profit
+
+        # First entries and avg. first entries of demand curve.
+        firm_demand_curve_first_entries = []
+        firm_avg_demand_curve_first_entry = []
+        for firm_hist in firm_action_hist:
+            firm_demand_curve_first_entries.append([x.demand_curve[0] for x in firm_hist])
+            firm_avg_demand_curve_first_entry.append(np.mean([x.demand_curve[0] for x in firm_hist]))
+        stats['firm_first_entries'] = firm_demand_curve_first_entries
+        stats['firm_avg_first_entries'] = firm_avg_demand_curve_first_entry
+
+
+
+        return stats
+
+
+    def run_episode(self, num_timesteps, verbose=True):
+        
+        # Run.
+        self.run(num_timesteps)
+
+        # Stats.
+        firm_action_hist = [s.epis_actions for s in self.firms]
+        person_action_hist = [s.epis_actions for s in self.people]
+        firm_money_paid = [s.money_paid for s in self.firms]
+        firm_money_recv = [s.money_recv for s in self.firms]
+        # print([firm_money_recv[0][i] - firm_money_paid[0][i] for i in range(len(firm_money_recv[0]))])
+        person_goods_recv = [s.goods_recv for s in self.people]
+        person_hours_worked = [s.hours_worked for s in self.people]
+        # print(list(zip(*person_hours_worked)))
+        stats = self.compute_stats(
+            firm_action_hist,
+            person_action_hist,
+            firm_money_recv,
+            firm_money_paid,
+            person_goods_recv
+        )
+
+        if verbose: 
+            pp(stats['firm_price_hists'])
+            print("Firm Avg. Profit: ", end='')
+            pp(stats['firm_avg_profit'])
+            pp(stats['firm_avg_first_entries'])
+
+        # End episode and reset agents.
         firm_losses = []
         person_losses = []
         for firm in self.firms:
@@ -47,16 +112,17 @@ class Model:
             person_losses.append(person.get_loss())
             person.reset()
 
+
         if verbose:
             person_data = (np.mean(person_losses), np.std(person_losses))
             firm_data = (np.mean(firm_losses), np.std(firm_losses))
-            # print("Person Loss: mean %s stdev %s" % person_data)
-            print("Firm Loss: mean %s stdev %s" % firm_data)
+            print("P Loss: mean %s stdev %s" % person_data)
+            print("F Loss: mean %s stdev %s" % firm_data)
 
-    def run(self, num_timesteps=100, verbose=False):
-        for _ in range(num_timesteps): self.run_one_step(verbose)
+    def run(self, num_timesteps=100):
+        for _ in range(num_timesteps): self.run_one_step()
 
-    def run_one_step(self, verbose=False):
+    def run_one_step(self):
 
         # Create state
         person_money = [p.money for p in self.people]
@@ -68,44 +134,12 @@ class Model:
         firm_actions = [f.get_action(self) for f in self.firms]
         person_actions = [p.get_action(self) for p in self.people]
 
-        # if verbose:
-            # print("======= ACTIONS =======")
-            # print("Firms...")
-            # pp([str(x) for x in firm_actions])
-            # print("People...")
-            # pp([str(x) for x in person_actions])
-            # print("-----------------------")
-
         # Run markets and get results.
         person_labor_updates, firm_labor_updates = \
             self.run_labor_market_step(person_actions, firm_actions)
         person_good_updates, firm_good_updates = \
             self.run_goods_market_step(person_actions, firm_actions)
         
-        # Logging GDP-esque info.
-        if verbose:
-            # total_num_goods_purchased = 0
-            # total_num_goods_produced = 0
-            # total_money_paid_to_people = 0
-            # total_money_paid_to_firms = 0
-            # for i in range(len(self.firms)):
-            #     money_paid, goods_recv = firm_labor_updates[i]
-            #     goods_sold, money_recv = firm_good_updates[i]
-            #     total_num_goods_produced += goods_recv
-            #     total_num_goods_purchased += goods_sold
-            #     total_money_paid_to_people += money_paid 
-            #     total_money_paid_to_firms += money_recv
-            # data = (
-            #     str(round(total_num_goods_purchased, 1)),
-            #     str(round(total_num_goods_produced, 1)),
-            #     str(round(total_money_paid_to_people, 1)),
-            #     str(round(total_money_paid_to_firms, 1))
-            # )
-            # print("TGPu %s TGPr %s TMPP %s TMPF %s" % data)
-
-            # Print out the price offered by the firm
-            print('Price from firm: {}'.format(firm_actions[0].price_to_offer))
-
         # Update firms and people with new results.
         for i in range(len(self.firms)):
             money_paid, goods_recv = firm_labor_updates[i]
@@ -146,7 +180,7 @@ class Model:
         possible_firms = list(range(len(self.firms)))
 
         # Create a list of the possible people, ordered by price per good.
-        # Entries are ($ per good, total # of goods to sell, person index).
+        # Entries are ($ per good, random number, total # of goods to sell, person index).
         possible_people = []
         for i in range(len(person_actions)):
             # Compute various statistics per person.
@@ -159,13 +193,13 @@ class Model:
 
             # If the person has something to sell, insert in order.
             if num_goods < 1.0: continue
-            entry = (price_per_good, num_goods, i)
+            entry = (price_per_good, random.random(), num_goods, i)
             possible_people.append(entry)
         possible_people.sort()        
 
         while (len(possible_firms) != 0 and len(possible_people) != 0):
             firm_index = random.choice(possible_firms)
-            price_per_good, num_goods, i = possible_people[0]
+            price_per_good, _, num_goods, i = possible_people[0]
             hours_worked, money_received = people_updates[i]
             firm_money_paid, firm_goods_received = firm_updates[firm_index]
             firm_demand_curve = firm_actions[firm_index].demand_curve
@@ -191,9 +225,10 @@ class Model:
             possible_people.pop(0)
             new_num_goods = num_goods - 1
             new_hours_worked = hours_worked + 1.0 / self.people[i].skill
-            person_entry = (price_per_good, new_num_goods, i)
+            person_entry = (price_per_good, random.random(), new_num_goods, i)
             if (new_num_goods >= 1 and new_hours_worked >= 1.0 / self.people[i].skill):
                 possible_people.insert(0, person_entry)
+                possible_people.sort()
             people_updates[i] = \
                 (new_hours_worked, money_received + 1.0 * price_per_good)
             
