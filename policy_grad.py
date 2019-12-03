@@ -3,6 +3,7 @@
 import numpy as np 
 import torch 
 import torch.nn as nn
+import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.distributions import Categorical
@@ -11,8 +12,8 @@ from constants import *
 
 # Heavily adopted from here: 
 # https://medium.com/@ts1829/policy-gradient-reinforcement-learning-in-pytorch-df1383ea0baf
-class ReinforcePolicyGradient(object):
-    def __init__(self, state_dim, action_dim, activation=F.tanh, learning_rate=0.01):
+class ReinforcePolicyGradient(nn.Module):
+    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=0.01):
         super(ReinforcePolicyGradient, self).__init__()
         # Should be (2 * number of firms) + (number of people)
         self.state_dim = state_dim 
@@ -21,33 +22,32 @@ class ReinforcePolicyGradient(object):
         self.learning_rate = learning_rate
 
         self.activation = activation
-        self.out_layer = nn.Linear(input_dim, action_dim)
+        self.out_layer = nn.Linear(state_dim, action_dim)
 
         self.gamma = DISCOUNT
 
-        self.epis_policy_hist = Variable(torch.Tensor())
+        self.epis_policy_hist = torch.Tensor([])
         self.epis_reward_hist = []
         self.reward_hist = []
         self.loss_hist = []
 
-        self.optimizer = optim.AdamOptimizer(self.parameters(), 
+        self.optimizer = optim.Adam(self.parameters(), 
             lr=self.learning_rate)
 
     def forward(self, x):
         x = self.activation(self.out_layer(x))
-        return F.log_softmax(x)
-
+        return F.log_softmax(x, dim=0)
 
     def choose_action(self, state):
         state = torch.from_numpy(state).type(torch.FloatTensor)
-        log_probs = self.policy_net.forward(Variable(state))
+        log_probs = self.__call__(state)
         probs = torch.exp(log_probs)
         c = Categorical(probs)
         action = c.sample()
 
         # Append action to the policy history
         if self.epis_policy_hist.dim() != 0:
-            self.epis_policy_hist = torch.cat([self.epis_policy_hist, c.log_prob(action)])
+            self.epis_policy_hist = torch.cat([self.epis_policy_hist, torch.Tensor([c.log_prob(action)])])
         else:
             self.epis_policy_hist = (c.log_prob(action))
 
@@ -67,22 +67,21 @@ class ReinforcePolicyGradient(object):
         rewards = (rewards - rewards.mean()) / (rewards.std() + np.finfo(np.float32).eps)
         
         # Loss calculation by reading through episode
-        loss = (torch.sum(torch.mul(self.epis_policy_hist, Variable(rewards)).mul(-1), -1))
+        loss = Variable(torch.sum(torch.mul(self.epis_policy_hist, rewards).mul(-1), -1), requires_grad=True)
         
         # Update weights
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
         
-        # Save and intialize episode histories
-        self.loss_hist.append(loss.data[0])
+        # Save and reset episode histories
+        self.loss_hist.append(loss.item())
         self.reward_hist.append(np.sum(self.epis_reward_hist))
-        self.epis_policy_hist = Variable(torch.Tensor())
+        self.epis_policy_hist = torch.Tensor([])
         self.epis_reward_hist = []
 
-    # function to update epis_reward_hist and epis_policy_hist
-
-
+    def record_reward(self, reward):
+        self.epis_reward_hist.append(reward)
 
 
 # function to pass in an episode

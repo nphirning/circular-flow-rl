@@ -8,6 +8,7 @@ class Agent(ABC):
         self.total_reward = 0
         self.rltype = rltype
         self.money = money
+        self.init_money = money
         self.demand_curve_shape = demand_curve_shape
 
     def get_total_reward(self):
@@ -27,6 +28,7 @@ class Agent(ABC):
 
     # Given a categorical number,
     # returns an Action object for the agents to use
+    @abstractmethod
     def construct_action(self, action_num):
         pass
 
@@ -35,19 +37,6 @@ class Agent(ABC):
         # determines the action to be taken (maybe random)
         # returns an Action object
         pass
-
-    # @abstractmethod
-    # # TODO: figure out how to convey price information
-    # def reward_from_labor(self, goods_amounts, good_prices):
-    #     # For a person, we'd convert num_goods to hours worked
-    #     # For a firm, we'd have positive utility
-    #     # goods_amounts should be an array, one amount for each good
-    #     #   (in V1, this will just be one number)
-    #     pass
-
-    # @abstractmethod
-    # def reward_from_goods(self, goods_amounts, good_prices):
-    #     pass
 
 # Idea is that an agent will always have the following components of an action:
 #   - Price to offer (float)
@@ -62,3 +51,7 @@ class Action(object):
         self.price_to_offer = price_to_offer
         self.units_to_offer = units_to_offer
         self.demand_curve = demand_curve
+
+    def __str__(self):
+        data = (self.price_to_offer, self.units_to_offer, self.demand_curve)
+        return "Price: %s\nUnits: %s\nDemand Curve: %s" % data

@@ -1,6 +1,7 @@
 from constants import *
 from firm import FirmAgent
 from person import PersonAgent
+from pprint import pprint as pp
 
 import random
 import bisect
@@ -32,10 +33,30 @@ class Model:
             )
             self.people.append(p)
 
-    def run(self, num_timesteps=100):
-        for _ in range(num_timesteps): self.run_one_step()
+    def run_episode(self, num_timesteps, verbose=True, very_verbose=False):
+        self.run(num_timesteps, verbose=very_verbose)
 
-    def run_one_step(self):
+        firm_losses = []
+        person_losses = []
+        for firm in self.firms:
+            firm.end_episode()
+            firm_losses.append(firm.get_loss())
+            firm.reset()
+        for person in self.people:
+            person.end_episode()
+            person_losses.append(person.get_loss())
+            person.reset()
+
+        if verbose:
+            person_data = (np.mean(person_losses), np.std(person_losses))
+            firm_data = (np.mean(firm_losses), np.std(firm_losses))
+            # print("Person Loss: mean %s stdev %s" % person_data)
+            print("Firm Loss: mean %s stdev %s" % firm_data)
+
+    def run(self, num_timesteps=100, verbose=False):
+        for _ in range(num_timesteps): self.run_one_step(verbose)
+
+    def run_one_step(self, verbose=False):
 
         # Create state
         person_money = [p.money for p in self.people]
@@ -44,16 +65,44 @@ class Model:
         state = person_money + firm_money + firm_goods 
 
         # Extract actions.
-        firm_actions = [f.get_action(state) for f in self.firms]
-        person_actions = [p.get_action(state) for p in self.people]
+        firm_actions = [f.get_action(self) for f in self.firms]
+        person_actions = [p.get_action(self) for p in self.people]
+
+        # if verbose:
+            # print("======= ACTIONS =======")
+            # print("Firms...")
+            # pp([str(x) for x in firm_actions])
+            # print("People...")
+            # pp([str(x) for x in person_actions])
+            # print("-----------------------")
 
         # Run markets and get results.
         person_labor_updates, firm_labor_updates = \
             self.run_labor_market_step(person_actions, firm_actions)
         person_good_updates, firm_good_updates = \
             self.run_goods_market_step(person_actions, firm_actions)
-        print(person_good_updates, firm_good_updates)
         
+        # Logging GDP-esque info.
+        if verbose:
+            total_num_goods_purchased = 0
+            total_num_goods_produced = 0
+            total_money_paid_to_people = 0
+            total_money_paid_to_firms = 0
+            for i in range(len(self.firms)):
+                money_paid, goods_recv = firm_labor_updates[i]
+                goods_sold, money_recv = firm_good_updates[i]
+                total_num_goods_produced += goods_recv
+                total_num_goods_purchased += goods_sold
+                total_money_paid_to_people += money_paid 
+                total_money_paid_to_firms += money_recv
+            data = (
+                str(round(total_num_goods_purchased, 1)),
+                str(round(total_num_goods_produced, 1)),
+                str(round(total_money_paid_to_people, 1)),
+                str(round(total_money_paid_to_firms, 1))
+            )
+            print("TGPu %s TGPr %s TMPP %s TMPF %s" % data)
+
         # Update firms and people with new results.
         for i in range(len(self.firms)):
             money_paid, goods_recv = firm_labor_updates[i]

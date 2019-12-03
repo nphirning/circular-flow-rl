@@ -7,6 +7,8 @@ import itertools
 NUM_FIRMS = 5
 NUM_PEOPLE = 10
 
+NUM_GOODS_MAX_BUY = 20
+NUM_GOODS_MAX_PRODUCE = 30
 
 WORK_HOURS_PER_PERSON = 40
 TOTAL_MONEY_FIRMS = 10000
@@ -41,11 +43,11 @@ def constant(n):
 ## RL ACTION PARAMETERS
 POSSIBLE_UNITS_FIRM = np.arange(10)
 POSSIBLE_PRICES_FIRM = np.arange(5, 16)
-POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array(itertools.product(range(5, 30, 4), range(0, 20, 4)))
+POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array(list(itertools.product(range(5, 30, 4), range(0, 20, 4))))
 
 POSSIBLE_UNITS_PERSON = np.arange(WORK_HOURS_PER_PERSON - 9, WORK_HOURS_PER_PERSON + 1)
 POSSIBLE_PRICES_PERSON = np.arange(5, 16)
-POSSIBLE_RECIP_DEMAND_PARAMS_PERSON = np.array(itertools.product(range(5, 30, 4), range(0, 20, 4)))
+POSSIBLE_RECIP_DEMAND_PARAMS_PERSON = np.array(list(itertools.product(range(5, 30, 4), range(0, 20, 4))))
 
 
 

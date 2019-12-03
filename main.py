@@ -1,7 +1,7 @@
 import model
 from constants import *
 
-def main():
+def trivial_test():
     m = model.Model(1000)
     m.create_firms(NUM_FIRMS, rltype=RLType.TRIVIAL)
     m.create_people(NUM_PEOPLE, rltype=RLType.TRIVIAL)
@@ -13,6 +13,18 @@ def main():
     for person in m.people:
         print(person.money)
 
+def reinforce_test():
+    m = model.Model(10000)
+    m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
+    m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
+    # m.run_episode(1000, very_verbose=False)
+    for _ in range(10):
+        m.run_episode(1000)
+    m.run_episode(1000, very_verbose=True)
+
+
+def main():
+    reinforce_test()
 
 if __name__ == "__main__":
     main()
