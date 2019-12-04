@@ -4,8 +4,8 @@ import itertools
 
 # These are constants because I use them to initialize 
 # the policy network's input dimension
-NUM_FIRMS = 1
-NUM_PEOPLE = 2
+NUM_FIRMS = 3
+NUM_PEOPLE = 10
 
 NUM_GOODS_MAX_BUY = 20
 NUM_GOODS_MAX_PRODUCE = 30
@@ -35,10 +35,20 @@ class DemandCurveShape(Enum):
 def uniform(n):
     return np.array([1.0 / n] * n)
 
+def rand_uniform(n):
+    d = np.random.uniform(0, 1, n)
+    return d/np.sum(d)
+
 def constant(n):
     def c(length):
         return np.ones(length) * n
     return c
+
+def normal(mean, std):
+    def c(length):
+        return np.random.normal(mean, std, length)
+    return c
+
 
 ## RL ACTION PARAMETERS
 POSSIBLE_UNITS_FIRM = np.array([2]) #np.arange(10)
@@ -48,8 +58,6 @@ POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array(list(itertools.product(range(5, 30,
 POSSIBLE_UNITS_PERSON = np.arange(WORK_HOURS_PER_PERSON - 9, WORK_HOURS_PER_PERSON + 1)
 POSSIBLE_PRICES_PERSON = np.arange(5, 16)
 POSSIBLE_RECIP_DEMAND_PARAMS_PERSON = np.array(list(itertools.product(range(5, 30, 4), range(0, 20, 4))))
-
-
 
 def reciprocal(params):
     (a, b) = params

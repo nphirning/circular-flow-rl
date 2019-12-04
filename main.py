@@ -1,6 +1,8 @@
 import model
 import matplotlib.pyplot as plt
 from constants import *
+from analytics import *
+from tqdm import tqdm
 
 def trivial_test():
     m = model.Model(1000)
@@ -17,27 +19,14 @@ def trivial_test():
 def reinforce_test():
     m = model.Model(10000)
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
-    m.create_people(NUM_PEOPLE, rltype=RLType.TRIVIAL)
-    # m.run_episode(1000, very_verbose=False)
+    m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
     firm_profits = []
-    for i in range(5000):
-        avg_profit = m.run_episode(100, verbose=i%200==0)
-        firm_profits.append(avg_profit)
-    plt.plot(range(1000), firm_profits)
-    plt.xlabel("Episode Number")
-    plt.ylabel("Mean Profit")
-    plt.show()
-    m.run_episode(1000)
+    num_iters = 10
+    for i in tqdm(range(num_iters)):
+        m.run_episode(100, verbose=False)
 
-# NOTE: actually, just run reinforce_test with NUM_FIRMS = 1
-# def monopoly_test():
-#     m = model.Model(100000)
-#     m.create_firms(1, rltype=RLType.REINFORCE)
-#     m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
-#     for _ in range(10):
-#         m.run_episode(1000)
-#     m.run_episode(1000, very_verbose=True)
-
+    stats = m.run_episode(1000, verbose=False)
+    plot_wealth_histories(m, stats)
 
 def main():
     reinforce_test()
