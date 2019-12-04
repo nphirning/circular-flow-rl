@@ -141,7 +141,8 @@ class Model:
             print("Raw: %s" % str(firm_losses))
             
 
-        return stats['firm_avg_profit']
+        # return stats['firm_avg_profit']
+        return stats['firm_money_over_time']
 
     def run(self, num_timesteps=100):
         for _ in range(num_timesteps): self.run_one_step()

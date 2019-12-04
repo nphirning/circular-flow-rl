@@ -17,13 +17,18 @@ def trivial_test():
 def reinforce_test():
     m = model.Model(10000)
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
-    m.create_people(NUM_PEOPLE, rltype=RLType.TRIVIAL)
+    m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
     # m.run_episode(1000, very_verbose=False)
     firm_profits = []
-    for i in range(5000):
-        avg_profit = m.run_episode(100, verbose=i%200==0)
+    #num_iters = 5000
+    num_iters = 200
+    verbose_incr = 10
+    for i in range(num_iters):
+        avg_profit = m.run_episode(100, verbose=i%verbose_incr==0)
+        if i % verbose_incr == 0:
+            print('***************Iteration {}*****************'.format(i))
         firm_profits.append(avg_profit)
-    plt.plot(range(1000), firm_profits)
+    plt.plot(range(num_iters), firm_profits)
     plt.xlabel("Episode Number")
     plt.ylabel("Mean Profit")
     plt.show()

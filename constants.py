@@ -5,7 +5,7 @@ import itertools
 # These are constants because I use them to initialize 
 # the policy network's input dimension
 NUM_FIRMS = 1
-NUM_PEOPLE = 2
+NUM_PEOPLE = 10
 
 NUM_GOODS_MAX_BUY = 20
 NUM_GOODS_MAX_PRODUCE = 30
