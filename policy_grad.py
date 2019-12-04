@@ -13,7 +13,7 @@ from constants import *
 # Heavily adopted from here: 
 # https://medium.com/@ts1829/policy-gradient-reinforcement-learning-in-pytorch-df1383ea0baf
 class ReinforcePolicyGradient(nn.Module):
-    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=1.0):
+    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=0.1):
         super(ReinforcePolicyGradient, self).__init__()
         # Should be (2 * number of firms) + (number of people)
         self.state_dim = state_dim 
@@ -23,7 +23,7 @@ class ReinforcePolicyGradient(nn.Module):
         self.learning_rate = learning_rate
 
         self.activation = activation
-        hidden_dim = 100
+        hidden_dim = 20
         self.layer1 = nn.Linear(state_dim, hidden_dim)
         self.layer2 = nn.Linear(hidden_dim, action_dim)
 
@@ -41,12 +41,13 @@ class ReinforcePolicyGradient(nn.Module):
         model = torch.nn.Sequential(
             self.layer1,
             nn.Tanh(),
-            self.layer2
+            self.layer2,
+            # nn.Softmax()
         )
-        return F.log_softmax(model(x), dim=0)
+        # return model(x)
         # ll1 = self.layer1(x)
         # x = self.activation(self.layer2(x))
-        # return F.log_softmax(x, dim=0)
+        return F.log_softmax(model(x), dim=0)
 
     def choose_action(self, state):
         state = torch.from_numpy(state).type(torch.FloatTensor)
@@ -56,10 +57,10 @@ class ReinforcePolicyGradient(nn.Module):
         action = c.sample()
 
         # Append action to the policy history
-        if self.epis_policy_hist.dim() != 0:
-            self.epis_policy_hist = torch.cat([self.epis_policy_hist, torch.Tensor([c.log_prob(action)])])
-        else:
-            self.epis_policy_hist = (c.log_prob(action))
+        self.epis_policy_hist = torch.cat([
+            self.epis_policy_hist,
+            c.log_prob(action).reshape(1)
+        ])
 
         return action
 
@@ -80,18 +81,9 @@ class ReinforcePolicyGradient(nn.Module):
         loss = torch.sum(torch.mul(self.epis_policy_hist, rewards).mul(-1), -1)
         
         # Update weights
-        summ = 0
-        for p in self.parameters():
-            summ += torch.sum(p.data)
-        print(summ)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-        print("yag")
-        summ = 0
-        for p in self.parameters():
-            summ += torch.sum(p.data)
-        print(summ)
         
         # Save and reset episode histories
         self.loss_hist.append(loss.item())
