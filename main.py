@@ -21,7 +21,7 @@ def reinforce_test():
     # m.run_episode(1000, very_verbose=False)
     firm_profits = []
     for i in range(5000):
-        avg_profit = m.run_episode(100, verbose=i%200==0)
+        avg_profit = m.run_episode(10, verbose=i%200==0)
         firm_profits.append(avg_profit)
     plt.plot(range(1000), firm_profits)
     plt.xlabel("Episode Number")

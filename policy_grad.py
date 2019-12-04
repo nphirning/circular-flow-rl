@@ -13,7 +13,7 @@ from constants import *
 # Heavily adopted from here: 
 # https://medium.com/@ts1829/policy-gradient-reinforcement-learning-in-pytorch-df1383ea0baf
 class ReinforcePolicyGradient(nn.Module):
-    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=0.1):
+    def __init__(self, state_dim, action_dim, activation=torch.tanh, learning_rate=1.0):
         super(ReinforcePolicyGradient, self).__init__()
         # Should be (2 * number of firms) + (number of people)
         self.state_dim = state_dim 
@@ -23,7 +23,7 @@ class ReinforcePolicyGradient(nn.Module):
         self.learning_rate = learning_rate
 
         self.activation = activation
-        hidden_dim = 1000
+        hidden_dim = 100
         self.layer1 = nn.Linear(state_dim, hidden_dim)
         self.layer2 = nn.Linear(hidden_dim, action_dim)
 
@@ -77,12 +77,21 @@ class ReinforcePolicyGradient(nn.Module):
         rewards = (rewards - rewards.mean()) / (rewards.std() + np.finfo(np.float32).eps)
         
         # Loss calculation by reading through episode
-        loss = Variable(torch.sum(torch.mul(self.epis_policy_hist, rewards).mul(-1), -1), requires_grad=True)
+        loss = torch.sum(torch.mul(self.epis_policy_hist, rewards).mul(-1), -1)
         
         # Update weights
+        summ = 0
+        for p in self.parameters():
+            summ += torch.sum(p.data)
+        print(summ)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        print("yag")
+        summ = 0
+        for p in self.parameters():
+            summ += torch.sum(p.data)
+        print(summ)
         
         # Save and reset episode histories
         self.loss_hist.append(loss.item())
