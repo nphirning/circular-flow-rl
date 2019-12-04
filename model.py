@@ -61,11 +61,14 @@ class Model:
         # First entries and avg. first entries of demand curve.
         firm_demand_curve_first_entries = []
         firm_avg_demand_curve_first_entry = []
+        firm_std_demand_curve_first_entry = []
         for firm_hist in firm_action_hist:
             firm_demand_curve_first_entries.append([x.demand_curve[0] for x in firm_hist])
             firm_avg_demand_curve_first_entry.append(np.mean([x.demand_curve[0] for x in firm_hist]))
+            firm_std_demand_curve_first_entry.append(np.std([x.demand_curve[0] for x in firm_hist]))
         stats['firm_first_entries'] = firm_demand_curve_first_entries
         stats['firm_avg_first_entries'] = firm_avg_demand_curve_first_entry
+        stats['firm_std_first_entries'] = firm_std_demand_curve_first_entry
 
         # Firm money accumulated over time.
         firm_money_gained_over_time = []
@@ -112,6 +115,7 @@ class Model:
             print("Firm Avg. Profit: ", end='')
             pp(stats['firm_avg_profit'])
             pp(stats['firm_avg_first_entries'])
+            pp(stats['firm_std_first_entries'])
             pp(stats['firm_money_over_time'])
             pp(stats['people_goods_over_time'])
 

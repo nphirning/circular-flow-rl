@@ -16,7 +16,7 @@ TOTAL_MONEY_PEOPLE = 1000
 
 MAX_DEMAND = 20
 
-DISCOUNT = 0.0
+DISCOUNT = 0.9
 
 class RLType(Enum):
     TRIVIAL = 1
@@ -42,8 +42,8 @@ def constant(n):
 
 ## RL ACTION PARAMETERS
 POSSIBLE_UNITS_FIRM = np.array([2]) #np.arange(10)
-POSSIBLE_PRICES_FIRM = np.array([20, 25])
-POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array([[20, 0]])#np.array(list(itertools.product(range(5, 30, 4), range(-20, 5, 4))))
+POSSIBLE_PRICES_FIRM = np.arange(5, 26, 5)
+POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array(list(itertools.product(range(5, 30, 4), range(-20, 5, 4))))
 
 POSSIBLE_UNITS_PERSON = np.arange(WORK_HOURS_PER_PERSON - 9, WORK_HOURS_PER_PERSON + 1)
 POSSIBLE_PRICES_PERSON = np.arange(5, 16)
