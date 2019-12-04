@@ -4,7 +4,6 @@ from policy_grad import ReinforcePolicyGradient
 from agent import Agent, Action
 from constants import *
 
-
 class FirmAgent(Agent):
     def __init__(self, money, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.RECIPROCAL):
         super().__init__(money, rltype, demand_curve_shape)
