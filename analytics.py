@@ -85,7 +85,7 @@ def plot_wealth_histories(m, stats):
 
     # Firms.
     for i in range(len(fs)):
-        fs[i] += m.firms[i].init_money
+        fs[i] += float(m.firms[i].init_money)
 
     plt.subplot(2, 2, 1)
     for f in fs: 
@@ -96,16 +96,26 @@ def plot_wealth_histories(m, stats):
     median_p = [np.median([p[i] for p in ps]) for i in range(len(ps[0]))]
 
     plt.subplot(2, 2, 2)
-    for p in ps:
-        plt.plot((p - median_p) / median_p)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        for p in ps:
+            plt.plot((p - median_p) / median_p)
     plt.title("People's wealth (% rel. median)")
 
     plt.subplot(2, 2, 3)
-    plt.plot(stats['GDP_over_time'])
-    plt.title("GDP")
+    gdp = stats['GDP_over_time']
+    gdp = smooth(gdp, k=20)
+    plt.plot(gdp)
+    plt.title("GDP (smoothed)")
 
     plt.subplot(2, 2, 4)
     plt.plot(stats['gini_over_time'])
     plt.title("Gini coefficient")
 
     plt.show()
+
+# Adapted from SciPy cookbook
+def smooth(x, k):
+    s = np.r_[x[k-1:0:-1], x, x[-2:-k-1:-1]]
+    w = np.ones(k, 'd')
+    y = np.convolve(w / w.sum(), s, mode='valid')
+    return y

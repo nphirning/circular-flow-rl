@@ -20,10 +20,9 @@ def reinforce_test():
     m = model.Model(10000)
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
     m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
-    firm_profits = []
-    num_iters = 200
+    num_iters = 100
     for i in tqdm(range(num_iters)):
-        m.run_episode(200, verbose=False)
+        m.run_episode(100, verbose=False)
 
     stats = m.run_episode(1000, verbose=False)
     plot_wealth_histories(m, stats)

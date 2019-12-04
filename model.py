@@ -20,7 +20,7 @@ class Model:
             f = FirmAgent(self.total_money_firms * money_coefficients[i], rltype)
             self.firms.append(f)
 
-    def create_people(self, num_people, dist=rand_uniform, skill_dist=normal(1, 0.1), 
+    def create_people(self, num_people, dist=rand_uniform, skill_dist=normal(1, 0.0), 
         rltype=RLType.DEEPQ):
         # Creates the people, with distribution over money
         money_coefficients = dist(num_people)
