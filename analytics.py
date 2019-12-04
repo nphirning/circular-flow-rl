@@ -73,7 +73,8 @@ def compute_stats(m, firm_action_hist, person_action_hist,
             n += 1
             for p2 in people_goods_gained_over_time:
                 gini_over_time += np.abs(p1 - p2)
-        gini_over_time /= 2 * n * p_tot
+        with np.errstate(divide='ignore', invalid='ignore'):
+            gini_over_time /= 2 * n * p_tot
         stats['gini_over_time'] = list(gini_over_time)
 
         return stats
