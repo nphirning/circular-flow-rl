@@ -1,0 +1,14 @@
+\begin{thebibliography}{1}
+
+\bibitem{RePEc:col:000092:003907}
+Fernando Lozano, Jaime Lozano, and Mario García.
+\newblock {An artificial economy based on reinforcement learning and agent
+  based modeling}.
+\newblock Documentos de Trabajo 003907, Universidad del Rosario, April 2007.
+
+\bibitem{pricing-multi-agent}
+Gerald Tesauro and Jeffrey Kephart.
+\newblock Pricing in agent economies using multi-agent q-learning.
+\newblock {\em Autonomous Agent and Multi-Agent Systems}, 5, 10 1999.
+
+\end{thebibliography}
