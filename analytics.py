@@ -103,7 +103,7 @@ def plot_wealth_histories(m, stats):
 
     plt.subplot(2, 2, 3)
     gdp = stats['GDP_over_time']
-    gdp = smooth(gdp, k=20)
+    gdp = smooth(gdp, k=50)
     plt.plot(gdp)
     plt.title("GDP (smoothed)")
 

@@ -4,17 +4,15 @@ import itertools
 
 # These are constants because I use them to initialize 
 # the policy network's input dimension
-NUM_FIRMS = 3
-NUM_PEOPLE = 10
+NUM_FIRMS = 1
+NUM_PEOPLE = 5
 
-NUM_GOODS_MAX_BUY = 20
-NUM_GOODS_MAX_PRODUCE = 30
+NUM_GOODS_MAX_BUY = 10
+NUM_GOODS_MAX_PRODUCE = NUM_GOODS_MAX_BUY * NUM_PEOPLE
 
 WORK_HOURS_PER_PERSON = 40
-TOTAL_MONEY_FIRMS = 10000
-TOTAL_MONEY_PEOPLE = 1000
-
-MAX_DEMAND = 20
+TOTAL_MONEY_FIRMS = 10000 * NUM_FIRMS
+TOTAL_MONEY_PEOPLE = 100 * NUM_PEOPLE
 
 DISCOUNT = 0.9
 
@@ -26,6 +24,7 @@ class RLType(Enum):
 class DemandCurveShape(Enum):
     CONSTANT = 1
     RECIPROCAL = 2
+    LINEAR = 3
 
 ## DISTRIBUTIONS
 #
@@ -51,13 +50,15 @@ def normal(mean, std):
 
 
 ## RL ACTION PARAMETERS
-POSSIBLE_UNITS_FIRM = np.array([2]) #np.arange(10)
-POSSIBLE_PRICES_FIRM = np.arange(5, 26, 5)
+POSSIBLE_UNITS_FIRM = np.arange(0, 5 * NUM_PEOPLE, int(NUM_PEOPLE / 5))
+POSSIBLE_PRICES_FIRM = np.arange(1, 30, 3)
 POSSIBLE_RECIP_DEMAND_PARAMS_FIRM = np.array(list(itertools.product(range(5, 30, 4), range(-20, 5, 4))))
+POSSIBLE_LIN_DEMAND_PARAMS_FIRM = np.arange(1, 15, 1)
 
 POSSIBLE_UNITS_PERSON = np.arange(WORK_HOURS_PER_PERSON - 9, WORK_HOURS_PER_PERSON + 1)
-POSSIBLE_PRICES_PERSON = np.arange(5, 16)
+POSSIBLE_PRICES_PERSON = np.arange(1, 15, 1)
 POSSIBLE_RECIP_DEMAND_PARAMS_PERSON = np.array(list(itertools.product(range(5, 30, 4), range(0, 20, 4))))
+POSSIBLE_LIN_DEMAND_PARAMS_PERSON = np.arange(1, 20, 3)
 
 def reciprocal(params):
     (a, b) = params
@@ -65,3 +66,7 @@ def reciprocal(params):
         return np.maximum((a / np.arange(1, length + 1)) + b, 0)
     return c
 
+def linear(b):
+    def c(length):
+        return b * (np.arange(length - 1, -1, -1)) / (length - 1)
+    return c

@@ -29,7 +29,13 @@ class PersonAgent(Agent):
             units = POSSIBLE_UNITS_PERSON[indices[0]]
             price = POSSIBLE_PRICES_PERSON[indices[1]]
             demand_curve = reciprocal(POSSIBLE_RECIP_DEMAND_PARAMS_PERSON[indices[2]])(NUM_GOODS_MAX_BUY)
-            return Action(price, units, demand_curve)
+        elif self.demand_curve_shape == DemandCurveShape.LINEAR:
+            indices = np.unravel_index(action_num, (POSSIBLE_UNITS_PERSON.shape[0], 
+                POSSIBLE_PRICES_PERSON.shape[0], POSSIBLE_LIN_DEMAND_PARAMS_PERSON.shape[0]))
+            units = POSSIBLE_UNITS_PERSON[indices[0]]
+            price = POSSIBLE_PRICES_PERSON[indices[1]]
+            demand_curve = linear(POSSIBLE_LIN_DEMAND_PARAMS_PERSON[indices[2]])(NUM_GOODS_MAX_BUY)
+        return Action(price, units, demand_curve)
 
     def get_action(self, model):
         if self.rltype == RLType.TRIVIAL:
