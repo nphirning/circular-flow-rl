@@ -18,7 +18,7 @@ DISCOUNT = 0.9
 
 class RLType(Enum):
     TRIVIAL = 1
-    DEEPQ = 2
+    Q_ACTOR_CRITIC = 2
     REINFORCE = 3
 
 class DemandCurveShape(Enum):
