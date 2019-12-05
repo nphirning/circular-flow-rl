@@ -1,8 +1,8 @@
 from constants import *
+from analytics import *
 from firm import FirmAgent
 from person import PersonAgent
 from pprint import pprint as pp
-from collections import Counter
 import random
 import bisect
 
@@ -13,14 +13,14 @@ class Model:
         self.total_money_people = TOTAL_MONEY_PEOPLE
         self.total_money_firms = TOTAL_MONEY_FIRMS
 
-    def create_firms(self, num_firms, distribution=uniform, rltype=RLType.DEEPQ):
+    def create_firms(self, num_firms, distribution=rand_uniform, rltype=RLType.DEEPQ):
         # Creates the firms, with distribution of money over firms
         money_coefficients = distribution(num_firms)
         for i in range(num_firms):
             f = FirmAgent(self.total_money_firms * money_coefficients[i], rltype)
             self.firms.append(f)
 
-    def create_people(self, num_people, dist=uniform, skill_dist=constant(1), 
+    def create_people(self, num_people, dist=rand_uniform, skill_dist=normal(1, 0.0), 
         rltype=RLType.DEEPQ):
         # Creates the people, with distribution over money
         money_coefficients = dist(num_people)
@@ -33,61 +33,6 @@ class Model:
             )
             self.people.append(p)
 
-    def compute_stats(self, firm_action_hist, person_action_hist, 
-        firm_money_recv, firm_money_paid, person_goods_recv):
-        stats = {}
-
-        # Frequency of prices offered by firms.
-        price_hists = []
-        for firm_hist in firm_action_hist:
-            price_hists.append(dict(Counter([x.price_to_offer for x in firm_hist])))
-        stats['firm_price_hists'] = price_hists
-
-        # Average money received by a firm.
-        firm_avg_money = []
-        for firm_money in firm_money_recv:
-            firm_avg_money.append(np.mean(firm_money))
-        stats['firm_avg_money_recv'] = firm_avg_money
-
-        # Average profit for a firm.
-        firm_avg_profit = []
-        for i in range(len(firm_money_recv)):
-            firm_recv = firm_money_recv[i]
-            firm_paid = firm_money_paid[i]
-            firm_profit = [firm_recv[j] - firm_paid[j] for j in range(len(firm_recv))]
-            firm_avg_profit.append(np.mean(firm_profit))
-        stats['firm_avg_profit'] = firm_avg_profit
-
-        # First entries and avg. first entries of demand curve.
-        firm_demand_curve_first_entries = []
-        firm_avg_demand_curve_first_entry = []
-        firm_std_demand_curve_first_entry = []
-        for firm_hist in firm_action_hist:
-            firm_demand_curve_first_entries.append([x.demand_curve[0] for x in firm_hist])
-            firm_avg_demand_curve_first_entry.append(np.mean([x.demand_curve[0] for x in firm_hist]))
-            firm_std_demand_curve_first_entry.append(np.std([x.demand_curve[0] for x in firm_hist]))
-        stats['firm_first_entries'] = firm_demand_curve_first_entries
-        stats['firm_avg_first_entries'] = firm_avg_demand_curve_first_entry
-        stats['firm_std_first_entries'] = firm_std_demand_curve_first_entry
-
-        # Firm money accumulated over time.
-        firm_money_gained_over_time = []
-        for i in range(len(firm_money_recv)):
-            firm_recv = firm_money_recv[i]
-            firm_paid = firm_money_paid[i]
-            firm_profit = [firm_recv[j] - firm_paid[j] for j in range(len(firm_recv))]
-            firm_money_gained_over_time.append(np.cumsum(firm_profit))
-        stats['firm_money_over_time'] = firm_money_gained_over_time
-
-        # People goods accumulated over time.
-        people_goods_gained_over_time = []
-        for person_gr in person_goods_recv:
-            people_goods_gained_over_time.append(np.cumsum(person_gr))
-        stats['people_goods_over_time'] = people_goods_gained_over_time
-
-        return stats
-
-
     def run_episode(self, num_timesteps, verbose=True):
         
         # Run.
@@ -98,26 +43,16 @@ class Model:
         person_action_hist = [s.epis_actions for s in self.people]
         firm_money_paid = [s.money_paid for s in self.firms]
         firm_money_recv = [s.money_recv for s in self.firms]
-        # print([firm_money_recv[0][i] - firm_money_paid[0][i] for i in range(len(firm_money_recv[0]))])
         person_goods_recv = [s.goods_recv for s in self.people]
         person_hours_worked = [s.hours_worked for s in self.people]
-        # print(list(zip(*person_hours_worked)))
-        stats = self.compute_stats(
+        stats = compute_stats(
+            self,
             firm_action_hist,
             person_action_hist,
             firm_money_recv,
             firm_money_paid,
             person_goods_recv
         )
-
-        if verbose: 
-            pp(stats['firm_price_hists'])
-            print("Firm Avg. Profit: ", end='')
-            pp(stats['firm_avg_profit'])
-            pp(stats['firm_avg_first_entries'])
-            pp(stats['firm_std_first_entries'])
-            pp(stats['firm_money_over_time'])
-            pp(stats['people_goods_over_time'])
 
         # End episode and reset agents.
         firm_losses = []
@@ -131,18 +66,28 @@ class Model:
             person_losses.append(person.get_loss())
             person.reset()
 
-
         if verbose:
-            person_data = (np.mean(person_losses), np.std(person_losses))
-            firm_data = (np.mean(firm_losses), np.std(firm_losses))
-            print("P Loss: mean %s stdev %s" % person_data)
-            print("Raw: %s" % str(person_losses))
-            print("F Loss: mean %s stdev %s" % firm_data)
-            print("Raw: %s" % str(firm_losses))
-            
+            print("Firm price histories:")
+            pp(stats['firm_price_hists'])
+            print("Firm avg. profit:")
+            pp(stats['firm_avg_profit'])
+            print("Firm avg. first entries:")
+            pp(stats['firm_avg_first_entries'])
+            print("Firm std. first entries:")
+            pp(stats['firm_std_first_entries'])
+            print("Firm money over time:")
+            pp(stats['firm_money_over_time'])
+            print("People goods over time:")
+            pp(stats['people_goods_over_time'])
 
-        # return stats['firm_avg_profit']
-        return stats['firm_money_over_time']
+            # person_data = (np.mean(person_losses), np.std(person_losses))
+            # firm_data = (np.mean(firm_losses), np.std(firm_losses))
+            # print("P Loss: mean %s stdev %s" % person_data)
+            # print("Raw: %s" % str(person_losses))
+            # print("F Loss: mean %s stdev %s" % firm_data)
+            # print("Raw: %s" % str(firm_losses))
+
+        return stats
 
     def run(self, num_timesteps=100):
         for _ in range(num_timesteps): self.run_one_step()
