@@ -89,6 +89,7 @@ class FirmAgent(Agent):
         assert(self.num_goods >= 0 and self.money >= 0)
 
         self.money -= FIRM_OPERATING_COST
+        self.money *= FIRM_INTEREST
 
         self.money_recv.append(money_recv)
         self.epis_actions.append(action)
