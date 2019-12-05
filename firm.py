@@ -1,6 +1,7 @@
 import numpy as np 
 import math
 from policy_grad import ReinforcePolicyGradient
+from q_actor_critic import ActorCritic
 from agent import Agent, Action
 from constants import *
 
@@ -12,11 +13,13 @@ class FirmAgent(Agent):
         self.money_recv = []
         self.money_paid = []
 
-        if self.rltype == RLType.REINFORCE:
-            state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
-            action_dim = POSSIBLE_UNITS_FIRM.shape[0] * POSSIBLE_PRICES_FIRM.shape[0] * POSSIBLE_RECIP_DEMAND_PARAMS_FIRM.shape[0] 
-            self.policy_net = ReinforcePolicyGradient(state_dim, action_dim)
+        state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
+        action_dim = POSSIBLE_UNITS_FIRM.shape[0] * POSSIBLE_PRICES_FIRM.shape[0] * POSSIBLE_RECIP_DEMAND_PARAMS_FIRM.shape[0] 
 
+        if self.rltype == RLType.REINFORCE:
+            self.policy_net = ReinforcePolicyGradient(state_dim, action_dim)
+        elif self.rltype == RLType.Q_ACTOR_CRITIC:
+            self.actor_critic = ActorCritic(state_dim, action_dim)
 
     # Given a categorical number,
     # returns an Action object for the agents to use
@@ -45,6 +48,11 @@ class FirmAgent(Agent):
             state_input = self.deconstruct_state(model)
             action_num = self.policy_net.choose_action(state_input)
             return self.construct_action(action_num)
+
+        if self.rltype == RLType.Q_ACTOR_CRITIC:
+            state_input = self.deconstruct_state(model)
+            action_num = self.actor_critic.choose_action(state_input)
+            return self.construct_action(action_num)
         
     def reset(self):
         self.money = self.init_money
@@ -56,6 +64,8 @@ class FirmAgent(Agent):
     def end_episode(self):
         if self.rltype == RLType.REINFORCE:
             self.policy_net.update_policy()
+        elif self.rltype == RLType.Q_ACTOR_CRITIC:
+            self.actor_critic.reset_memory()
 
     def update(self, state, action, result):
         """
@@ -69,6 +79,11 @@ class FirmAgent(Agent):
         self.num_goods += goods_recv - goods_sold
         if self.rltype == RLType.REINFORCE:
             self.policy_net.record_reward(utility)
+        elif self.rltype == RLType.Q_ACTOR_CRITIC:
+            self.actor_critic.record_reward(profit)
+            self.actor_critic.update_policy()
+            self.actor_critic.update_q()
+            self.actor_critic.shift_results()
         assert(self.num_goods >= 0 and self.money >= 0)
 
         self.money_recv.append(money_recv)
@@ -76,8 +91,13 @@ class FirmAgent(Agent):
         self.money_paid.append(money_paid)
     
     def get_loss(self):
-        if len(self.policy_net.loss_hist) == 0: return None
-        return self.policy_net.loss_hist[-1]
+        if self.rltype == RLType.REINFORCE:
+            loss_hist = self.policy_net.loss_hist
+        elif self.rltype == RLType.Q_ACTOR_CRITIC:
+            loss_hist = self.actor_critic.policy_loss_hist
+
+        if len(loss_hist) == 0: return None
+        return loss_hist[-1]
     
 
     

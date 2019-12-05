@@ -21,7 +21,7 @@
  8. 2 RL people, N firms
  9. 1 RL person and 1 trivial person, N firms
 Also try different wealth distributions
-
+Further steps: change the states we pass into the neural nets to reflect only partial information
 
 ## TODO List:
 * One firm: should learn to spike prices (check)
