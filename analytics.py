@@ -1,6 +1,7 @@
 import model
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 from constants import *
 from collections import Counter
 
@@ -8,6 +9,8 @@ def compute_stats(m, firm_action_hist, person_action_hist,
         firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist,
         firm_money_hist):
         stats = {}
+
+        stats['person_skills'] = [p.skill for p in m.people]
 
         stats['firm_money_hists'] = firm_money_hist
 
@@ -86,12 +89,13 @@ def compute_stats(m, firm_action_hist, person_action_hist,
         return stats
 
 def save_plots_from_iteration(stats, iteration_num, name):
-    _, axs = plt.subplots(3, 2, figsize=(10, 12))
+    _, axs = plt.subplots(3, 3, figsize=(15, 12))
     plot_firm_money_hist(axs[0, 0], stats['firm_money_hists'])
-    plot_human_money_hist(axs[0, 1], stats['people_money_over_time'])
+    plot_human_money_hist(axs[0, 1], stats)
     plot_human_goods_hist(axs[1, 1], stats['people_goods_over_time'])
     plot_gdp_smoothed(axs[1, 0], stats)
     plot_median_human_goods(axs[2, 1], stats)
+    plot_total_money(axs[0, 2], stats)
     plot_gini_coef(axs[2, 0], stats)
     plt.savefig('%s-iteration-%s' % (name, iteration_num), dpi=300)
 
@@ -102,12 +106,20 @@ def plot_firm_money_hist(ax, firm_money_hists):
     ax.set_ylabel("Firm Money")
     ax.legend()
 
-def plot_human_money_hist(ax, human_money_hists):
-    for idx, human_money_hist in enumerate(human_money_hists):
-        ax.plot(np.arange(len(human_money_hist)), human_money_hist, label='Human %s' % idx)
+def plot_human_money_hist(ax, stats):
+    colormap = cm.get_cmap('binary', len(stats['people_money_over_time']))
+    skill_map = sorted([(skill, idx) for idx, skill in enumerate(stats['person_skills'])])
+    max_skill = skill_map[-1][0]
+    min_skill = skill_map[0][0]
+    dskill = max_skill - min_skill
+    
+    human_money_hists = stats['people_money_over_time']
+    for skill, idx in skill_map:
+        human_money_hist = human_money_hists[idx]
+        color = colormap((skill - min_skill) / dskill)
+        ax.plot(np.arange(len(human_money_hist)), human_money_hist, color=color)
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Human Money")
-    ax.legend()
 
 def plot_human_goods_hist(ax, human_good_hists):
     for idx, human_good_hist in enumerate(human_good_hists):
@@ -126,6 +138,20 @@ def plot_median_human_goods(ax, stats):
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Goods (percent relative to median)")
     ax.legend()
+
+def plot_total_money(ax, stats):
+    pm = stats['people_money_over_time']
+    fm = stats['firm_money_hists']
+    total_money = []
+    for i in range(len(pm[0])):
+        total_money_iter = 0
+        for j in range(len(pm)): total_money_iter += pm[j][i]
+        for j in range(len(fm)): total_money_iter += fm[j][i]
+        total_money.append(total_money_iter)
+    ax.plot(total_money)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Total Money")
+
 
 def plot_human_wealth(ax, stats):
     #TODO: Rory, combine money + goods ==> wealth 

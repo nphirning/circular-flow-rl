@@ -78,7 +78,6 @@ class Model:
 
             losses = (np.mean(person_losses), np.mean(firm_losses), np.mean(np.concatenate((person_losses, firm_losses))))
             print("Losses (P, F, T) = (%8.5f, %8.5f, %8.5f)" % losses)
-            print("Person Skills: %s" % [round(p.skill, 2) for p in self.people])
 
         return stats
 

@@ -4,17 +4,21 @@ import itertools
 
 # These are constants because I use them to initialize 
 # the policy network's input dimension
-NUM_FIRMS = 5
-NUM_PEOPLE = 15
+NUM_FIRMS = 3
+NUM_PEOPLE = 8
 
 NUM_GOODS_MAX_BUY = 10
-NUM_GOODS_MAX_PRODUCE = NUM_GOODS_MAX_BUY * NUM_PEOPLE
-
 WORK_HOURS_PER_PERSON = 10
 TOTAL_MONEY_FIRMS = 10000 * NUM_FIRMS
 TOTAL_MONEY_PEOPLE = 1000 * NUM_PEOPLE
+DISCOUNT = 0.99
+HUMAN_INTEREST = 1.01
+FIRM_OPERATING_COST = 20
 
-DISCOUNT = 0.95
+# Length of firm demand curve.
+NUM_GOODS_MAX_PRODUCE = NUM_GOODS_MAX_BUY * NUM_PEOPLE
+
+
 
 class RLType(Enum):
     TRIVIAL = 1

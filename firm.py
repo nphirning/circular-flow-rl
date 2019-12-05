@@ -88,6 +88,8 @@ class FirmAgent(Agent):
             self.actor_critic.shift_results()
         assert(self.num_goods >= 0 and self.money >= 0)
 
+        self.money -= FIRM_OPERATING_COST
+
         self.money_recv.append(money_recv)
         self.epis_actions.append(action)
         self.money_paid.append(money_paid)
