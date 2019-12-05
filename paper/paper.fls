@@ -415,13 +415,13 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/vf/public/mathpazo/zplmr7y.vf
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/adobe/palatino/pplri9e.tfm
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/vf/adobe/palatino/pplri9e.vf
 INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
 INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.bbl
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.bbl
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/adobe/palatino/pplri9e.tfm
-INPUT /usr/local/texlive/2019/texmf-dist/fonts/vf/adobe/palatino/pplri9e.vf
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.aux
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.out
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.out

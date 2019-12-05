@@ -75,7 +75,7 @@ class PersonAgent(Agent):
         money_paid, money_recv, goods_recv, hours_worked = result
         self.money += money_recv - money_paid
         eps = 0.01
-        utility = np.log(1 + goods_recv)
+        utility = goods_recv #np.log(1 + goods_recv)
         if self.rltype == RLType.REINFORCE:
             self.policy_net.record_reward(utility)
         elif self.rltype == RLType.Q_ACTOR_CRITIC:
@@ -84,6 +84,8 @@ class PersonAgent(Agent):
             self.actor_critic.update_q()
             self.actor_critic.shift_results()
         assert(self.money >= 0)
+
+        self.money *= 1.01
 
         self.epis_actions.append(action)
         self.goods_recv.append(goods_recv)

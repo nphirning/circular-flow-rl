@@ -5,8 +5,11 @@ from constants import *
 from collections import Counter
 
 def compute_stats(m, firm_action_hist, person_action_hist, 
-        firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist):
+        firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist,
+        firm_money_hist):
         stats = {}
+
+        stats['firm_money_hists'] = firm_money_hist
 
         # Frequency of prices offered by firms.
         price_hists = []
@@ -81,6 +84,64 @@ def compute_stats(m, firm_action_hist, person_action_hist,
         stats['gini_over_time'] = list(gini_over_time)
 
         return stats
+
+def save_plots_from_iteration(stats, iteration_num, name):
+    _, axs = plt.subplots(3, 2, figsize=(10, 12))
+    plot_firm_money_hist(axs[0, 0], stats['firm_money_hists'])
+    plot_human_money_hist(axs[0, 1], stats['people_money_over_time'])
+    plot_human_goods_hist(axs[1, 1], stats['people_goods_over_time'])
+    plot_gdp_smoothed(axs[1, 0], stats)
+    plot_median_human_goods(axs[2, 1], stats)
+    plot_gini_coef(axs[2, 0], stats)
+    plt.savefig('%s-iteration-%s' % (name, iteration_num), dpi=300)
+
+def plot_firm_money_hist(ax, firm_money_hists):
+    for idx, firm_money_hist in enumerate(firm_money_hists):
+        ax.plot(np.arange(len(firm_money_hist)), firm_money_hist, label='Firm %s' % idx)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Firm Money")
+    ax.legend()
+
+def plot_human_money_hist(ax, human_money_hists):
+    for idx, human_money_hist in enumerate(human_money_hists):
+        ax.plot(np.arange(len(human_money_hist)), human_money_hist, label='Human %s' % idx)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Human Money")
+    ax.legend()
+
+def plot_human_goods_hist(ax, human_good_hists):
+    for idx, human_good_hist in enumerate(human_good_hists):
+        ax.plot(np.arange(len(human_good_hist)), human_good_hist, label='Human %s' % idx)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Human Goods")
+    ax.legend()
+
+def plot_median_human_goods(ax, stats):
+    ps = stats['people_goods_over_time']
+
+    median_p = [np.median([p[i] for p in ps]) for i in range(len(ps[0]))]
+    with np.errstate(divide='ignore', invalid='ignore'):
+        for idx, p in enumerate(ps):
+            ax.plot((p - median_p) / median_p, label='Human %s' % idx)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Goods (percent relative to median)")
+    ax.legend()
+
+def plot_human_wealth(ax, stats):
+    #TODO: Rory, combine money + goods ==> wealth 
+    pass 
+
+def plot_gdp_smoothed(ax, stats):
+    gdp = stats['GDP_over_time']
+    gdp = smooth(gdp, k=5)
+    ax.plot(gdp)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("GDP (smoothed)")
+
+def plot_gini_coef(ax, stats):
+    ax.plot(stats['gini_over_time'])
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Gini Coefficient")
 
 def plot_wealth_histories(m, stats):
     fs = stats['firm_money_over_time']

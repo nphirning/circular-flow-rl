@@ -11,6 +11,7 @@ class FirmAgent(Agent):
         self.num_goods = 0
         self.epis_actions = []
         self.money_recv = []
+        self.money_hist = [self.money]
         self.money_paid = []
 
         state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
@@ -60,6 +61,7 @@ class FirmAgent(Agent):
         self.epis_actions = []
         self.money_recv = []
         self.money_paid = []
+        self.money_hist = [self.init_money]
 
     def end_episode(self):
         if self.rltype == RLType.REINFORCE:
@@ -89,6 +91,7 @@ class FirmAgent(Agent):
         self.money_recv.append(money_recv)
         self.epis_actions.append(action)
         self.money_paid.append(money_paid)
+        self.money_hist.append(self.money)
     
     def get_loss(self):
         if self.rltype == RLType.REINFORCE:
