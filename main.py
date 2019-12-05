@@ -27,7 +27,7 @@ def reinforce_test():
         avg_GDP.append(np.mean(stats['GDP_over_time']))
 
     stats = m.run_episode(1000)
-    print_stats(m, stats)
+    # print_stats(m, stats)
     plot_wealth_histories(m, stats)
 
 def main():

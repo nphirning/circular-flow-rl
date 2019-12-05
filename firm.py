@@ -63,10 +63,12 @@ class FirmAgent(Agent):
         """
         money_paid, money_recv, goods_recv, goods_sold = result
         profit = money_recv - money_paid
+        eps = 0.01
+        utility = np.log(1 + profit / (self.money + eps))
         self.money += profit
         self.num_goods += goods_recv - goods_sold
         if self.rltype == RLType.REINFORCE:
-            self.policy_net.record_reward(profit)
+            self.policy_net.record_reward(utility)
         assert(self.num_goods >= 0 and self.money >= 0)
 
         self.money_recv.append(money_recv)

@@ -7,7 +7,6 @@ class PersonAgent(Agent):
     def __init__(self, money, skill, rltype=RLType.DEEPQ, demand_curve_shape=DemandCurveShape.RECIPROCAL):
         super().__init__(money, rltype, demand_curve_shape)
         self.skill = skill # goods per hour
-
         self.epis_actions = []
         self.goods_recv = []
         self.hours_worked = []
@@ -66,8 +65,10 @@ class PersonAgent(Agent):
         """
         money_paid, money_recv, goods_recv, hours_worked = result
         self.money += money_recv - money_paid
+        eps = 0.01
+        utility = np.log(1 + goods_recv)
         if self.rltype == RLType.REINFORCE:
-            self.policy_net.record_reward(goods_recv)
+            self.policy_net.record_reward(utility)
         assert(self.money >= 0)
 
         self.epis_actions.append(action)
