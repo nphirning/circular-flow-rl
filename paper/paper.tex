@@ -160,15 +160,16 @@ Another important economic focus is on income and wealth inequality, both of whi
 \[
   G = \frac{1}{2\mu} \iint p(x)p(y)|x - y|\, \mathrm{d}x\, \mathrm{d}y.
 \] 
-In a discrete scenario, this just becomes the average absolute difference of all pairs of items (e.g., income or absolute wealth) divided by twice the mean. Given its relevance to modern society, understanding how income inequality develops and progresses over time and as a function of initial wealth and skill distribution is quite important. We aim to perform basic analyses of both of these phenomena in the work presented herein.
+In a discrete scenario, this just becomes the average absolute difference of all pairs of items (e.g., income or absolute wealth) divided by twice the mean. Given its relevance to modern society, understanding how income inequality develops and progresses over time and as a function of initial wealth and skill distribution is quite important.
 
+\medskip 
 
-
+We aim to explore the applicability of multi-agent reinforcement learning as a means for analyzing macroeconomic phenomena. To this end, we implement the circular flow model and perform basic analyses of both GDP and income inequality. As this is a multi-agent problem, agents choose actions and learn simultaneously, making the simulation dynamics quite complex. Thus, we will also discuss and analyze the effectiveness of two different learning algorithms.
 
 
 \section{Literature Review}
 
-Despite the applicability of reinforcement learning techniques to economics, there are relatively few examples of such applications in existing literature. One particularly relevant example is a paper by Lozano et. al. \cite{RePEc:col:000092:003907} which focuses on modeling an economy ``based on conventions.'' In this work, the authors apply the $\text{SARSA}(\lambda)$ algorithm in a government agent to search for a good expenditure policy. In this case, the authors avoid applying complicated multi-agent reinforcement learning by modeling each firm with a simple algorithm in which firms can copy neighboring firms or (with some low probability) switch to a random policy. The government attempts to increase national income and decrease debt based on some limited knowledge of the existing firms and historical records of income, debt, etc. 
+Despite the applicability of reinforcement learning techniques to economics, there are relatively few examples of such applications in existing literature. One particularly relevant example is a paper by Lozano et al. \cite{RePEc:col:000092:003907} which focuses on modeling an economy ``based on conventions.'' In this work, the authors apply the $\text{SARSA}(\lambda)$ algorithm in a government agent to search for a good expenditure policy. In this case, the authors avoid applying complicated multi-agent reinforcement learning by modeling each firm with a simple algorithm in which firms can copy neighboring firms or (with some low probability) switch to a random policy. The government attempts to increase national income and decrease debt based on some limited knowledge of the existing firms and historical records of income, debt, etc. 
 
 \medskip
 
@@ -176,11 +177,15 @@ One important issue that the authors of \cite{RePEc:col:000092:003907} grappled 
 
 \medskip
 
-Another relevant work by Tesauro \& Kephart involved investigation of the behavior of reinforcement learning agents in the presence of other adaptive agents for economic purposes \cite{pricing-multi-agent}. In particular, Tesauro \& Kephart consider two selling agents competing in an economic model where each agent applied Q-learning. In this case, the state and action space was small enough that the Q-learning could proceed directly. Furthermore, the consumers in the model act via a simple, greedy rule as opposed to acting as an independent, market-shaping force. Another difference between Tesauro \& Kephart and the model proposed here is that the former model does not assume simultaneous price-setting; instead, the two selling agents take turns adjusting prices in response to each other. This turn-based approach is slightly less realistic than the simultaneous setting, but it allowed the authors to frame the problem as a two-player, alternating-turn, arbitrary-sum Markov game. Additionally, the authors spent significant amount of their time computing the Q-function for one of the sellers when the other seller was assumed myopic; they investigate into simultaneous Q-learning as well, but note that no convergence proofs exist for such cases.
+Another relevant work by Tesauro \& Kephart involved investigation of the behavior of reinforcement learning agents in the presence of other adaptive agents for economic purposes \cite{pricing-multi-agent}. In particular, Tesauro \& Kephart consider two selling agents competing in an economic model where each agent applied Q-learning. In this case, the state and action space was small enough that the Q-learning could proceed directly. Furthermore, the consumers in the model acted via a simple, greedy rule as opposed to acting as an independent, market-shaping force. Another difference between Tesauro \& Kephart and the model proposed here is that the former model does not assume simultaneous price-setting; instead, the two selling agents took turns adjusting prices in response to each other. This turn-based approach is slightly less realistic than the simultaneous setting, but it allowed the authors to frame the problem as a two-player, alternating-turn, arbitrary-sum Markov game. Additionally, the authors spent significant amount of their time computing the Q-function for one of the sellers when the other seller was assumed myopic; they investigated simultaneous Q-learning as well, but noted that no convergence proofs exist for such cases.
 
 \medskip 
 
-TODO: Moar.
+While there are relatively few examples of reinforcement learning applied to macroeconomic models, there are quite a few papers with relevant material on applying multi-agent models to various settings involving competition and collaboration. For example, a 2013 study by Bos et. al. found that reinforcement learning alone does not accurately model humans in competitive social environments, but it \textit{does} accurately model this when combined with biased reward representations \cite{vandenBos2137}. In a separate work, Bereby-Meyer and Roth experiment with reinforcement learning in game theoretic situations, such as the repeated prisoner's dilemma, when complicated by noise \cite{10.1257/aer.96.4.1029}. The authors conclude that noise slows learning and strongly negatively affects cooperative tendencies \cite{10.1257/aer.96.4.1029}. As such, even with simple multi-agent situations involving some randomness, strong cooperation is unlikely.
+
+\medskip
+
+One study performed by K\"on\"onen studied the situation of two competing brokers selling identical products under two different learning methods: modified gradient descent on the values and a policy gradient approach \cite{doi:10.1002/int.20121}. K\"on\"onen found success with both approaches, but found that the system would become intractable as the number of pricing actions increased \cite{doi:10.1002/int.20121}. To address this, the author suggested applying an MLP or other generalizable model as an extension. In our model, we attempt to combine and extend many of the successful techniques presented in past studies to create an accurate representation of the circular flow model.   
 
 \section{Methods}
 \subsection{Problem Framing******}
@@ -208,13 +213,32 @@ with large action spaces.
 
 
 
+The circular flow model uses two distinct types of agents: firms and people. Correspondingly, the simulation defines these two agent types separately. Each agent (firm or human) keeps the following internal state:
+\begin{itemize}
+  \item \textbf{Money.} Each agent can accumulate and spend money during each timestep.
+  \item \textbf{Goods.} Each agent can attain goods (firms create goods through the labor market, and people buy goods through the goods market).
+\end{itemize}
+Each firm receives a reward at each step equal to the profit they generate. Thus, firms aim to maximize their future profit. Human agents receive a reward equal to the number of goods they consume. Furthermore, human agents are each seeded with a constant skill level which governs how many goods a human agent can produce in an hour of work.
+
+\medskip
+
+At each timestep, every agent produces an action that determines how they behave in the two markets. In each market, the designated selling agents give a fixed price and number of units. The buying agents provide a vectorized demand curve which specifies how much the agent is willing to pay for each subsequent item. Thus, each agent provides an action with the following structure:
+\begin{itemize}
+  \item \textbf{Offered Price.} In the labor market, the human agents set their hourly rate. In the goods market, the firms set their price per good.
+  \item \textbf{Offered Units.} In the labor market, the human agents set the number of hours they are willing to work. In the goods market, the firms set the number of goods they are willing to sell.
+  \item \textbf{Demand Curve.} The demand curve is a vector. In the labor market, the $i$th entry of the demand curve corresponds to the price the firm will pay to produce its $i$th good. In the goods market, the $i$th entry of the demand curve corresponds to the price a human will pay for its $i$th good.
+\end{itemize}
+
+In practice, this action space is vast. In order to make the problem tractable, the offered price and offered units are discretized into one of 20 or so values. The demand curve is parameterized by TODO.
+
+
 \section{Results and Data Analysis}
 
 \section{Conclusion}
 
 \section{Acknowledgments}
 
-The authors feel that they all contributed equally to the work presented. In particular, Andrew Chen implemented the policy gradient and actor-critic algorithms, Nicholas Hirning implemented the circular flow model architecture, and Rory Lipkis performed hyperparameter optimization and data analysis. All three authors collaborated on implementing and debugging the REINFORCE policy gradient algorithm and other areas of the code.
+The authors feel that they all contributed equally to the work presented. In particular, Andrew Chen implemented the actor-critic reinforcement learning algorithm, Nicholas Hirning implemented the circular flow model architecture, and Rory Lipkis performed hyperparameter optimization and data analysis. All three authors collaborated on implementing and debugging the REINFORCE policy gradient algorithm and other areas of the code. 
 
 \medskip
 

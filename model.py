@@ -46,6 +46,7 @@ class Model:
         person_goods_recv = [s.goods_recv for s in self.people]
         person_hours_worked = [s.hours_worked for s in self.people]
         person_money_hist = [s.money_hist for s in self.people]
+        firm_money_hist = [s.money_hist for s in self.firms]
         stats = compute_stats(
             self,
             firm_action_hist,
@@ -53,7 +54,8 @@ class Model:
             firm_money_recv,
             firm_money_paid,
             person_goods_recv,
-            person_money_hist
+            person_money_hist,
+            firm_money_hist
         )
 
         # End episode and reset agents.
@@ -69,17 +71,14 @@ class Model:
             person.reset()
 
         if verbose:
-            for stat in stats:
-                print(stat)
-                pp(stats[stat])
-                print("=======")
+            # for stat in stats:
+            #     print(stat)
+            #     pp(stats[stat])
+            #     print("=======")
 
-            # person_data = (np.mean(person_losses), np.std(person_losses))
-            # firm_data = (np.mean(firm_losses), np.std(firm_losses))
-            # print("P Loss: mean %s stdev %s" % person_data)
-            # print("Raw: %s" % str(person_losses))
-            # print("F Loss: mean %s stdev %s" % firm_data)
-            # print("Raw: %s" % str(firm_losses))
+            losses = (np.mean(person_losses), np.mean(firm_losses), np.mean(np.concatenate((person_losses, firm_losses))))
+            print("Losses (P, F, T) = (%8.5f, %8.5f, %8.5f)" % losses)
+            print("Person Skills: %s" % [round(p.skill, 2) for p in self.people])
 
         return stats
 

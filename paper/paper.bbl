@@ -11,4 +11,23 @@ Gerald Tesauro and Jeffrey Kephart.
 \newblock Pricing in agent economies using multi-agent q-learning.
 \newblock {\em Autonomous Agent and Multi-Agent Systems}, 5, 10 1999.
 
+\bibitem{vandenBos2137}
+Wouter van~den Bos, Arjun Talwar, and Samuel~M. McClure.
+\newblock Neural correlates of reinforcement learning and social preferences in
+  competitive bidding.
+\newblock {\em Journal of Neuroscience}, 33(5):2137--2146, 2013.
+
+\bibitem{10.1257/aer.96.4.1029}
+Yoella Bereby-Meyer and Alvin~E. Roth.
+\newblock The speed of learning in noisy games: Partial reinforcement and the
+  sustainability of cooperation.
+\newblock {\em American Economic Review}, 96(4):1029--1042, September 2006.
+
+\bibitem{doi:10.1002/int.20121}
+Ville Könönen.
+\newblock Dynamic pricing based on asymmetric multiagent reinforcement
+  learning.
+\newblock {\em International Journal of Intelligent Systems}, 21(1):73--98,
+  2006.
+
 \end{thebibliography}

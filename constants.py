@@ -4,17 +4,17 @@ import itertools
 
 # These are constants because I use them to initialize 
 # the policy network's input dimension
-NUM_FIRMS = 3
-NUM_PEOPLE = 10
+NUM_FIRMS = 5
+NUM_PEOPLE = 15
 
 NUM_GOODS_MAX_BUY = 10
 NUM_GOODS_MAX_PRODUCE = NUM_GOODS_MAX_BUY * NUM_PEOPLE
 
 WORK_HOURS_PER_PERSON = 10
 TOTAL_MONEY_FIRMS = 10000 * NUM_FIRMS
-TOTAL_MONEY_PEOPLE = 100 * NUM_PEOPLE
+TOTAL_MONEY_PEOPLE = 1000 * NUM_PEOPLE
 
-DISCOUNT = 0.9
+DISCOUNT = 0.95
 
 class RLType(Enum):
     TRIVIAL = 1
