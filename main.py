@@ -20,15 +20,19 @@ def reinforce_test():
     m = model.Model(10000)
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.LINEAR)
     m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.LINEAR)
-    num_iters = 75
+    print("Person Skills: %s" % [round(p.skill, 2) for p in m.people])
+    num_iters = 20
+
+
+
     avg_GDP = []
     for i in range(num_iters):
         stats = m.run_episode(100, verbose=True)
-        save_plots_from_iteration(stats, i, 'plots/test4-nolog/test')
+        save_plots_from_iteration(stats, i, 'plots/test5/test')
         # avg_GDP.append(np.mean(stats['GDP_over_time']))
 
-    stats = m.run_episode(500)
-    save_plots_from_iteration(stats, i, 'plots/test4-nolog/test-final')
+    stats = m.run_episode(100)
+    save_plots_from_iteration(stats, i, 'plots/test5/test-final')
     # print_stats(m, stats)
     plot_wealth_histories(m, stats)
 

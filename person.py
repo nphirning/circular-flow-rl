@@ -11,6 +11,7 @@ class PersonAgent(Agent):
         self.goods_recv = []
         self.hours_worked = []
         self.money_hist = []
+        self.iteration = 0
 
         # Per-turn state.
         self.num_hours_to_work = WORK_HOURS_PER_PERSON
@@ -67,6 +68,7 @@ class PersonAgent(Agent):
         self.epis_actions = []
         self.hours_worked = []
         self.money_hist = [self.money]
+        self.iteration = 0
 
     def end_episode(self):
         if self.rltype == RLType.REINFORCE:
@@ -78,9 +80,11 @@ class PersonAgent(Agent):
         """
         @param result - (money paid, money recv, goods recv, hours worked)
         """
+        self.iteration += 1
+
+        # Update internal action function.
         money_paid, money_recv, goods_recv, hours_worked = result
         self.money += money_recv - money_paid
-        eps = 0.01
         utility = goods_recv #np.log(1 + goods_recv)
         if self.rltype == RLType.REINFORCE:
             self.policy_net.record_reward(utility)
@@ -91,7 +95,8 @@ class PersonAgent(Agent):
             self.actor_critic.shift_results()
         assert(self.money >= 0)
 
-        self.money *= 1.01
+        # Interest update.
+        self.money *= HUMAN_INTEREST
 
         self.epis_actions.append(action)
         self.goods_recv.append(goods_recv)
