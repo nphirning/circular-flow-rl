@@ -78,6 +78,7 @@ class ActorCritic(object):
         self.next_reward = None
 
         self.policy_loss_hist = []
+        self.q_loss_hist = []
 
 
     def choose_action(self, state):
@@ -113,6 +114,8 @@ class ActorCritic(object):
         self.q_optimizer.zero_grad()
         q_loss.backward()
         self.q_optimizer.step()
+
+        self.q_loss_hist.append(q_loss.item())
         # TODO: do appropriate storing here
 
 
@@ -125,6 +128,9 @@ class ActorCritic(object):
         self.next_action = None
         self.next_action_log_prob = None
         self.next_reward = None
+
+        if len(self.policy_loss_hist) > 0:
+            print('Current losses: {} {}'.format(self.policy_loss_hist[-1], self.q_loss_hist[-1]))
 
     def record_reward(self, reward):
         self.next_reward = reward

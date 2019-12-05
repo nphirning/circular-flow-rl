@@ -94,7 +94,7 @@ class FirmAgent(Agent):
         if self.rltype == RLType.REINFORCE:
             loss_hist = self.policy_net.loss_hist
         elif self.rltype == RLType.Q_ACTOR_CRITIC:
-            loss_hist = self.actor_critic.policy_loss_hist
+            loss_hist = list(zip(self.actor_critic.policy_loss_hist, self.actor_critic.q_loss_hist))
 
         if len(loss_hist) == 0: return None
         return loss_hist[-1]

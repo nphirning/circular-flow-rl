@@ -18,12 +18,12 @@ def trivial_test():
 
 def reinforce_test():
     m = model.Model(10000)
-    m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
+    m.create_firms(NUM_FIRMS, rltype=RLType.Q_ACTOR_CRITIC)
     m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
     num_iters = 100
     avg_GDP = []
     for i in tqdm(range(num_iters)):
-        stats = m.run_episode(100)
+        stats = m.run_episode(100, verbose=True)
         avg_GDP.append(np.mean(stats['GDP_over_time']))
 
     stats = m.run_episode(1000)
