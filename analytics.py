@@ -5,7 +5,7 @@ from constants import *
 from collections import Counter
 
 def compute_stats(m, firm_action_hist, person_action_hist, 
-        firm_money_recv, firm_money_paid, person_goods_recv):
+        firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist):
         stats = {}
 
         # Frequency of prices offered by firms.
@@ -56,6 +56,9 @@ def compute_stats(m, firm_action_hist, person_action_hist,
             people_goods_gained_over_time.append(np.cumsum(person_gr))
         stats['people_goods_over_time'] = people_goods_gained_over_time
 
+        # People money over time
+        stats['people_money_over_time'] = person_money_hist
+            
         # GDP over time.
         GDP_over_time = np.zeros(len(firm_money_recv[0]))
         for i in range(len(firm_money_recv)):
@@ -119,3 +122,11 @@ def smooth(x, k):
     w = np.ones(k, 'd')
     y = np.convolve(w / w.sum(), s, mode='valid')
     return y
+
+def print_stats(m, stats):
+    for i in range(len(m.people)):
+        print("Person %d" % i)
+        print("\tskill \t%.2f" % m.people[i].skill)
+        print("\tgoods \t%.2f" % stats['people_goods_over_time'][i][-1])
+        money = stats['people_money_over_time'][i]
+        print("\tmoney \t%.2f -> %.2f" % (money[0], money[-1]))

@@ -27,16 +27,8 @@ def reinforce_test():
         avg_GDP.append(np.mean(stats['GDP_over_time']))
 
     stats = m.run_episode(1000)
-
-    # debugging
-    people_goods_over_time = stats['people_goods_over_time']
-    for i in range(len(people_goods_over_time)):
-        print("skill \t%.3f" % m.people[i].skill)
-        print("goods \t%d" % people_goods_over_time[i][-1])
-        print("money \t%.3f" % m.people[i].money)
-        print("===")
-
-    # plot_wealth_histories(m, stats)
+    print_stats(m, stats)
+    plot_wealth_histories(m, stats)
 
 def main():
     reinforce_test()
