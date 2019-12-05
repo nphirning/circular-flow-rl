@@ -45,13 +45,15 @@ class Model:
         firm_money_recv = [s.money_recv for s in self.firms]
         person_goods_recv = [s.goods_recv for s in self.people]
         person_hours_worked = [s.hours_worked for s in self.people]
+        person_money_hist = [s.money_hist for s in self.people]
         stats = compute_stats(
             self,
             firm_action_hist,
             person_action_hist,
             firm_money_recv,
             firm_money_paid,
-            person_goods_recv
+            person_goods_recv,
+            person_money_hist
         )
 
         # End episode and reset agents.
@@ -67,18 +69,10 @@ class Model:
             person.reset()
 
         if verbose:
-            print("Firm price histories:")
-            pp(stats['firm_price_hists'])
-            print("Firm avg. profit:")
-            pp(stats['firm_avg_profit'])
-            print("Firm avg. first entries:")
-            pp(stats['firm_avg_first_entries'])
-            print("Firm std. first entries:")
-            pp(stats['firm_std_first_entries'])
-            print("Firm money over time:")
-            pp(stats['firm_money_over_time'])
-            print("People goods over time:")
-            pp(stats['people_goods_over_time'])
+            for stat in stats:
+                print(stat)
+                pp(stats[stat])
+                print("=======")
 
             # person_data = (np.mean(person_losses), np.std(person_losses))
             # firm_data = (np.mean(firm_losses), np.std(firm_losses))

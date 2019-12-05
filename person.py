@@ -11,6 +11,7 @@ class PersonAgent(Agent):
         self.epis_actions = []
         self.goods_recv = []
         self.hours_worked = []
+        self.money_hist = []
 
         # Per-turn state.
         self.num_hours_to_work = WORK_HOURS_PER_PERSON
@@ -53,6 +54,7 @@ class PersonAgent(Agent):
         self.goods_recv = []
         self.epis_actions = []
         self.hours_worked = []
+        self.money_hist = [self.money]
 
     def end_episode(self):
         if self.rltype == RLType.REINFORCE:
@@ -71,6 +73,7 @@ class PersonAgent(Agent):
         self.epis_actions.append(action)
         self.goods_recv.append(goods_recv)
         self.hours_worked.append(hours_worked)
+        self.money_hist.append(self.money)
     
     def get_loss(self):
         if self.rltype == RLType.TRIVIAL:
