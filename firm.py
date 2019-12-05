@@ -89,8 +89,13 @@ class FirmAgent(Agent):
         self.money_paid.append(money_paid)
     
     def get_loss(self):
-        if len(self.policy_net.loss_hist) == 0: return None
-        return self.policy_net.loss_hist[-1]
+        if self.rltype == RLType.REINFORCE:
+            loss_hist = self.policy_net.loss_hist
+        elif self.rltype == RLType.Q_ACTOR_CRITIC:
+            loss_hist = self.actor_critic.policy_loss_hist
+
+        if len(loss_hist) == 0: return None
+        return loss_hist[-1]
     
 
     

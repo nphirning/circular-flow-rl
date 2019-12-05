@@ -77,6 +77,8 @@ class ActorCritic(object):
         self.next_action_log_prob = None
         self.next_reward = None
 
+        self.policy_loss_hist = []
+
 
     def choose_action(self, state):
         state = torch.from_numpy(state).type(torch.FloatTensor)
@@ -96,6 +98,8 @@ class ActorCritic(object):
         self.policy_optimizer.zero_grad()
         policy_loss.backward()
         self.policy_optimizer.step()
+
+        self.policy_loss_hist.append(policy_loss.item())
         # TODO: do appropriate storing here
 
     def update_q(self):

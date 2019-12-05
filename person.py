@@ -16,7 +16,7 @@ class PersonAgent(Agent):
         self.num_hours_to_work = WORK_HOURS_PER_PERSON
 
         state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
-            action_dim = POSSIBLE_UNITS_PERSON.shape[0] * POSSIBLE_PRICES_PERSON.shape[0] * POSSIBLE_RECIP_DEMAND_PARAMS_PERSON.shape[0] 
+        action_dim = POSSIBLE_UNITS_PERSON.shape[0] * POSSIBLE_PRICES_PERSON.shape[0] * POSSIBLE_RECIP_DEMAND_PARAMS_PERSON.shape[0] 
         if self.rltype == RLType.REINFORCE:
             self.policy_net = ReinforcePolicyGradient(state_dim, action_dim)
         elif self.rltype == RLType.Q_ACTOR_CRITIC:
@@ -89,7 +89,12 @@ class PersonAgent(Agent):
     def get_loss(self):
         if self.rltype == RLType.TRIVIAL:
             return 0
-        if len(self.policy_net.loss_hist) == 0: return None
-        return self.policy_net.loss_hist[-1]
+        if self.rltype == RLType.REINFORCE:
+            loss_hist = self.policy_net.loss_hist
+        elif self.rltype == RLType.Q_ACTOR_CRITIC:
+            loss_hist = self.actor_critic.policy_loss_hist
+
+        if len(loss_hist) == 0: return None
+        return loss_hist[-1]
     
     

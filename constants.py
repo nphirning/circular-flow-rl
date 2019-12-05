@@ -18,8 +18,9 @@ DISCOUNT = 0.9
 
 class RLType(Enum):
     TRIVIAL = 1
-    Q_ACTOR_CRITIC = 2
+    DEEPQ = 2
     REINFORCE = 3
+    Q_ACTOR_CRITIC = 4
 
 class DemandCurveShape(Enum):
     CONSTANT = 1
