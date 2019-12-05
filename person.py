@@ -16,7 +16,13 @@ class PersonAgent(Agent):
         self.num_hours_to_work = WORK_HOURS_PER_PERSON
 
         state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
-        action_dim = POSSIBLE_UNITS_PERSON.shape[0] * POSSIBLE_PRICES_PERSON.shape[0] * POSSIBLE_RECIP_DEMAND_PARAMS_PERSON.shape[0] 
+        demand_params = None
+        if self.demand_curve_shape == DemandCurveShape.RECIPROCAL:
+            demand_params = POSSIBLE_RECIP_DEMAND_PARAMS_PERSON
+        elif self.demand_curve_shape == DemandCurveShape.LINEAR:
+            demand_params = POSSIBLE_LIN_DEMAND_PARAMS_PERSON
+
+        action_dim = POSSIBLE_UNITS_PERSON.shape[0] * POSSIBLE_PRICES_PERSON.shape[0] * demand_params.shape[0] 
         if self.rltype == RLType.REINFORCE:
             self.policy_net = ReinforcePolicyGradient(state_dim, action_dim)
         elif self.rltype == RLType.Q_ACTOR_CRITIC:
