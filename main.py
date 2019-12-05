@@ -21,11 +21,22 @@ def reinforce_test():
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE)
     m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE)
     num_iters = 100
+    avg_GDP = []
     for i in tqdm(range(num_iters)):
-        m.run_episode(100, verbose=False)
+        stats = m.run_episode(100)
+        avg_GDP.append(np.mean(stats['GDP_over_time']))
 
-    stats = m.run_episode(1000, verbose=False)
-    plot_wealth_histories(m, stats)
+    stats = m.run_episode(1000)
+
+    # debugging
+    people_goods_over_time = stats['people_goods_over_time']
+    for i in range(len(people_goods_over_time)):
+        print("skill \t%.3f" % m.people[i].skill)
+        print("goods \t%d" % people_goods_over_time[i][-1])
+        print("money \t%.3f" % m.people[i].money)
+        print("===")
+
+    # plot_wealth_histories(m, stats)
 
 def main():
     reinforce_test()
