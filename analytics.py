@@ -156,6 +156,7 @@ def write_plots_to_file(m, stats, iteration_num, path):
     filename = path + str(iteration_num) + '.txt'
     with open(filename, 'w') as f:
         # header
+        f.write('step ')
         for col in cols:
             _, cid = col
             if cid[-1] == '*':
@@ -170,16 +171,18 @@ def write_plots_to_file(m, stats, iteration_num, path):
         f.write('\n')
 
         # data
+        acc = 4
         n_steps = len(stats['GDP_over_time'])
         for step in range(n_steps):
+            f.write(str(step) + ' ')
             for col in cols:
                 key, cid = col
                 stat = stats[key]
                 if cid[-1] == '*':
                     for agent in stat:
-                        f.write(str(round(agent[step], 2)) + ' ')
+                        f.write(str(round(agent[step], acc)) + ' ')
                 else:
-                    f.write(str(round(stat[step], 2)) + ' ')
+                    f.write(str(round(stat[step], acc)) + ' ')
             f.write('\n')
 
 def save_plots_from_iteration(stats, iteration_num, name):
