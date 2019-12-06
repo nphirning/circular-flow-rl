@@ -75,19 +75,6 @@ def compute_stats(m, firm_action_hist, person_action_hist,
             GDP_over_time += firm_recv + firm_paid
         stats['GDP_over_time'] = list(GDP_over_time)
 
-        # Gini coefficient over time.
-        p_tot = 0
-        n = 0
-        gini_over_time = np.zeros(len(person_goods_recv[0]))
-        for p1 in people_goods_gained_over_time:
-            p_tot += p1
-            n += 1
-            for p2 in people_goods_gained_over_time:
-                gini_over_time += np.abs(p1 - p2)
-        with np.errstate(divide='ignore', invalid='ignore'):
-            gini_over_time /= 2 * n * p_tot
-        stats['gini_over_time'] = list(gini_over_time)
-
         # Market price of goods.
         goods_tot = 0
         for p in person_goods_recv:
@@ -95,26 +82,61 @@ def compute_stats(m, firm_action_hist, person_action_hist,
         money_tot = 0
         for f in firm_money_recv:
             money_tot += np.array(f)
-        stats['market_price_goods'] = list(money_tot / goods_tot)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            stats['market_price_goods'] = list(money_tot / goods_tot)
 
-        # Market price of labor
+        # Market price of labor.
         hours_tot = 0
         for p in m.people:
             hours_tot += np.array(p.hours_worked)
         money_tot = 0
         for f in firm_money_paid:
             money_tot += np.array(f)
-        stats['market_price_labor'] = list(money_tot / hours_tot)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            stats['market_price_labor'] = list(money_tot / hours_tot)
+
+        # Unemployment.
+        employment = 0
+        for p in m.people:
+            employed_bool = np.array(p.hours_worked) > 0.01
+            employed = [1 if step else 0 for step in list(employed_bool)]
+            employment += np.array(employed)
+        unemployment = 1 - employment / NUM_PEOPLE
+        stats['unemployment'] = list(unemployment)
+
+        # People wealth over time
+        wealth_over_time = []
+        for i in range(NUM_PEOPLE):
+            wealth_from_money = np.array(person_money_hist[i])
+            wealth_from_goods = \
+            np.array(stats['people_goods_over_time'][i]) * \
+            np.array(stats['market_price_goods'])
+            wealth_from_goods = np.concatenate(([0], wealth_from_goods))
+            wealth_over_time.append(wealth_from_money + wealth_from_goods)
+        stats['wealth_over_time'] = wealth_over_time
+
+        # Gini coefficient over time.
+        p_tot = 0
+        n = 0
+        gini_over_time = np.zeros(len(wealth_over_time[0]))
+        for p1 in wealth_over_time:
+            p_tot += p1
+            n += 1
+            for p2 in wealth_over_time:
+                gini_over_time += np.abs(p1 - p2)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            gini_over_time /= 2 * n * p_tot
+        stats['gini_over_time'] = list(gini_over_time)
 
         return stats
 
 def save_plots_from_iteration(stats, iteration_num, name):
-    _, axs = plt.subplots(4, 4, figsize=(15, 12))
+    _, axs = plt.subplots(4, 3, figsize=(15, 12))
     plot_firm_money_hist(axs[0, 0], stats['firm_money_hists'])
     plot_human_money_hist(axs[0, 1], stats)
     plot_human_goods_hist(axs[1, 1], stats)
     plot_gdp_smoothed(axs[2, 2], stats)
-    plot_median_human_goods(axs[2, 1], stats)
+    plot_median_human_wealth(axs[2, 1], stats)
     plot_total_money(axs[0, 2], stats)
     plot_gdp_smoothed(axs[1, 0], stats)
     plot_human_goods_hist(axs[1, 1], stats)
@@ -122,6 +144,8 @@ def save_plots_from_iteration(stats, iteration_num, name):
     plot_gini_coef(axs[2, 0], stats)
     plot_firm_goods(axs[1, 0], stats)
     plot_market_price_labor(axs[3, 0], stats)
+    plot_unemployment(axs[3, 1], stats)
+    plot_human_wealth(axs[3, 2], stats)
     plt.savefig('%s-iteration-%s' % (name, iteration_num), dpi=300)
     plt.close('all')
 
@@ -163,14 +187,14 @@ def plot_human_goods_hist(ax, stats):
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Human Goods")
 
-def plot_median_human_goods(ax, stats):
-    colormap = cm.get_cmap('plasma', len(stats['people_money_over_time']))
+def plot_median_human_wealth(ax, stats):
+    colormap = cm.get_cmap('plasma', len(stats['wealth_over_time']))
     skill_map = sorted([(skill, idx) for idx, skill in enumerate(stats['person_skills'])])
     max_skill = skill_map[-1][0]
     min_skill = skill_map[0][0]
     dskill = max_skill - min_skill
 
-    ps = stats['people_goods_over_time']
+    ps = stats['wealth_over_time']
 
     median_p = [np.median([p[i] for p in ps]) for i in range(len(ps[0]))]
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -179,7 +203,7 @@ def plot_median_human_goods(ax, stats):
             color = colormap((skill - min_skill) / (dskill))
             ax.plot((p - median_p) / median_p, color=color)
     ax.set_xlabel("Iteration")
-    ax.set_ylabel("Goods (percent relative to median)")
+    ax.set_ylabel("Wealth (percent relative to median)")
 
 def plot_total_money(ax, stats):
     pm = stats['people_money_over_time']
@@ -203,7 +227,6 @@ def plot_firm_goods(ax, stats):
     ax.legend()
 
 def plot_market_price_goods(ax, stats):
-
     ax.plot(stats['market_price_goods'], alpha=0.4)
     ax.plot(smooth(stats['market_price_goods'], k=5))
     ax.set_xlabel("Iteration")
@@ -214,9 +237,25 @@ def plot_market_price_labor(ax, stats):
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Market Price of Labor")
 
+def plot_unemployment(ax, stats):
+    ax.plot(stats['unemployment'])
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Unemployment rate")
+
 def plot_human_wealth(ax, stats):
-    #TODO: Rory, combine money + goods ==> wealth 
-    pass 
+    colormap = cm.get_cmap('plasma', len(stats['wealth_over_time']))
+    skill_map = sorted([(skill, idx) for idx, skill in enumerate(stats['person_skills'])])
+    max_skill = skill_map[-1][0]
+    min_skill = skill_map[0][0]
+    dskill = max_skill - min_skill
+    
+    wealth_hists = stats['wealth_over_time']
+    for skill, idx in skill_map:
+        wealth_hist = wealth_hists[idx]
+        color = colormap((skill - min_skill) / (dskill))
+        ax.plot(np.arange(len(wealth_hist)), wealth_hist, color=color)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Wealth")
 
 def plot_gdp_smoothed(ax, stats):
     gdp = stats['GDP_over_time']
@@ -230,51 +269,9 @@ def plot_gini_coef(ax, stats):
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Gini Coefficient")
 
-def plot_wealth_histories(m, stats):
-    fs = stats['firm_money_over_time']
-    ps = stats['people_goods_over_time']
-
-    # Firms.
-    for i in range(len(fs)):
-        fs[i] += float(m.firms[i].init_money)
-
-    plt.subplot(2, 2, 1)
-    for f in fs: 
-        plt.plot(f)
-    plt.title("Firms' wealth")
-
-    # People.
-    median_p = [np.median([p[i] for p in ps]) for i in range(len(ps[0]))]
-
-    plt.subplot(2, 2, 2)
-    with np.errstate(divide='ignore', invalid='ignore'):
-        for p in ps:
-            plt.plot((p - median_p) / median_p)
-    plt.title("People's wealth (% rel. median)")
-
-    plt.subplot(2, 2, 3)
-    gdp = stats['GDP_over_time']
-    gdp = smooth(gdp, k=50)
-    plt.plot(gdp)
-    plt.title("GDP (smoothed)")
-
-    plt.subplot(2, 2, 4)
-    plt.plot(stats['gini_over_time'])
-    plt.title("Gini coefficient")
-
-    plt.show()
-
 # Adapted from SciPy cookbook
 def smooth(x, k):
     s = np.r_[x[k-1:0:-1], x, x[-2:-k-1:-1]]
     w = np.ones(k, 'd')
     y = np.convolve(w / w.sum(), s, mode='valid')
     return y
-
-def print_stats(m, stats):
-    for i in range(len(m.people)):
-        print("Person %d" % i)
-        print("\tskill \t%.2f" % m.people[i].skill)
-        print("\tgoods \t%.2f" % stats['people_goods_over_time'][i][-1])
-        money = stats['people_money_over_time'][i]
-        print("\tmoney \t%.2f -> %.2f" % (money[0], money[-1]))
