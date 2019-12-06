@@ -51,6 +51,8 @@
 \usepackage{booktabs} % Horizontal rules in tables
 
 \usepackage{subcaption}
+\usepackage{pgfplotstable}
+\usepackage{pgfplots}
 
 \usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
 
@@ -63,7 +65,7 @@
 
 \usepackage{titlesec} % Allows customization of titles
 \renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
-\renewcommand\thesubsection{\roman{subsection}} % roman numerals for subsections
+\renewcommand\thesubsection{\Alph{subsection}} % roman numerals for subsections
 \titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
 \titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
 
@@ -71,7 +73,7 @@
 \pagestyle{fancy} % All pages have headers and footers
 \fancyhead{} % Blank out the default header
 \fancyfoot{} % Blank out the default footer
-\fancyhead[C]{Modeling an Economy with Policy Gradients $\bullet$ Autumn 2019 $\bullet$ CS 238} % Custom header text
+\fancyhead[C]{Modeling Macroeconomic Phenomena with Multi-Agent Reinforcement Learning $\bullet$ Autumn 2019 $\bullet$ CS 238} % Custom header text
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
 
 \usepackage{titling} % Customizing the title section
@@ -92,7 +94,7 @@
 
 \pretitle{\begin{center}\Large\bfseries} % Article title formatting
 \posttitle{\end{center}} % Article title closing formatting
-\title{Modeling an Economy with Policy Gradients} % Article title
+\title{Modeling Macroeconomic Phenomena \\with Multi-Agent Reinforcement Learning} % Article title
 \author{%
 \textsc{Nicholas Hirning} \\[1ex]
 \normalsize Stanford University \\ 
@@ -109,9 +111,7 @@
 \date{} % Leave empty to omit a date
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
-
-TODO
-
+While reinforcement learning has been widely used to model gameplay, its application to economics remains limited. In this work, we demonstrate how multi-agent reinforcement learning can be combined with a simple economic model to simulate and analyze macroeconomic phenomena under various conditions. In particular, we show how policy gradient learning algorithms yield qualitatively correct results in simple simulations, and we demonstrate nontrivial behavior in more complex scenarios involving over 30 separate agents. 
 \end{abstract}
 }
 
@@ -145,41 +145,41 @@ A simple model taught in introductory economics classes is the circular flow mod
   \end{tikzpicture}
   \caption{Basic schematic of the circular flow model, a simple economic model in which society is composed of two types of agents (firms and people) that interact in two distinct markets.} \label{fig:circularflow}
 \end{figure}
-
+\medskip
 While the circular flow model does not include many important economic factors, it has the benefit of being simple enough to serve as a starting point for high-level analysis. For more in-depth economic phenomena, one would likely benefit from including more markets and agents; for example, the five-sector economy model includes government, financial markets, and overseas influences. However, as we aim to provide a proof-of-concept for modeling economies with multi-agent reinforcement learning, the circular flow model serves as a simple foundation that can potentially produce nontrivial dynamics.
 
 \medskip
 
-In the following work, we explore how various economic phenomena can be simulated and analyzed by applying reinforcement learning to the circular flow model. While we are limited by the simplicity of the model, there are many economic metrics that can be directly investigated in such a model. For example, the gross domestic product (GDP) is widely touted as a comprehensive measure of a country's economic health. The GDP is defined by the following equation:
+In the following work, we explore how various economic phenomena can be simulated and analyzed by applying reinforcement learning to the circular flow model. While we are limited by the simplicity of the model, there are many economic metrics that manifest in such a model. For example, the gross domestic product (GDP) is widely touted as a comprehensive measure of a country's economic health. The GDP is defined by the following equation:
 \[
   \text{GDP} = C + G + I + N,
 \]
-where $C$ stands for consumer spending, $G$ for government spending, $I$ for private domestic investments, and $N$ for net exports. In practice, the vast majority of GDP is contained in consumer spending (accounting for roughly $2/3$ of the U.S. GDP). While the circular flow model cannot account for net exports or government spending, the total consumer spending and private domestic investments can be approximated by the total quantity of money exchanged in the goods and labor markets. Thus, such a model can lead to investigation of how GDP changes over time and as a function of the number of agents of each type.
+where $C$ stands for consumer spending, $G$ for government spending, $I$ for private domestic investments, and $N$ for net exports. In practice, the vast majority of GDP is contained in consumer spending (accounting for roughly $2/3$ of the U.S. GDP). While the circular flow model cannot account for net exports or government spending, the total consumer spending and private domestic investments can be approximated by the total quantity of money exchanged in the goods and labor markets.
 
 \medskip
 
-Another important economic focus is on income and wealth inequality, both of which are manifested in the circular flow model. A common approach to measuring inequality is to use the Gini coefficient. The Gini coefficient of a distribution $p$ with mean $\mu$ is given by 
+Another important area of economics studies income and wealth inequality. A common approach to measuring these is to use the Gini coefficient. The Gini coefficient is a measure of the inequality of a distribution $p$ with mean $\mu$. Explicitly, the Gini coefficient is given by 
 \[
   G = \frac{1}{2\mu} \iint p(x)p(y)|x - y|\, \mathrm{d}x\, \mathrm{d}y.
 \] 
-In a discrete scenario, this just becomes the average absolute difference of all pairs of items (e.g., income or absolute wealth) divided by twice the mean. Given its relevance to modern society, understanding how income inequality develops and progresses over time and as a function of initial wealth and skill distribution is quite important.
+In a discrete scenario, this becomes the average absolute difference of all pairs of items (e.g., income or absolute wealth) divided by twice the mean.
 
 \medskip 
 
-We aim to explore the applicability of multi-agent reinforcement learning as a means for analyzing macroeconomic phenomena. To this end, we implement the circular flow model and perform basic analyses of both GDP and income inequality. As this is a multi-agent problem, agents choose actions and learn simultaneously, making the simulation dynamics quite complex. Thus, we will also discuss and analyze the effectiveness of two different learning algorithms.
+We aim to explore the applicability of multi-agent reinforcement learning as a means for analyzing macroeconomic phenomena. To this end, we implement the circular flow model and perform basic analyses of several economic metrics, including GDP and the Gini coefficient. As this is a multi-agent problem, agents choose actions and learn simultaneously, making the simulation dynamics quite complex. We also discuss and analyze the effectiveness of two different learning algorithms.
 
 
 \section{Literature Review}
 
-Despite the applicability of reinforcement learning techniques to economics, there are relatively few examples of such applications in existing literature. One particularly relevant example is a paper by Lozano et al. \cite{RePEc:col:000092:003907} which focuses on modeling an economy ``based on conventions.'' In this work, the authors apply the $\text{SARSA}(\lambda)$ algorithm in a government agent to search for a good expenditure policy. In this case, the authors avoid applying complicated multi-agent reinforcement learning by modeling each firm with a simple algorithm in which firms can copy neighboring firms or (with some low probability) switch to a random policy. The government attempts to increase national income and decrease debt based on some limited knowledge of the existing firms and historical records of income, debt, etc. 
+Despite the applicability of reinforcement learning techniques to economics, there are relatively few examples of such applications in existing literature. One particularly relevant example is a paper by Lozano et al. \cite{RePEc:col:000092:003907} which focuses on modeling an economy ``based on conventions.'' In this work, the authors apply the $\text{SARSA}(\lambda)$ algorithm in a government agent to search for a good expenditure policy. The authors avoid applying complicated multi-agent reinforcement learning by modeling each firm with a simple algorithm in which firms can copy neighboring firms or (with some low probability) switch to a random policy. The government attempts to increase national income and decrease debt based on some limited knowledge of the existing firms and historical records of income, debt, etc. 
 
 \medskip
 
-One important issue that the authors of \cite{RePEc:col:000092:003907} grappled with was the vast (and continuous) state space. In this case, they applied a multilayer-perceptron (MLP) with a single hidden layer to approximate the $Q$-function for $\text{SARSA}(\lambda)$. Given the vast array of actions and states within any economy, approximation with an MLP model or similar is common in such scenarios. The authors found limited success with their model, with the economy collapsing less frequently over time due to the government's policies.
+One important issue that the authors of \cite{RePEc:col:000092:003907} grappled with was the vast (and continuous) state space. They applied a multilayer-perceptron (MLP) with a single hidden layer to approximate the $Q$-function for $\text{SARSA}(\lambda)$. Given the vast array of actions and states within any economy, approximation with an MLP model or similar is common in such scenarios. The authors found some success with their model, with the economy collapsing less frequently over time due to the government's policies.
 
 \medskip
 
-Another relevant work by Tesauro \& Kephart involved investigation of the behavior of reinforcement learning agents in the presence of other adaptive agents for economic purposes \cite{pricing-multi-agent}. In particular, Tesauro \& Kephart consider two selling agents competing in an economic model where each agent applied Q-learning. In this case, the state and action space was small enough that the Q-learning could proceed directly. Furthermore, the consumers in the model acted via a simple, greedy rule as opposed to acting as an independent, market-shaping force. Another difference between Tesauro \& Kephart and the model proposed here is that the former model does not assume simultaneous price-setting; instead, the two selling agents took turns adjusting prices in response to each other. This turn-based approach is slightly less realistic than the simultaneous setting, but it allowed the authors to frame the problem as a two-player, alternating-turn, arbitrary-sum Markov game. Additionally, the authors spent significant amount of their time computing the Q-function for one of the sellers when the other seller was assumed myopic; they investigated simultaneous Q-learning as well, but noted that no convergence proofs exist for such cases.
+Another relevant work by Tesauro \& Kephart involved investigation of the behavior of reinforcement learning agents in the presence of other adaptive agents for economic purposes \cite{pricing-multi-agent}. In particular, Tesauro \& Kephart consider two selling agents competing in an economic model where each agent applied Q-learning. The state and action space was small enough that the Q-learning could proceed directly. Furthermore, the consumers in the model acted via a simple, greedy rule as opposed to acting as an independent, market-shaping force. Another difference between Tesauro \& Kephart and the model proposed here is that the former model does not assume simultaneous price-setting; instead, the two selling agents took turns adjusting prices in response to each other. This turn-based approach is slightly less realistic than the simultaneous setting, but it allowed the authors to frame the problem as a two-player, alternating-turn, arbitrary-sum Markov game. Additionally, the authors spent significant amount of their time computing the Q-function for one of the sellers when the other seller was assumed myopic; they investigated simultaneous Q-learning as well, but noted that no convergence proofs exist for such cases.
 
 \medskip 
 
@@ -187,16 +187,29 @@ While there are relatively few examples of reinforcement learning applied to mac
 
 \medskip
 
-One study performed by K\"on\"onen studied the situation of two competing brokers selling identical products under two different learning methods: modified gradient descent on the values and a policy gradient approach \cite{doi:10.1002/int.20121}. K\"on\"onen found success with both approaches, but found that the system would become intractable as the number of pricing actions increased \cite{doi:10.1002/int.20121}. To address this, the author suggested applying an MLP or other generalizable model as an extension. In our model, we attempt to combine and extend many of the successful techniques presented in past studies to create an accurate representation of the circular flow model.   
+One study performed by K\"on\"onen studied the situation of two competing brokers selling identical products under two different learning methods: modified gradient descent on the values and a policy gradient approach \cite{doi:10.1002/int.20121}. K\"on\"onen found success with both approaches, but found that the system would become intractable as the number of pricing actions increased \cite{doi:10.1002/int.20121}. To address this, the author suggested applying an MLP or other generalizable model as an extension. The suggestion to combine policy gradient algorithms and a generalizable action-choosing model significanlty influenced our design. 
 
 \section{Methods}
+
+The model consists of an implementation of the circular flow architecture and a reinforcement learning engine. We describe these two components separately.
+
+\subsection{Circular Flow Architecture}
 
 The circular flow model uses two distinct types of agents: firms and people. Correspondingly, the simulation defines these two agent types separately. Each agent (firm or human) keeps the following internal state:
 \begin{itemize}
   \item \textbf{Money.} Each agent can accumulate and spend money during each timestep.
   \item \textbf{Goods.} Each agent can attain goods (firms create goods through the labor market, and people buy goods through the goods market).
 \end{itemize}
-Each firm receives a reward at each step equal to the profit they generate. Thus, firms aim to maximize their future profit. Human agents receive a reward equal to the number of goods they consume. Furthermore, human agents are each seeded with a constant skill level which governs how many goods a human agent can produce in an hour of work.
+Human agents are additionally each seeded with a constant skill level which governs how many goods a human agent can produce in an hour of work. 
+
+\medskip
+
+On each iteration, the internal state of each agent can change, and this change determines the reward for that agent. Human agents receive a reward equal to the number of goods they consume. Firm agents receive a reward equal to the profit increase in logarithmic space. More precisely, the reward for a firm is 
+\[
+  r_\text{firm} = \log (m + p + \epsilon) - \log(m + \epsilon) = \log\left(1 + \frac{p}{m + \epsilon}\right).  
+\]
+Here $m$ is the money of the firm before the update, $p$ is the net profit of the firm for this iteration, and $\epsilon$ is a small constant used to prevent infinite negative reward in the case of $m = 0$ or $m = p = 0$. This definition is derived from the idea that the utility of money is logarithmic.
+
 
 \medskip
 
@@ -204,38 +217,36 @@ At each timestep, every agent produces an action that determines how they behave
 \begin{itemize}
   \item \textbf{Offered Price.} In the labor market, the human agents set their hourly rate. In the goods market, the firms set their price per good.
   \item \textbf{Offered Units.} In the labor market, the human agents set the number of hours they are willing to work. In the goods market, the firms set the number of goods they are willing to sell.
-  \item \textbf{Demand Curve.} The demand curve is a vector. In the labor market, the $i$th entry of the demand curve corresponds to the price the firm will pay to produce its $i$th good. In the goods market, the $i$th entry of the demand curve corresponds to the price a human will pay for its $i$th good.
+  \item \textbf{Demand Curve.} The demand curve is a vector. In the labor market, the $i$th entry of the demand curve corresponds to the price a firm will pay to produce its $i$th good. In the goods market, the $i$th entry of the demand curve corresponds to the price a human will pay for its $i$th good.
 \end{itemize}
 
-In practice, this action space is vast. In order to make the problem tractable, the offered price and offered units are discretized into one of 20 or so values. The demand curve is parameterized by TODO.
+The space of all actions is vast. In order to make the problem tractable, the offered price and offered units are discretized into $P$ and $U$ values, respectively. In our simulations, we often set $P \approx 15$ and $U \approx 25$. Similarly, the demand curve was parameterized by families of functions. We experimented with two different families of curves: inverse and linear. The family of inverse curves $y = a/x + b$ is specified by the two parameters $a, b$ (in our simulations we used approximately 36 total possible configurations). The family of linear curves was specified by solely the $y$-intercept, as the $x$-intercept was a hyperparameter fixed before training (the $x$-intercept corresponds to the maximum number of goods that can be purchased or produced by a given human or firm in a single iteration). In practice, the linear family trained faster, but the inverse family led to better results. We use the family of inverse demand curves for all plots presented in this paper.
 
+\medskip
 
+The state used to produce the action is the money and goods of all firms and the money of all people (concatenated into a single vector). For a system with $N$ firms and $M$ people, the resulting state space has dimension $s_s = 2N + M$. Thus, the reinforcement learning engine (described in the next section) is tasked with learning a mapping from a space of size $s_s$ to a space of size $s_a \approx P \cdot U \cdot F$, where $F$ is the number of possible values for the parameters of the demand curves. While this fully transparent state is not wholly realistic, it significantly simplifies the model and can be justified economically by the increasing availability of information.
 
+\medskip
 
+In addition to this setup, several additional features were added to enhance the simulations. All human agents' stored money is increased every iteration by an interest rate (generally $<1\%$). This has the benefit of preventing trivial policies in which humans provide all money to the firms, at which point the firms can no longer directly increase reward. Similarly, every iteration firms' stored money is decreased by fixed operational costs as well as costs that scale with the size of the firm (i.e., $m \mapsto r(m - f)$, where $f$ is a fixed cost and $r$ is a multiplicative decay just below $1$). Together, these additions allow for interesting model dynamics for the entirety of the experiment.
 
-
-
-[multiagent -> individual RL agents]
-[describe state, $s_s$]
-[describe actions, $s_a$, as discretized to more easily track the]
-[describe rewards]
-[parameterizing the demand curve]
-[full transparency of staters]
 
 \subsection{RL Algorithms******}
-Following the literature we reviewed, we worked within the realm of policy gradient methods; we also choose this family of algorithms because they have stronger convergence guarantees than value-based RL methods (albeit potentially to local optimum that are not global optimum).
-\newline\newline
-As framed, our problem contains large — in fact, high dimensional — state spaces. Specifically, the dimension of a given state is $s_s = 2 \cdot (\text{number of firms}) + (\text{number of people})$. Furthermore, while the values in each dimension were integers, they could take on a wide range of values. Therefore, in every policy, we use neural network architectures to convert a given state to a vector, containing log probabilities of taking each action. In empirical testing, if $s_a$ is the number of possible actions, we've seen that the following architecture is a simple framework that still yields convergence in our context:
+Both the learning algorithms chosen for the simulation were policy gradient methods. This was chosen due to previous literature, and because such methods have stronger convergence guarantees than value-based reinforcement learning methods (though potentially to non-global optima).
+
+\medskip
+
+As discussed previously, the simulation contains large, high-dimensional state spaces. The dimension of a given state vector is $s_s = 2 N + M$. Furthermore, every entry can take on a wide range of integral values. Therefore, we use neural network architectures to convert a given state to a vector containing log probabilities for each action. In empirical testing, if $s_a$ is the number of possible actions, we've seen that the following architecture is a simple framework that still yields convergence in our context:
 \begin{itemize}
   \item Input layer with state input, of dimension $s_s$. State values are unnormalized.
   \item Fully-connected hidden layer with tanh activation, of dimension $\left\lfloor \sqrt{s_s \, s_a} \right\rfloor$
   \item Fully-connected output layer with tanh activation, followed by log softmax, of dimension $s_a$
 \end{itemize}
-During training, we generally use a learning rate of $\alpha = 0.01$. 
+During training, the learning rate was set to $\alpha = 0.01$. 
 
 
 \subsubsection{REINFORCE Policy Gradient}
-Perhaps the simplest policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo-type approach to gathering training data. We manually specify the length of the episode, generally using $T = 100$.
+Perhaps the simplest policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo approach to collecting training data. The length of the episode $T$ is manually specified, and we generally used $T \sim 100$.
 \begin{algorithm}
 \caption{REINFORCE Policy Gradient}\label{euclid}
 \begin{algorithmic}[1]
@@ -252,16 +263,16 @@ Perhaps the simplest policy gradient method is the REINFORCE algorithm. This alg
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-This algorithm runs reasonably quickly per episode. However, we also need to run more episodes because:
+The runtime of this algorithm per episode is relatively short. However, often a significant number of episodes are required for the following reasons:
 \begin{itemize}
   \item Agents only update the parameters once per episode.
   \item In many contexts, vanilla REINFORCE has been known to suffer from high variance in the losses from episode to episode.
-  \item In our multi-agent problem, the environment dynamics constantly change because every agent responds to each timestep in the markets.
+  \item In our multi-agent problem, the environment dynamics constantly change as every agent responds to each timestep in the markets.
 \end{itemize}
 
 
-\subsubsection{Q Actor-Critic}
-An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the functions $Q(s, a)$. We consider this set of algorithms because while they carry the convergence advantages of general policy gradient methods, they also approximate the Q-values with better sample efficiency. In our context, we again use neural networks with one hidden layer each for both the actor and critic. 
+\subsubsection{Actor-Critic}
+An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the performance of the action. We considered this set of algorithms because in theory, it carries the convergence advantages of general policy gradient methods while also approximating Q-values with higher sample efficiency. In this scenario, we tested Q Actor-Critic, in which the critic computes the Q-values $Q(s,a)$, as well as Advantage Actor-Critic (A2C), in which the critic computes the advantage $Q(s, a) - V(s)$; the idea of using the advantage vs the $Q$-value is to compare the quality of the action with a stable baseline, reducing variance.  As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. Note also that we get to update the parameters after every action via TD learning.
 \begin{algorithm}
 \caption{Q Actor Critic}\label{euclid}
 \begin{algorithmic}[1]
@@ -281,16 +292,116 @@ An alternative family of policy gradient methods is the \textit{actor-critic} fa
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-In the current version we have implemented, the 
-
-[************** Q-network doesn't converge, maybe because we have an unstable target, requiring a target network]
-
-
-
 
 
 
 \section{Results and Data Analysis}
+
+We break the results down into two sections: preliminary results and a more complex simulation. The preliminary results are designed to verify that the system is working and producing correct results, while the more complex simulation allows more open-ended exploration of economic concepts.
+
+\subsection{Preliminary Results}
+
+To test the convergence of the learning and the ensure that the results were logical, we created a scenario with one firm agent and five human agents. The dynamics discussed below are for a simulation in which all agents utilized the REINFORCE algorithm, all agents used inverse demand curves, the human agent interest rate was set to $1\%$, the firm operational cost was set to $\$10$, and the discount was $\gamma = 0.99$. The firm was initialized with $\$10000$, while the human agents were initialized to have uniform random initial money such that the total money given to human agents was $\$5000$. The human skill levels (goods per hour) were drawn from $N(1, 0.1)$. The simulation was run for 100 iterations. 
+
+\medskip 
+
+Recall that the loss function for the REINFORCE algorithm is of the following form:
+\[
+  \mathcal{L} = -\sum_{t = 1}^T \left[\log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
+\]
+
+In particular, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the losses approaching zero. This occurs in our preliminary simulation, as can be seen in figure \ref{plt:losstozero}.
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=fl, x=i]{prelims.dat};
+  \addlegendentry{Firm}
+  \addplot table [y=pl, x=i]{prelims.dat};
+  \addlegendentry{Human (Mean)}
+  \end{axis}
+\end{tikzpicture}
+\caption{The agents' losses converge to zero over time. This plot illustrates the loss of firm agents vs. human agents in a simulation with one firm agent and five human agents. The loss for the human agents is the average of all five human agents' losses. This simulation uses the REINFORCE learning algorithm, and indicates that the algorithm is succcessfully converging to a policy within 100 episodes.}
+\label{plt:losstozero}
+\end{figure}
+
+While this indicates that agents are able to converge to policies in this multi-agent environment, it does not necessarily indicate that the learned behavior leads to positive rewards. To investigate this, we can look at how the firm's profit changes over time and the actions that the firm is taking. As there is a single firm and multiple people, we might expect that the firm has more of an ability to monopolize the market, pushing the price of goods higher. As such, we expect the price at which the firm sells goods to rise. In figure \ref{plt:firmprofitincrease}, we see that the firm's profit is generally increasing over time from an initial average profit of approximately $\$23$ per iteration to an average profit of up to $\$50$ per iteration. The noisiness in the increase in profit may be due to the complex, changing environment (due to the changing actions of the human agents), or the fact that the reward is actually the future-discounted logarithmic profit.
+
+\medskip 
+
+Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses a given price in the first and last episodes. In particular, the firm generally learns to select higher prices as it has a monopoly on the goods market and the five human agents are competing for the firm's offerings. Note that this precise pattern is not wholly reproducible; on subsequent runs, the firm agent will display similar behavior but the precise actions chosen will vary.  
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Episode,
+      ylabel=Average Firm Profit per Iteration
+    ]
+    \addplot table [y=fp, x=i]{prelims.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Firm profit increases over time. This plot shows the average profit the firm gains per iteration as a function of episode. The simulation shown uses a single firm agent and five human agents, all using the REINFORCE learning algorithm. This indicates that the REINFORCE learning algorithm is yielding higher reward and better policies over time.}
+  \label{plt:firmprofitincrease}
+  \end{figure}
+
+\begin{figure}[h]
+\begin{tikzpicture}
+    \begin{axis}[
+        ybar,
+        legend style={at={(0.5,-0.2)},
+          anchor=north,legend columns=-1},
+        ylabel=Frequency,
+        bar width=5pt,
+        xlabel=Price per Good (\$),
+        symbolic x coords={1, 4, 7, 10, 13, 16, 19, 22, 25, 28},
+        xtick=data
+        ]
+    \addplot coordinates {(1, 19) (4, 22) (7, 20) (10, 27) (13, 15) (16, 27) (19, 16) (22, 17) (25, 14) (28, 23)};
+    \addplot coordinates {(1, 5) (4, 21) (7, 25) (10, 0) (13, 0) (16, 0) (19, 0) (22, 106) (25, 0) (28, 43)};
+    \legend{episode 1, episode 100}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{With a single firm agent and five human agents, the firm learns to increase the price of goods to maximize its own profit. The bars shown correspond to the frequency at which the firm chooses a given price to offer for the first episode and the last episode. The possible prices are discretized to be in the set $\{1, 4, 7, 10, 13, 16, 19, 22, 25, 28\}$. This behavior is consistent with that of a monopoly.}
+  \label{plt:firmactions}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Policy Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=pl, x=i]{a2c.dat};
+  \addlegendentry{Firm}
+  \end{axis}
+\end{tikzpicture}
+\caption{Policy Network Loss in Actor Critic Method}
+\label{plt:a2cpolicyloss}
+\end{figure}
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Critic Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=al, x=i]{a2c.dat};
+  \addlegendentry{Firm}
+  \end{axis}
+\end{tikzpicture}
+\caption{Critic Network Loss in Actor Critic Method}
+\label{plt:a2cadvloss}
+\end{figure}
+
+
+\subsection{Investigating Economic Phenomena}
 
 \section{Conclusion}
 

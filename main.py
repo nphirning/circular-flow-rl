@@ -39,6 +39,10 @@ def plot1_for_paper():
         prices.append(price_history)
         print(price_history)
 
+    print('i pl al')
+    for i in range(num_iters):
+        print('{} {} {}'.format(i, firm_loss[i][0], firm_loss[i][1]))
+
     fig, axs = plt.subplots(2, 1, figsize=(8, 12))
 
     fig.suptitle('Actor-Critic Losses with Firm Monopoly', fontsize=20)
@@ -51,6 +55,8 @@ def plot1_for_paper():
     fig.subplots_adjust(top=0.95)
     plt.savefig('actor_critic_losses.png', bbox_inches='tight', dpi=300)
     plt.close()
+
+
 
     # with open('plot1_for_paper.txt', 'w') as f:
     #     f.write(','.join([str(round(x, 2)) for x in firm_loss]) + '\n')
