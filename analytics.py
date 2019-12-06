@@ -16,7 +16,6 @@ def compute_stats(m, firm_action_hist, person_action_hist,
         stats = {}
 
         stats['person_skills'] = [p.skill for p in m.people]
-
         stats['firm_money_hists'] = firm_money_hist
         stats['firm_goods_hists'] = firm_goods_hist
 
@@ -101,10 +100,19 @@ def compute_stats(m, firm_action_hist, person_action_hist,
             money_tot += np.array(f)
         stats['market_price_goods'] = list(money_tot / goods_tot)
 
+        # Market price of labor
+        hours_tot = 0
+        for p in m.people:
+            hours_tot += np.array(p.hours_worked)
+        money_tot = 0
+        for f in firm_money_paid:
+            money_tot += np.array(f)
+        stats['market_price_labor'] = list(money_tot / hours_tot)
+
         return stats
 
 def save_plots_from_iteration(stats, iteration_num, name):
-    _, axs = plt.subplots(3, 3, figsize=(15, 12))
+    _, axs = plt.subplots(4, 4, figsize=(15, 12))
     plot_firm_money_hist(axs[0, 0], stats['firm_money_hists'])
     plot_human_money_hist(axs[0, 1], stats)
     plot_human_goods_hist(axs[1, 1], stats)
@@ -116,6 +124,7 @@ def save_plots_from_iteration(stats, iteration_num, name):
     plot_market_price_goods(axs[1, 2], stats)
     plot_gini_coef(axs[2, 0], stats)
     plot_firm_goods(axs[1, 0], stats)
+    plot_market_price_labor(axs[3, 0], stats)
     plt.savefig('%s-iteration-%s' % (name, iteration_num), dpi=300)
     plt.close('all')
 
@@ -202,6 +211,11 @@ def plot_market_price_goods(ax, stats):
     ax.plot(smooth(stats['market_price_goods'], k=5))
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Market Price of Goods")
+
+def plot_market_price_labor(ax, stats):
+    ax.plot(stats['market_price_labor'])
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Market Price of Labor")
 
 def plot_human_wealth(ax, stats):
     #TODO: Rory, combine money + goods ==> wealth 
