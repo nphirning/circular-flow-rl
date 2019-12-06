@@ -33,6 +33,8 @@
 
 \usepackage{float}
 \usepackage{cite}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
@@ -221,28 +223,67 @@ In practice, this action space is vast. In order to make the problem tractable, 
 [full transparency of staters]
 
 \subsection{RL Algorithms******}
-We worked within the realm of policy gradient methods; we chose this family of algorithms 
-
-[exploration strategy is built in?]
-
-
-
-with large action spaces.
-
-
-
+Following the literature we reviewed, we worked within the realm of policy gradient methods; we also choose this family of algorithms because they have stronger convergence guarantees than value-based RL methods (albeit potentially to local optimum that are not global optimum).
+\newline\newline
 As framed, our problem contains large — in fact, high dimensional — state spaces. Specifically, the dimension of a given state is $s_s = 2 \cdot (\text{number of firms}) + (\text{number of people})$. Furthermore, while the values in each dimension were integers, they could take on a wide range of values. Therefore, in every policy, we use neural network architectures to convert a given state to a vector, containing log probabilities of taking each action. In empirical testing, if $s_a$ is the number of possible actions, we've seen that the following architecture is a simple framework that still yields convergence in our context:
 \begin{itemize}
   \item Input layer with state input, of dimension $s_s$. State values are unnormalized.
-  \item Hidden layer with tanh activation, of dimension $\left\lfloor \sqrt{s_s \, s_a} \right\rfloor$
-  \item Output layer with tanh activation, followed by log softmax, of dimension $s_a$
+  \item Fully-connected hidden layer with tanh activation, of dimension $\left\lfloor \sqrt{s_s \, s_a} \right\rfloor$
+  \item Fully-connected output layer with tanh activation, followed by log softmax, of dimension $s_a$
 \end{itemize}
 During training, we generally use a learning rate of $\alpha = 0.01$. 
 
 
-\subsubsection{REINFORCE Policy Gradient******}
-Perhaps the most basic policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo-type approach to gathering training data. During each episode, the agent follows 
+\subsubsection{REINFORCE Policy Gradient}
+Perhaps the simplest policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo-type approach to gathering training data. We manually specify the length of the episode, generally using $T = 100$.
+\begin{algorithm}
+\caption{REINFORCE Policy Gradient}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{REINFORCE}{}
+\State $\text{Initialize policy network parameters }\theta$
+\For {$i = 1, 2, \ldots, M$}
+\State $\text{Follow current policy to obtain trajectory }$\newline\phantom{======}$\{s_1, a_1, r_1, \ldots, s_T, a_T, r_T\}$.
+\For {$t = 1, 2, \ldots, T$}
+\State $\text{Compute }v_t = \sum_{i = t}^n \gamma^{i- t} r_i$.
+\State $\text{Update } \theta \leftarrow \theta + \alpha \nabla_{\theta} \pi_{\theta} (s_t, a_t) v_t$
+\EndFor
+\EndFor
+\State \Return {$\theta$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+This algorithm runs reasonably quickly per episode. However, we also need to run more episodes because:
+\begin{itemize}
+  \item Agents only update the parameters once per episode.
+  \item In many contexts, vanilla REINFORCE has been known to suffer from high variance in the losses from episode to episode.
+  \item In our multi-agent problem, the environment dynamics constantly change because every agent responds to each timestep in the markets.
+\end{itemize}
 
+
+\subsubsection{Q Actor-Critic}
+An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the functions $Q(s, a)$. We consider this set of algorithms because while they carry the convergence advantages of general policy gradient methods, they also approximate the Q-values with better sample efficiency. In our context, we again use neural networks with one hidden layer each for both the actor and critic. 
+\begin{algorithm}
+\caption{Q Actor Critic}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{Actor\_Critic}{}
+\State $\text{Initialize policy and Q-network parameters }\theta, \omega$
+\For {$i = 1, 2, \ldots, M$}
+\State $\text{Initialize state and action }s_1, a_1 \sim \pi_{\theta}(a|s_1)$.
+\For {$t = 1, 2, \ldots, T-1$}
+\State Record reward $r_t$ and next state $s_{t+1}$
+\State Sample the next action $a_{t+1} \sim \pi_{\theta}(a|s_{t+1})$
+\State $\text{Update } \theta \leftarrow \theta + \alpha_{\theta} Q_{\omega}(s_t,a_t) \nabla_{\theta} \pi_{\theta} (s_t, a_t)$
+\State $\text{Compute temporal difference error: }\delta_t = r_t + \gamma Q_{\omega}(s_{t+1}, a_{t+1}) - Q_{\omega}(s_{t}, a_{t})$
+\State $\text{Update } \omega \leftarrow \omega + \alpha_{\omega} \delta_t \nabla_{\omega} Q_{\omega} (s_t, a_t)$
+\EndFor
+\EndFor
+\State \Return {$\theta, \omega$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+In the current version we have implemented, the 
+
+[************** Q-network doesn't converge, maybe because we have an unstable target, requiring a target network]
 
 
 
