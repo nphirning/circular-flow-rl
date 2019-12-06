@@ -471,9 +471,13 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/adobe/palatino/pplr8r.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/vf/adobe/palatino/pplr9t.vf
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.aux
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.out
 INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.out
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
@@ -482,6 +486,7 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.p
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb
