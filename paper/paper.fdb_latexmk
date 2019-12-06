@@ -1,14 +1,14 @@
 # Fdb version 3
-["bibtex paper"] 1575627685 "paper.aux" "paper.bbl" "paper" 1575627687
+["bibtex paper"] 1575663246 "paper.aux" "paper.bbl" "paper" 1575663250
   "/usr/local/texlive/2019/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "paper.aux" 1575627687 6509 1f18d628ac64c158151ab4645bc60fbf "pdflatex"
+  "paper.aux" 1575663249 7056 3beaf894bdc8f4eb6f2dfd3397cae6f2 "pdflatex"
   "sources.bib" 1575495214 5330 0fcec9201aa5241ad25f12f93f64ec2e ""
   (generated)
   "paper.bbl"
   "paper.blg"
-["pdflatex"] 1575627685 "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.tex" "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.pdf" "paper" 1575627687
-  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.aux" 1575627687 6509 1f18d628ac64c158151ab4645bc60fbf ""
-  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.tex" 1575627683 30114 e3f0c605975fa61ad027394b5d83f39c ""
+["pdflatex"] 1575663246 "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.tex" "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.pdf" "paper" 1575663250
+  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.aux" 1575663249 7056 3beaf894bdc8f4eb6f2dfd3397cae6f2 ""
+  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.tex" 1575663241 31135 f64c8f91e11cc54a33b8a1303ec83431 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
@@ -263,15 +263,16 @@
   "/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1557342064 3277517 23507ed665b4dd9046f0f2a94bbef2be ""
   "/usr/local/texlive/2019/texmf-var/web2c/pdftex/pdflatex.fmt" 1557342086 4259635 562fc36ec496993777a6c428d8bfb811 ""
   "/usr/local/texlive/2019/texmf.cnf" 1557341546 577 d150fef99ac436ad1156e86b0892f6ef ""
-  "paper.aux" 1575627687 6509 1f18d628ac64c158151ab4645bc60fbf "pdflatex"
-  "paper.bbl" 1575627685 1236 770a548fb2e1fc734a3e9d905a90d548 "bibtex paper"
-  "paper.out" 1575627687 748 5ff3eb18ca6fb9182af707af0c89653e "pdflatex"
-  "paper.tex" 1575627683 30114 e3f0c605975fa61ad027394b5d83f39c ""
+  "a2c.dat" 1575663241 2125 6bd0b27e5df1dc3600933733d2f98451 ""
+  "paper.aux" 1575663249 7056 3beaf894bdc8f4eb6f2dfd3397cae6f2 "pdflatex"
+  "paper.bbl" 1575663246 1236 770a548fb2e1fc734a3e9d905a90d548 "bibtex paper"
+  "paper.out" 1575663249 746 a8c91566efff75d18894d518be6bcbd8 "pdflatex"
+  "paper.tex" 1575663241 31135 f64c8f91e11cc54a33b8a1303ec83431 ""
   "prelims.dat" 1575621175 2047 9895c0ae76cbbabb7f81f12dc763442d ""
   (generated)
   "paper.out"
+  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.pdf"
+  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.log"
   "paper.log"
   "paper.aux"
-  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.pdf"
   "paper.pdf"
-  "/Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/paper.log"

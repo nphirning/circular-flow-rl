@@ -462,6 +462,8 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/mathpazo/zplmr7m.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/mathpazo/zplmr7y.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/mathpazo/zplmr7v.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/mathpazo/zplmr7t.tfm
+INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/a2c.dat
+INPUT /Users/nphirning/Dropbox/Stanford/2019-2020/Autumn/CS238/project/circular-flow-rl/paper/a2c.dat
 INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
 INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm

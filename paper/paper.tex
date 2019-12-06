@@ -271,8 +271,8 @@ The runtime of this algorithm per episode is relatively short. However, often a 
 \end{itemize}
 
 
-\subsubsection{Q Actor-Critic}
-An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the function $Q(s, a)$. We considered this set of algorithms because it carries the convergence advantages of general policy gradient methods while also approximating Q-values with higher sample efficiency. As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. 
+\subsubsection{Actor-Critic}
+An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the performance of the action. We considered this set of algorithms because in theory, it carries the convergence advantages of general policy gradient methods while also approximating Q-values with higher sample efficiency. In this scenario, we tested Q Actor-Critic, in which the critic computes the Q-values $Q(s,a)$, as well as Advantage Actor-Critic (A2C), in which the critic computes the advantage $Q(s, a) - V(s)$; the idea of using the advantage vs the $Q$-value is to compare the quality of the action with a stable baseline, reducing variance.  As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. Note also that we get to update the parameters after every action via TD learning.
 \begin{algorithm}
 \caption{Q Actor Critic}\label{euclid}
 \begin{algorithmic}[1]
@@ -292,12 +292,6 @@ An alternative family of policy gradient methods is the \textit{actor-critic} fa
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-In the current version we have implemented, the 
-
-[************** Q-network doesn't converge, maybe because we have an unstable target, requiring a target network]
-
-
-
 
 
 
@@ -374,6 +368,38 @@ Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses
   \caption{With a single firm agent and five human agents, the firm learns to increase the price of goods to maximize its own profit. The bars shown correspond to the frequency at which the firm chooses a given price to offer for the first episode and the last episode. The possible prices are discretized to be in the set $\{1, 4, 7, 10, 13, 16, 19, 22, 25, 28\}$. This behavior is consistent with that of a monopoly.}
   \label{plt:firmactions}
 \end{figure}
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Policy Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=pl, x=i]{a2c.dat};
+  \addlegendentry{Firm}
+  \end{axis}
+\end{tikzpicture}
+\caption{Policy Network Loss in Actor Critic Method}
+\label{plt:a2cpolicyloss}
+\end{figure}
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Critic Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=al, x=i]{a2c.dat};
+  \addlegendentry{Firm}
+  \end{axis}
+\end{tikzpicture}
+\caption{Critic Network Loss in Actor Critic Method}
+\label{plt:a2cadvloss}
+\end{figure}
+
 
 \subsection{Investigating Economic Phenomena}
 
