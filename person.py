@@ -10,7 +10,7 @@ class PersonAgent(Agent):
         self.epis_actions = []
         self.goods_recv = []
         self.hours_worked = []
-        self.money_hist = []
+        self.money_hist = [self.init_money]
         self.iteration = 0
 
         # Per-turn state.
