@@ -7,6 +7,9 @@ from collections import Counter
 import seaborn as sns
 sns.set(style="darkgrid")
 
+def create_loss_plot(stats, name):
+    pass
+
 def compute_stats(m, firm_action_hist, person_action_hist, 
         firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist,
         firm_money_hist, firm_goods_hist):

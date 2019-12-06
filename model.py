@@ -74,6 +74,9 @@ class Model:
             person_losses.append(person.get_loss())
             person.reset()
 
+        stats['firm_losses'] = firm_losses
+        stats['person_losses'] = person_losses
+
         if verbose:
             # for stat in stats:
             #     print(stat)

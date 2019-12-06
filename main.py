@@ -16,6 +16,15 @@ def trivial_test():
     for person in m.people:
         print(person.money)
 
+def plot1_for_paper():
+    m = model.Model(1e5)
+    m.create_firms(1, rltype=RLType.REINFORCE)
+    m.create_people(5, rltype=RLType.TRIVIAL)
+    num_iters = 100
+    for i in range(num_iters):
+        stats = m.run_episode(200, verbose=True)
+        
+
 def reinforce_test():
     m = model.Model(10000)
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.LINEAR)
