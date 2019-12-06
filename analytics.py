@@ -7,9 +7,6 @@ from collections import Counter
 import seaborn as sns
 sns.set(style="darkgrid")
 
-def create_loss_plot(stats, name):
-    pass
-
 def compute_stats(m, firm_action_hist, person_action_hist, 
         firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist,
         firm_money_hist, firm_goods_hist):
@@ -101,10 +98,10 @@ def compute_stats(m, firm_action_hist, person_action_hist,
         stats['market_price_goods'] = list(money_tot / goods_tot)
 
         # Market price of labor
-        hours_tot = 0
+        hours_tot = 0.0
         for p in m.people:
             hours_tot += np.array(p.hours_worked)
-        money_tot = 0
+        money_tot = 0.0
         for f in firm_money_paid:
             money_tot += np.array(f)
         stats['market_price_labor'] = list(money_tot / hours_tot)

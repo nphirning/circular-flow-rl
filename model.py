@@ -74,9 +74,6 @@ class Model:
             person_losses.append(person.get_loss())
             person.reset()
 
-        stats['firm_losses'] = firm_losses
-        stats['person_losses'] = person_losses
-
         if verbose:
             # for stat in stats:
             #     print(stat)
@@ -86,7 +83,7 @@ class Model:
             losses = (np.mean(person_losses), np.mean(firm_losses), np.mean(np.concatenate((person_losses, firm_losses))))
             print("Losses (P, F, T) = (%8.5f, %8.5f, %8.5f)" % losses)
 
-        return stats
+        return stats, firm_losses, person_losses
 
     def run(self, num_timesteps=100):
         for _ in range(num_timesteps): self.run_one_step()
