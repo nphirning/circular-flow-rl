@@ -36,7 +36,7 @@ class PolicyNetwork(nn.Module):
 
 
 class AdvantageNetwork(nn.Module):
-    def __init__(self, state_dim, action_dim, learning_rate=0.005):
+    def __init__(self, state_dim, action_dim, learning_rate=0.01):
         super(AdvantageNetwork, self).__init__()
         # Should be (2 * number of firms) + (number of people)
         self.state_dim = state_dim 
@@ -141,13 +141,16 @@ class ActorCritic(object):
         self.next_action_log_prob = None
         self.next_reward = None
 
-        if len(self.policy_loss_hist) > 0:
-            print('Current losses: {} {}'.format(self.policy_loss_hist[-1], self.adv_loss_hist[-1]))
+        # if len(self.policy_loss_hist) > 0:
+        #     print('Current losses: {} {}'.format(self.policy_loss_hist[-1], self.adv_loss_hist[-1]))
 
     def record_reward(self, reward):
         self.next_reward = reward
 
     def reset_memory(self):
+
+        print('Last Advantage: {}'.format(torch.sum(self.adv_net(self.curr_state))))
+
         self.curr_state = None
         self.curr_action = None
         self.curr_action_log_prob = None
