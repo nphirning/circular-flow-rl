@@ -46,7 +46,7 @@
 
 \usepackage[english]{babel} % Language hyphenation and typographical rules
 
-\usepackage[hmarginratio=1:1,top=25mm,columnsep=20pt,margin=0.75in]{geometry} % Document margins
+\usepackage[hmarginratio=1:1,top=25mm,columnsep=20pt,margin=0.5in, top=0.75in, bottom=0.75in]{geometry} % Document margins
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{booktabs} % Horizontal rules in tables
 
@@ -405,13 +405,30 @@ Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses
 
 \section{Conclusion}
 
+We implemented the circular flow model using multi-agent reinforcement learning and demonstrated that the results were qualitatively correct and could be used to investigate more complex macroeconomic phenomena. In particular, we found reasonable results in a simple monopolization model with a single firm agent and five human agents. This model was tested with two different policy gradient algorithms: REINFORCE and Q-actor critic. The latter was faster, but suffered from stability issues as compared to the former. Additionally, we simulated a more complex situation involving 5 firm agents and 25 human agents. The resulting dynamics had realistic features, including policies that corresponded to retirement behavior, slowly increasing wealth inequality, etc.
+
+\medskip 
+
+While this simulation is a successful proof-of-concept for using multi-agent reinforcement learning for  macroeconomic simulations, there are many extensions that can make the results more realistic and interpretable. We outline several of these extensions here:
+\begin{itemize}
+  \item \textbf{Government.} In practice, the GDP tended to decrease in our simulations. One way to combat this would be to add a government agent that can control the interest rates and taxes for firms and humans. The reward for the government agent would be related to increasing GDP, decreasing unemployment, and keeping the Gini coefficient in a desired range.
+  \item \textbf{Multiple Goods.} We only simulated one specific market on one type of good. By expanding to $n$ goods, each person could specialize in the good they were the best at (the skill of a person would become a $n$-vector of skills). Additionally, firms could either produce multiple goods or a single good. 
+  \item \textbf{Birth, Death, Bankruptcy.} In practice, people can die and wealth can be passed on within a family. Similarly, firms can go bankrupt and new firms can emerge. Adding a system by which firms and people can enter and leave markets would allow for more generalizable dynamics.
+  \item \textbf{Unions and Trusts.} Allowing cooperation amongst firms and humans would make the simulation even more realistic. This can be approximated by allowing one neural network to choose the actions for multiple people or multiple firms at once.
+  \item \textbf{Equity and the Stock Market.} One feature missing from the circular flow model is the existence of financial markets. One interesting addition would be allowing human agents to bet on the stock market or to own shares of a firm. However, this may require increasing the number of agents significantly in order to prevent a single person's actions from influencing the remainder of the market.
+\end{itemize}
+
+As computational power increases and the field of reinforcement learning progresses, the ability to create accurate economic simulations will continue to improve. In particular, economics is a field in which controlled experiments are extremely difficult to setup. We hope that the techniques presented in this paper may allow future economists to investigate niche phenomena and situations more easily.
+
+
+
 \section{Acknowledgments}
 
 The authors feel that they all contributed equally to the work presented. In particular, Andrew Chen implemented the actor-critic reinforcement learning algorithm, Nicholas Hirning implemented the circular flow model architecture, and Rory Lipkis performed hyperparameter optimization and data analysis. All three authors collaborated on implementing and debugging the REINFORCE policy gradient algorithm and other areas of the code. 
 
 \medskip
 
-The authors would like to thank the CS 238 staff for a really great time throughout this course \texttt{;)}.
+The authors would like to thank the CS 238 staff for a great time throughout this course.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
