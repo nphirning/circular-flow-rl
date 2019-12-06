@@ -231,7 +231,7 @@ The state used to produce the action is the money and goods of all firms and the
 In addition to this setup, several additional features were added to enhance the simulations. All human agents' stored money is increased every iteration by an interest rate (generally $<1\%$). This has the benefit of preventing trivial policies in which humans provide all money to the firms, at which point the firms can no longer directly increase reward. Similarly, every iteration firms' stored money is decreased by fixed operational costs as well as costs that scale with the size of the firm (i.e., $m \mapsto r(m - f)$, where $f$ is a fixed cost and $r$ is a multiplicative decay just below $1$). Together, these additions allow for interesting model dynamics for the entirety of the experiment.
 
 
-\subsection{RL Algorithms******}
+\subsection{RL Algorithms}
 Both the learning algorithms chosen for the simulation were policy gradient methods. This was chosen due to previous literature, and because such methods have stronger convergence guarantees than value-based reinforcement learning methods (though potentially to non-global optima).
 
 \medskip
@@ -369,6 +369,7 @@ Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses
   \label{plt:firmactions}
 \end{figure}
 
+We also attempted to run both Q Actor-Critic and A2C algorithms for the firm in the same monopoly situation as before (one firm with five people). However, while the policy networks would consistently converge (see Figure \ref{plt:acpolicyloss}), the critic networks would rarely converge, about 10\% of the time (see Figure \ref{plt:acadvloss}). For this reason, we chose to stick with REINFORCE as the reinforcement learning model for future simulations.
 
 \begin{figure}[h]
 \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
@@ -381,8 +382,8 @@ Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses
   \addlegendentry{Firm}
   \end{axis}
 \end{tikzpicture}
-\caption{Policy Network Loss in Actor Critic Method}
-\label{plt:a2cpolicyloss}
+\caption{Policy Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's policy network loss converges rather quickly to 0 (note that the y-axis increments are rather small). Like in REINFORCE, when the policy becomes close to deterministic, the loss approaches zero.}
+\label{plt:acpolicyloss}
 \end{figure}
 
 \begin{figure}[h]
@@ -396,9 +397,11 @@ Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses
   \addlegendentry{Firm}
   \end{axis}
 \end{tikzpicture}
-\caption{Critic Network Loss in Actor Critic Method}
-\label{plt:a2cadvloss}
+\caption{Critic Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's critic loss does not converge, even with changing the learning rate. This was also true when we used A2C, which is supposed to address variance issues with a baseline. Note that the scale on the y-axis is quite large.}
+\label{plt:acadvloss}
 \end{figure}
+
+
 
 
 \subsection{Investigating Economic Phenomena}
