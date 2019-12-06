@@ -24,12 +24,12 @@ def reinforce_test():
     num_iters = 100
     avg_GDP = []
     for i in range(num_iters):
-        stats = m.run_episode(200, verbose=True)
-        save_plots_from_iteration(stats, i, 'plots/test8/test')
+        stats = m.run_episode(300, verbose=True)
+        save_plots_from_iteration(stats, i, 'plots/test9/test')
         # avg_GDP.append(np.mean(stats['GDP_over_time']))
 
-    stats = m.run_episode(200)
-    save_plots_from_iteration(stats, i, 'plots/test8/test-final')
+    stats = m.run_episode(300)
+    save_plots_from_iteration(stats, i, 'plots/test9/test-final')
     # print_stats(m, stats)
     # plot_wealth_histories(m, stats)
 
