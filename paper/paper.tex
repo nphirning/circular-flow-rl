@@ -208,6 +208,47 @@ At each timestep, every agent produces an action that determines how they behave
 In practice, this action space is vast. In order to make the problem tractable, the offered price and offered units are discretized into one of 20 or so values. The demand curve is parameterized by TODO.
 
 
+
+
+
+
+
+[multiagent -> individual RL agents]
+[describe state, $s_s$]
+[describe actions, $s_a$, as discretized to more easily track the]
+[describe rewards]
+[parameterizing the demand curve]
+[full transparency of staters]
+
+\subsection{RL Algorithms******}
+We worked within the realm of policy gradient methods; we chose this family of algorithms 
+
+[exploration strategy is built in?]
+
+
+
+with large action spaces.
+
+
+
+As framed, our problem contains large — in fact, high dimensional — state spaces. Specifically, the dimension of a given state is $s_s = 2 \cdot (\text{number of firms}) + (\text{number of people})$. Furthermore, while the values in each dimension were integers, they could take on a wide range of values. Therefore, in every policy, we use neural network architectures to convert a given state to a vector, containing log probabilities of taking each action. In empirical testing, if $s_a$ is the number of possible actions, we've seen that the following architecture is a simple framework that still yields convergence in our context:
+\begin{itemize}
+  \item Input layer with state input, of dimension $s_s$. State values are unnormalized.
+  \item Hidden layer with tanh activation, of dimension $\left\lfloor \sqrt{s_s \, s_a} \right\rfloor$
+  \item Output layer with tanh activation, followed by log softmax, of dimension $s_a$
+\end{itemize}
+During training, we generally use a learning rate of $\alpha = 0.01$. 
+
+
+\subsubsection{REINFORCE Policy Gradient******}
+Perhaps the most basic policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo-type approach to gathering training data. During each episode, the agent follows 
+
+
+
+
+
+
+
 \section{Results and Data Analysis}
 
 \section{Conclusion}
