@@ -203,7 +203,9 @@ def plot_firm_goods(ax, stats):
     ax.legend()
 
 def plot_market_price_goods(ax, stats):
-    ax.plot(stats['market_price_goods'])
+
+    ax.plot(stats['market_price_goods'], alpha=0.4)
+    ax.plot(smooth(stats['market_price_goods'], k=5))
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Market Price of Goods")
 
