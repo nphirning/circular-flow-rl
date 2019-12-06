@@ -13,6 +13,7 @@ class FirmAgent(Agent):
         self.money_recv = []
         self.money_hist = [self.money]
         self.money_paid = []
+        self.goods_hist = [0]
 
         state_dim = 2 * NUM_FIRMS + NUM_PEOPLE 
         demand_params = None
@@ -66,6 +67,7 @@ class FirmAgent(Agent):
         self.epis_actions = []
         self.money_recv = []
         self.money_paid = []
+        self.goods_hist = [0]
         self.money_hist = [self.init_money]
 
     def end_episode(self):
@@ -94,8 +96,10 @@ class FirmAgent(Agent):
         assert(self.num_goods >= 0 and self.money >= 0)
 
         self.money -= FIRM_OPERATING_COST
+        self.money = max(0, self.money)
         self.money *= FIRM_INTEREST
 
+        self.goods_hist.append(self.num_goods)
         self.money_recv.append(money_recv)
         self.epis_actions.append(action)
         self.money_paid.append(money_paid)
