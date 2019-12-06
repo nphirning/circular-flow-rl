@@ -128,7 +128,59 @@ def compute_stats(m, firm_action_hist, person_action_hist,
             gini_over_time /= 2 * n * p_tot
         stats['gini_over_time'] = list(gini_over_time)
 
+        # Median wealth over time.
+        w = wealth_over_time
+        median_p = [np.median([p[i] for p in w]) for i in range(len(w[0]))]
+        wealth_rel_median = []
+        with np.errstate(divide='ignore', invalid='ignore'):
+            for p in w:
+                wealth_rel_median.append((p - median_p) / median_p)
+        stats['wealth_rel_median'] = wealth_rel_median
+
         return stats
+
+def write_plots_to_file(m, stats, iteration_num, path):
+    cols = [
+    ('people_money_over_time', 'mp*'),
+    ('firm_money_hists', 'mf*'),
+    ('people_goods_over_time', 'gp*'),
+    ('firm_goods_hists', 'gf*'),
+    ('GDP_over_time', 'gdp'),
+    ('unemployment', 'u'),
+    ('market_price_goods', 'pg'),
+    ('market_price_labor', 'pl'),
+    ('wealth_rel_median', 'wp*'),
+    ('gini_over_time', 'gini')
+    ]
+
+    filename = path + str(iteration_num) + '.txt'
+    with open(filename, 'w') as f:
+        # header
+        for col in cols:
+            _, cid = col
+            if cid[-1] == '*':
+                if cid[-2] == 'p':
+                    N = NUM_PEOPLE
+                else:
+                    N = NUM_FIRMS
+                for i in range(N):
+                    f.write(cid[:-1] + str(i) + ' ')
+            else:
+                f.write(cid + ' ')
+        f.write('\n')
+
+        # data
+        n_steps = len(stats['GDP_over_time'])
+        for step in range(n_steps):
+            for col in cols:
+                key, cid = col
+                stat = stats[key]
+                if cid[-1] == '*':
+                    for agent in stat:
+                        f.write(str(round(agent[step], 2)) + ' ')
+                else:
+                    f.write(str(round(stat[step], 2)) + ' ')
+            f.write('\n')
 
 def save_plots_from_iteration(stats, iteration_num, name):
     _, axs = plt.subplots(4, 3, figsize=(15, 12))
@@ -138,7 +190,6 @@ def save_plots_from_iteration(stats, iteration_num, name):
     plot_gdp_smoothed(axs[2, 2], stats)
     plot_median_human_wealth(axs[2, 1], stats)
     plot_total_money(axs[0, 2], stats)
-    plot_gdp_smoothed(axs[1, 0], stats)
     plot_human_goods_hist(axs[1, 1], stats)
     plot_market_price_goods(axs[1, 2], stats)
     plot_gini_coef(axs[2, 0], stats)
