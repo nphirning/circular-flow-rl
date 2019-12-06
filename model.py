@@ -13,15 +13,16 @@ class Model:
         self.total_money_people = TOTAL_MONEY_PEOPLE
         self.total_money_firms = TOTAL_MONEY_FIRMS
 
-    def create_firms(self, num_firms, distribution=rand_uniform, rltype=RLType.DEEPQ):
+    def create_firms(self, num_firms, distribution=rand_uniform, rltype=RLType.DEEPQ, 
+        demand_curve_shape=DemandCurveShape.RECIPROCAL):
         # Creates the firms, with distribution of money over firms
         money_coefficients = distribution(num_firms)
         for i in range(num_firms):
-            f = FirmAgent(self.total_money_firms * money_coefficients[i], rltype)
+            f = FirmAgent(self.total_money_firms * money_coefficients[i], rltype, demand_curve_shape=demand_curve_shape)
             self.firms.append(f)
 
     def create_people(self, num_people, dist=rand_uniform, skill_dist=normal(1.0, 0.1), 
-        rltype=RLType.DEEPQ):
+        rltype=RLType.DEEPQ, demand_curve_shape=DemandCurveShape.RECIPROCAL):
         # Creates the people, with distribution over money
         money_coefficients = dist(num_people)
         skill_coefficients = skill_dist(num_people)
@@ -29,7 +30,8 @@ class Model:
             p = PersonAgent(
                 self.total_money_people * money_coefficients[i],
                 skill_coefficients[i],
-                rltype
+                rltype,
+                demand_curve_shape=demand_curve_shape
             )
             self.people.append(p)
 
