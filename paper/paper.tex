@@ -245,7 +245,7 @@ Perhaps the simplest policy gradient method is the REINFORCE algorithm. This alg
 \State $\text{Follow current policy to obtain trajectory }$\newline\phantom{======}$\{s_1, a_1, r_1, \ldots, s_T, a_T, r_T\}$.
 \For {$t = 1, 2, \ldots, T$}
 \State $\text{Compute }v_t = \sum_{i = t}^n \gamma^{i- t} r_i$.
-\State $\text{Update } \theta \leftarrow \theta + \alpha \nabla_{\theta} \pi_{\theta} (s_t, a_t) v_t$
+\State $\text{Update } \theta \leftarrow \theta + \alpha \nabla_{\theta}\log\pi_{\theta} (s_t, a_t) v_t$
 \EndFor
 \EndFor
 \State \Return {$\theta$}
@@ -271,7 +271,7 @@ An alternative family of policy gradient methods is the \textit{actor-critic} fa
 \State $\text{Initialize state and action }s_1, a_1 \sim \pi_{\theta}(a|s_1)$.
 \For {$t = 1, 2, \ldots, T-1$}
 \State Record reward $r_t$ and next state $s_{t+1}$
-\State Sample the next action $a_{t+1} \sim \pi_{\theta}(a|s_{t+1})$
+\State Sample the next action $a_{t+1} \sim \log \pi_{\theta}(a|s_{t+1})$
 \State $\text{Update } \theta \leftarrow \theta + \alpha_{\theta} Q_{\omega}(s_t,a_t) \nabla_{\theta} \pi_{\theta} (s_t, a_t)$
 \State $\text{Compute temporal difference error: }\delta_t = r_t + \gamma Q_{\omega}(s_{t+1}, a_{t+1}) - Q_{\omega}(s_{t}, a_{t})$
 \State $\text{Update } \omega \leftarrow \omega + \alpha_{\omega} \delta_t \nabla_{\omega} Q_{\omega} (s_t, a_t)$

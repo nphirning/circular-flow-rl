@@ -18,8 +18,8 @@ def trivial_test():
 
 def reinforce_test():
     m = model.Model(10000)
-    m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.LINEAR)
-    m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.LINEAR)
+    m.create_firms(NUM_FIRMS, rltype=RLType.Q_ACTOR_CRITIC, demand_curve_shape=DemandCurveShape.RECIPROCAL)
+    m.create_people(NUM_PEOPLE, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.RECIPROCAL)
     print("Person Skills: %s" % [round(p.skill, 2) for p in m.people])
     num_iters = 100
     avg_GDP = []
