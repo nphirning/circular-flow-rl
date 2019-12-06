@@ -48,22 +48,38 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The agents' losses converge to zero over time. This plot illustrates the loss of firm agents vs. human agents in a simulation with one firm agent and five human agents. The loss for the human agents is the average of all five human agents' losses. This simulation uses the REINFORCE learning algorithm, and indicates that the algorithm is succcessfully converging to a policy within 100 episodes.\relax }}{5}{figure.caption.2}\protected@file@percent }
 \newlabel{plt:losstozero}{{2}{5}{The agents' losses converge to zero over time. This plot illustrates the loss of firm agents vs. human agents in a simulation with one firm agent and five human agents. The loss for the human agents is the average of all five human agents' losses. This simulation uses the REINFORCE learning algorithm, and indicates that the algorithm is succcessfully converging to a policy within 100 episodes.\relax }{figure.caption.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B}Investigating Economic Phenomena}{5}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{5}{section.5}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Firm profit increases over time. This plot shows the average profit the firm gains per iteration as a function of episode. The simulation shown uses a single firm agent and five human agents, all using the REINFORCE learning algorithm. This indicates that the REINFORCE learning algorithm is yielding higher reward and better policies over time.\relax }}{5}{figure.caption.3}\protected@file@percent }
 \newlabel{plt:firmprofitincrease}{{3}{5}{Firm profit increases over time. This plot shows the average profit the firm gains per iteration as a function of episode. The simulation shown uses a single firm agent and five human agents, all using the REINFORCE learning algorithm. This indicates that the REINFORCE learning algorithm is yielding higher reward and better policies over time.\relax }{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{5}{section.5}\protected@file@percent }
 \bibstyle{unsrt}
 \bibdata{sources}
 \bibcite{RePEc:col:000092:003907}{1}
 \bibcite{pricing-multi-agent}{2}
 \bibcite{vandenBos2137}{3}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces With a single firm agent and five human agents, the firm learns to increase the price of goods to maximize its own profit. The bars shown correspond to the frequency at which the firm chooses a given price to offer for the first episode and the last episode. The possible prices are discretized to be in the set $\{1, 4, 7, 10, 13, 16, 19, 22, 25, 28\}$. This behavior is consistent with that of a monopoly.\relax }}{6}{figure.caption.4}\protected@file@percent }
+\newlabel{plt:firmactions}{{4}{6}{With a single firm agent and five human agents, the firm learns to increase the price of goods to maximize its own profit. The bars shown correspond to the frequency at which the firm chooses a given price to offer for the first episode and the last episode. The possible prices are discretized to be in the set $\{1, 4, 7, 10, 13, 16, 19, 22, 25, 28\}$. This behavior is consistent with that of a monopoly.\relax }{figure.caption.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Policy Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's policy network loss converges rather quickly to 0 (note that the y-axis increments are rather small). Like in REINFORCE, when the policy becomes close to deterministic, the loss approaches zero.\relax }}{6}{figure.caption.5}\protected@file@percent }
+\newlabel{plt:acpolicyloss}{{5}{6}{Policy Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's policy network loss converges rather quickly to 0 (note that the y-axis increments are rather small). Like in REINFORCE, when the policy becomes close to deterministic, the loss approaches zero.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Acknowledgments}{6}{section.6}\protected@file@percent }
 \bibcite{10.1257/aer.96.4.1029}{4}
 \bibcite{doi:10.1002/int.20121}{5}
 \bibcite{reinforce-lectures}{6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces With a single firm agent and five human agents, the firm learns to increase the price of goods to maximize its own profit. The bars shown correspond to the frequency at which the firm chooses a given price to offer for the first episode and the last episode. The possible prices are discretized to be in the set $\{1, 4, 7, 10, 13, 16, 19, 22, 25, 28\}$. This behavior is consistent with that of a monopoly.\relax }}{6}{figure.caption.4}\protected@file@percent }
-\newlabel{plt:firmactions}{{4}{6}{With a single firm agent and five human agents, the firm learns to increase the price of goods to maximize its own profit. The bars shown correspond to the frequency at which the firm chooses a given price to offer for the first episode and the last episode. The possible prices are discretized to be in the set $\{1, 4, 7, 10, 13, 16, 19, 22, 25, 28\}$. This behavior is consistent with that of a monopoly.\relax }{figure.caption.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Acknowledgments}{6}{section.6}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Policy Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's policy network loss converges rather quickly to 0 (note that the y-axis increments are rather small). Like in REINFORCE, when the policy becomes close to deterministic, the loss approaches zero.\relax }}{6}{figure.caption.5}\protected@file@percent }
-\newlabel{plt:acpolicyloss}{{5}{6}{Policy Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's policy network loss converges rather quickly to 0 (note that the y-axis increments are rather small). Like in REINFORCE, when the policy becomes close to deterministic, the loss approaches zero.\relax }{figure.caption.5}{}}
 \bibcite{actor-critic}{7}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Critic Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's critic loss does not converge, even with changing the learning rate. This was also true when we used A2C, which is supposed to address variance issues with a baseline. Note that the scale on the y-axis is quite large.\relax }}{7}{figure.caption.6}\protected@file@percent }
 \newlabel{plt:acadvloss}{{6}{7}{Critic Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's critic loss does not converge, even with changing the learning rate. This was also true when we used A2C, which is supposed to address variance issues with a baseline. Note that the scale on the y-axis is quite large.\relax }{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces TODO.\relax }}{7}{figure.caption.7}\protected@file@percent }
+\newlabel{plt:init-ppl}{{7}{7}{TODO.\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces TODO.\relax }}{7}{figure.caption.8}\protected@file@percent }
+\newlabel{plt:init-firms}{{8}{7}{TODO.\relax }{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces TODO.\relax }}{7}{figure.caption.9}\protected@file@percent }
+\newlabel{plt:late-ppl}{{9}{7}{TODO.\relax }{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces TODO.\relax }}{8}{figure.caption.10}\protected@file@percent }
+\newlabel{plt:late-firms}{{10}{8}{TODO.\relax }{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces TODO.\relax }}{8}{figure.caption.11}\protected@file@percent }
+\newlabel{plt:late-stockmarket}{{11}{8}{TODO.\relax }{figure.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces TODO.\relax }}{8}{figure.caption.12}\protected@file@percent }
+\newlabel{plt:late-goodspeople}{{12}{8}{TODO.\relax }{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces TODO.\relax }}{8}{figure.caption.13}\protected@file@percent }
+\newlabel{plt:late-gdp}{{13}{8}{TODO.\relax }{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces TODO.\relax }}{8}{figure.caption.14}\protected@file@percent }
+\newlabel{plt:late-gdp}{{14}{8}{TODO.\relax }{figure.caption.14}{}}

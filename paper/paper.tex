@@ -129,7 +129,7 @@ In simple models of market economies, a common assumption is that each citizen w
 
 \medskip
 
-A simple model taught in introductory economics classes is the circular flow model. In this setup, there are two types of agents in the economy: firms (or businesses), and people (or households). These agents interact in two different markets, the goods market and the labor market. In the goods market, people pay currency to firms in exchange for goods. In the labor market, firms pay people for their labor to produce more goods. This basic model is diagrammed in figure \ref{fig:circularflow}. The name comes from the fact that currency flows clockwise in a circle between firms and people.
+A simple model taught in introductory economics classes is the circular flow model. In this setup, there are two types of agents in the economy: firms (or businesses), and people (or households). These agents interact in two different markets, the goods market and the labor market. In the goods market, people pay currency to firms in exchange for goods. In the labor market, firms pay people for their labor to produce more goods. This basic model is diagrammed in Figure \ref{fig:circularflow}. The name comes from the fact that currency flows clockwise in a circle between firms and people.
 
 \begin{figure}[h]
   \centering
@@ -228,7 +228,7 @@ The state used to produce the action is the money and goods of all firms and the
 
 \medskip
 
-In addition to this setup, several additional features were added to enhance the simulations. All human agents' stored money is increased every iteration by an interest rate (generally $<1\%$). This has the benefit of preventing trivial policies in which humans provide all money to the firms, at which point the firms can no longer directly increase reward. Similarly, every iteration firms' stored money is decreased by fixed operational costs as well as costs that scale with the size of the firm (i.e., $m \mapsto r(m - f)$, where $f$ is a fixed cost and $r$ is a multiplicative decay just below $1$). Together, these additions allow for interesting model dynamics for the entirety of the experiment.
+In addition to this setup, several additional features were added to enhance the simulations. All human agents' stored money is increased every iteration by an interest rate (generally $<1\%$). This has the benefit of preventing trivial policies in which humans provide all money to the firms, at which point the firms can no longer directly increase reward. Similarly, every iteration firms' stored money is decreased by fixed operational costs. We added functionality to include costs that scale with the size of the firm (i.e., $m \mapsto r(m - f)$, where $f$ is a fixed cost and $r$ is a multiplicative decay just below $1$), but in practice these often led to unstable dynamics. Together, these additions allow for interesting model dynamics for the entirety of the experiment.
 
 
 \subsection{RL Algorithms}
@@ -310,7 +310,7 @@ Recall that the loss function for the REINFORCE algorithm is of the following fo
   \mathcal{L} = -\sum_{t = 1}^T \left[\log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
 \]
 
-In particular, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the losses approaching zero. This occurs in our preliminary simulation, as can be seen in figure \ref{plt:losstozero}.
+In particular, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the losses approaching zero. This occurs in our preliminary simulation, as can be seen in Figure \ref{plt:losstozero}.
 
 \begin{figure}[h]
 \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
@@ -329,7 +329,7 @@ In particular, as the policy converges, the probability of taking a given action
 \label{plt:losstozero}
 \end{figure}
 
-While this indicates that agents are able to converge to policies in this multi-agent environment, it does not necessarily indicate that the learned behavior leads to positive rewards. To investigate this, we can look at how the firm's profit changes over time and the actions that the firm is taking. As there is a single firm and multiple people, we might expect that the firm has more of an ability to monopolize the market, pushing the price of goods higher. As such, we expect the price at which the firm sells goods to rise. In figure \ref{plt:firmprofitincrease}, we see that the firm's profit is generally increasing over time from an initial average profit of approximately $\$23$ per iteration to an average profit of up to $\$50$ per iteration. The noisiness in the increase in profit may be due to the complex, changing environment (due to the changing actions of the human agents), or the fact that the reward is actually the future-discounted logarithmic profit.
+While this indicates that agents are able to converge to policies in this multi-agent environment, it does not necessarily indicate that the learned behavior leads to positive rewards. To investigate this, we can look at how the firm's profit changes over time and the actions that the firm is taking. As there is a single firm and multiple people, we might expect that the firm has more of an ability to monopolize the market, pushing the price of goods higher. As such, we expect the price at which the firm sells goods to rise. In Figure \ref{plt:firmprofitincrease}, we see that the firm's profit is generally increasing over time from an initial average profit of approximately $\$23$ per iteration to an average profit of up to $\$50$ per iteration. The noisiness in the increase in profit may be due to the complex, changing environment (due to the changing actions of the human agents), or the fact that the reward is actually the future-discounted logarithmic profit.
 
 \medskip 
 
@@ -405,6 +405,196 @@ We also attempted to run both Q Actor-Critic and A2C algorithms for the firm in 
 
 
 \subsection{Investigating Economic Phenomena}
+
+After verifying the preliminary results, we simulated a more complex scenario and tracking more standard economic metrics. We included five firm agents and 25 human agents using REINFORCE with episodes of length 200. The interest rate for human agents was set to $0.2\%$ and the operational cost for the firms was set to $\$10$. The money of each human agent for the first episode is shown in Figure \ref{plt:init-ppl}, and the money of each firm agent for the first episode is shown in Figure \ref{plt:init-firms}. The initial policies for human agents tended to buy goods greedily, while the initial policies for firm agents tended to sell greedily.
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Person Money (\$),
+      ylabel=Iteration
+    ]
+    \addplot table [y=mp0, x=i]{init.dat};
+    \addplot table [y=mp1, x=i]{init.dat};
+    \addplot table [y=mp2, x=i]{init.dat};
+    \addplot table [y=mp3, x=i]{init.dat};
+    \addplot table [y=mp4, x=i]{init.dat};
+    \addplot table [y=mp5, x=i]{init.dat};
+    \addplot table [y=mp6, x=i]{init.dat};
+    \addplot table [y=mp7, x=i]{init.dat};
+    \addplot table [y=mp8, x=i]{init.dat};
+    \addplot table [y=mp9, x=i]{init.dat};
+    \addplot table [y=mp10, x=i]{init.dat};
+    \addplot table [y=mp11, x=i]{init.dat};
+    \addplot table [y=mp12, x=i]{init.dat};
+    \addplot table [y=mp13, x=i]{init.dat};
+    \addplot table [y=mp14, x=i]{init.dat};
+    \addplot table [y=mp15, x=i]{init.dat};
+    \addplot table [y=mp16, x=i]{init.dat};
+    \addplot table [y=mp17, x=i]{init.dat};
+    \addplot table [y=mp18, x=i]{init.dat};
+    \addplot table [y=mp19, x=i]{init.dat};
+    \addplot table [y=mp20, x=i]{init.dat};
+    \addplot table [y=mp21, x=i]{init.dat};
+    \addplot table [y=mp22, x=i]{init.dat};
+    \addplot table [y=mp23, x=i]{init.dat};
+    \addplot table [y=mp24, x=i]{init.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:init-ppl}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Firm Money (\$),
+      ylabel=Iteration
+    ]
+    \addplot table [y=mf0, x=i]{init.dat};
+    \addplot table [y=mf1, x=i]{init.dat};
+    \addplot table [y=mf2, x=i]{init.dat};
+    \addplot table [y=mf3, x=i]{init.dat};
+    \addplot table [y=mf4, x=i]{init.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:init-firms}
+\end{figure}
+
+At episode 60, distinct policies have emerged. The same plots of money for human and firm agents is shown in Figure \ref{plt:late-ppl} and Figure \ref{plt:late-firms}. In particular, a pattern that emerges amongst the human agent policies is the concept of what we call a \textit{retirement policy}. In the retirement policy, a human agent aims to increase its money for the majority of its life (similar to saving money for retirement). Between iterations 100 and 150, the policy adjusts to begin using the money to purchase goods and increase utility. In this case, the most successful retirement policy is executed by the TODO. It is also interesting to note that human agents that start out with more money 
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Person Money (\$),
+      ylabel=Iteration
+    ]
+    \addplot table [y=mp0, x=i]{late.dat};
+    \addplot table [y=mp1, x=i]{late.dat};
+    \addplot table [y=mp2, x=i]{late.dat};
+    \addplot table [y=mp3, x=i]{late.dat};
+    \addplot table [y=mp4, x=i]{late.dat};
+    \addplot table [y=mp5, x=i]{late.dat};
+    \addplot table [y=mp6, x=i]{late.dat};
+    \addplot table [y=mp7, x=i]{late.dat};
+    \addplot table [y=mp8, x=i]{late.dat};
+    \addplot table [y=mp9, x=i]{late.dat};
+    \addplot table [y=mp10, x=i]{late.dat};
+    \addplot table [y=mp11, x=i]{late.dat};
+    \addplot table [y=mp12, x=i]{late.dat};
+    \addplot table [y=mp13, x=i]{late.dat};
+    \addplot table [y=mp14, x=i]{late.dat};
+    \addplot table [y=mp15, x=i]{late.dat};
+    \addplot table [y=mp16, x=i]{late.dat};
+    \addplot table [y=mp17, x=i]{late.dat};
+    \addplot table [y=mp18, x=i]{late.dat};
+    \addplot table [y=mp19, x=i]{late.dat};
+    \addplot table [y=mp20, x=i]{late.dat};
+    \addplot table [y=mp21, x=i]{late.dat};
+    \addplot table [y=mp22, x=i]{late.dat};
+    \addplot table [y=mp23, x=i]{late.dat};
+    \addplot table [y=mp24, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:late-ppl}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Firm Money (\$),
+      ylabel=Iteration
+    ]
+    \addplot table [y=mf0, x=i]{late.dat};
+    \addplot table [y=mf1, x=i]{late.dat};
+    \addplot table [y=mf2, x=i]{late.dat};
+    \addplot table [y=mf3, x=i]{late.dat};
+    \addplot table [y=mf4, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:late-firms}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Average Market Price of Goods,
+      ylabel=Iteration
+    ]
+    \addplot table [y=pg, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:late-stockmarket}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Total Goods Consumed,
+      ylabel=Iteration
+    ]
+    \addplot table [y=gp0, x=i]{late.dat};
+    \addplot table [y=gp1, x=i]{late.dat};
+    \addplot table [y=gp2, x=i]{late.dat};
+    \addplot table [y=gp3, x=i]{late.dat};
+    \addplot table [y=gp4, x=i]{late.dat};
+    \addplot table [y=gp5, x=i]{late.dat};
+    \addplot table [y=gp6, x=i]{late.dat};
+    \addplot table [y=gp7, x=i]{late.dat};
+    \addplot table [y=gp8, x=i]{late.dat};
+    \addplot table [y=gp9, x=i]{late.dat};
+    \addplot table [y=gp10, x=i]{late.dat};
+    \addplot table [y=gp11, x=i]{late.dat};
+    \addplot table [y=gp12, x=i]{late.dat};
+    \addplot table [y=gp13, x=i]{late.dat};
+    \addplot table [y=gp14, x=i]{late.dat};
+    \addplot table [y=gp15, x=i]{late.dat};
+    \addplot table [y=gp16, x=i]{late.dat};
+    \addplot table [y=gp17, x=i]{late.dat};
+    \addplot table [y=gp18, x=i]{late.dat};
+    \addplot table [y=gp19, x=i]{late.dat};
+    \addplot table [y=gp20, x=i]{late.dat};
+    \addplot table [y=gp21, x=i]{late.dat};
+    \addplot table [y=gp22, x=i]{late.dat};
+    \addplot table [y=gp23, x=i]{late.dat};
+    \addplot table [y=gp24, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:late-goodspeople}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=GDP,
+      ylabel=Iteration
+    ]
+    \addplot table [y=gdp, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:late-gdp}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Gini Coefficient,
+      ylabel=Iteration
+    ]
+    \addplot table [y=gini, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO.}
+  \label{plt:late-gdp}
+\end{figure}
 
 \section{Conclusion}
 
