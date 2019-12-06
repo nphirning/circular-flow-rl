@@ -248,7 +248,7 @@ During training, the learning rate was set to $\alpha = 0.01$.
 \subsubsection{REINFORCE Policy Gradient}
 Perhaps the simplest policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo approach to collecting training data. The length of the episode $T$ is manually specified, and we generally used $T \sim 100$.
 \begin{algorithm}
-\caption{REINFORCE Policy Gradient}\label{euclid}
+\caption{REINFORCE Policy Gradient \cite{reinforce-lectures}}\label{euclid}
 \begin{algorithmic}[1]
 \Procedure{REINFORCE}{}
 \State $\text{Initialize policy network parameters }\theta$
@@ -266,13 +266,13 @@ Perhaps the simplest policy gradient method is the REINFORCE algorithm. This alg
 The runtime of this algorithm per episode is relatively short. However, often a significant number of episodes are required for the following reasons:
 \begin{itemize}
   \item Agents only update the parameters once per episode.
-  \item In many contexts, vanilla REINFORCE has been known to suffer from high variance in the losses from episode to episode.
+  \item In many contexts, vanilla REINFORCE has been known to suffer from high variance in the losses from episode to episode.\cite{reinforce-lectures}
   \item In our multi-agent problem, the environment dynamics constantly change as every agent responds to each timestep in the markets.
 \end{itemize}
 
 
 \subsubsection{Actor-Critic}
-An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the performance of the action. We considered this set of algorithms because in theory, it carries the convergence advantages of general policy gradient methods while also approximating Q-values with higher sample efficiency. In this scenario, we tested Q Actor-Critic, in which the critic computes the Q-values $Q(s,a)$, as well as Advantage Actor-Critic (A2C), in which the critic computes the advantage $Q(s, a) - V(s)$; the idea of using the advantage vs the $Q$-value is to compare the quality of the action with a stable baseline, reducing variance.  As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. Note also that we get to update the parameters after every action via TD learning.
+An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the performance of the action. We considered this set of algorithms because in theory, it carries the convergence advantages of general policy gradient methods while reducing the gradient variance \cite{actor-critic}. In this scenario, we tested Q Actor-Critic, in which the critic computes the Q-values $Q(s,a)$, as well as Advantage Actor-Critic (A2C), in which the critic computes the advantage $Q(s, a) - V(s)$; the idea of using the advantage vs the $Q$-value is to compare the quality of the action with a stable baseline, reducing variance.  As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. Note also that we get to update the parameters after every action via TD learning.
 \begin{algorithm}
 \caption{Q Actor Critic}\label{euclid}
 \begin{algorithmic}[1]
