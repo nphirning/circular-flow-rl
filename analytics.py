@@ -138,7 +138,6 @@ def save_plots_from_iteration(stats, iteration_num, name):
     plot_gdp_smoothed(axs[2, 2], stats)
     plot_median_human_wealth(axs[2, 1], stats)
     plot_total_money(axs[0, 2], stats)
-    plot_gdp_smoothed(axs[1, 0], stats)
     plot_human_goods_hist(axs[1, 1], stats)
     plot_market_price_goods(axs[1, 2], stats)
     plot_gini_coef(axs[2, 0], stats)
