@@ -236,6 +236,23 @@ Both the learning algorithms chosen for the simulation were policy gradient meth
 
 \medskip
 
+
+In policy gradient methods, instead of approximating the value functions and using a separate exploration strategy for choosing actions, we directly compute the policy. Given a policy model parameterized by $\theta$, we compute probabilities $\pi_{\theta}(a|s)$. When training this model, we aim to minimize the loss function \cite{actor-critic}:
+\[
+J(\theta) = -\sum_{s \in S} P_{\pi}(s) \sum_{a\in A} \pi_{\theta}(a|s) Q^{\pi}(s, a)
+\]
+Intuitively, a low loss means that the agent outputs high probabilities for high $Q$-valued actions. Policy Gradient Theorem allows us to express the gradient of this loss in a tractable manner \cite{reinforce-lectures} \cite{actor-critic}:
+\[
+\nabla_{\theta} J(\theta) = \mathbb{E}_{\pi}[Q^{\pi}(s, a) \nabla_{\theta} \log \pi_{\theta}(a|s)]
+\]
+This means that over a trajectory, we simply need to compute the gradients:
+\[
+\left(\sum_{i=t}^T \gamma^{i-t} r_t\right) \nabla_{\theta} \log \pi_{\theta}(a_t|s_t)
+\]
+We can then use standard gradient descent methods to optimize $\theta$.
+
+\medskip
+
 As discussed previously, the simulation contains large, high-dimensional state spaces. The dimension of a given state vector is $s_s = 2 N + M$. Furthermore, every entry can take on a wide range of integral values. Therefore, we use neural network architectures to convert a given state to a vector containing log probabilities for each action. In empirical testing, if $s_a$ is the number of possible actions, we've seen that the following architecture is a simple framework that still yields convergence in our context:
 \begin{itemize}
   \item Input layer with state input, of dimension $s_s$. State values are unnormalized.
@@ -255,7 +272,7 @@ Perhaps the simplest policy gradient method is the REINFORCE algorithm. This alg
 \For {$i = 1, 2, \ldots, M$}
 \State $\text{Follow current policy to obtain trajectory }$\newline\phantom{======}$\{s_1, a_1, r_1, \ldots, s_T, a_T, r_T\}$.
 \For {$t = 1, 2, \ldots, T$}
-\State $\text{Compute }v_t = \sum_{i = t}^n \gamma^{i- t} r_i$.
+\State $\text{Compute }v_t = \sum_{i = t}^T \gamma^{i- t} r_i$.
 \State $\text{Update } \theta \leftarrow \theta + \alpha \nabla_{\theta}\log\pi_{\theta} (s_t, a_t) v_t$
 \EndFor
 \EndFor
@@ -305,18 +322,22 @@ To test the convergence of the learning and the ensure that the results were log
 
 \medskip 
 
-Recall that the loss function for the REINFORCE algorithm is of the following form:
+Recall that the gradient the REINFORCE algorithm is of the following form:
 \[
-  \mathcal{L} = -\sum_{t = 1}^T \left[\log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
+  \nabla_{\theta} J(\theta) = -\sum_{t = 1}^T \left[\nabla_{\theta} \log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
 \]
 
-In particular, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the losses approaching zero. This occurs in our preliminary simulation, as can be seen in figure \ref{plt:losstozero}.
+In our training, we designate a proxy for the loss to reflect this gradient:
+\[
+  J'(\theta) = -\sum_{t = 1}^T \left[\log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
+\]
+Note that, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the (proxy) losses approaching zero. This occurs in our preliminary simulation, as can be seen in figure \ref{plt:losstozero}.
 
 \begin{figure}[h]
 \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
   \begin{axis}[
     xlabel=Episode,
-    ylabel=Loss,
+    ylabel=Loss (Proxy),
     legend style={at={(1,0)}, anchor=south east}
   ]
   \addplot table [y=fl, x=i]{prelims.dat};
