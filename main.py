@@ -70,8 +70,8 @@ def reinforce_test():
     # plot_wealth_histories(m, stats)
 
 def main():
-    # reinforce_test()
-    plot1_for_paper()
+    reinforce_test()
+    #plot1_for_paper()
 
 if __name__ == "__main__":
     main()

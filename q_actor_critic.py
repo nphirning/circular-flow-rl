@@ -35,13 +35,17 @@ class PolicyNetwork(nn.Module):
         return F.log_softmax(model(x), dim=0)
 
 
-class QNetwork(nn.Module):
-    def __init__(self, state_dim, action_dim, learning_rate=0.01):
-        super(QNetwork, self).__init__()
+class AdvantageNetwork(nn.Module):
+    def __init__(self, state_dim, action_dim, learning_rate=0.005):
+        super(AdvantageNetwork, self).__init__()
         # Should be (2 * number of firms) + (number of people)
         self.state_dim = state_dim 
         # Should be (choices of hours/goods produced) * (choices of prices) * (demand curve parameters)
+        
+
         self.action_dim = action_dim
+
+
 
         self.learning_rate = learning_rate
 
@@ -61,10 +65,10 @@ class QNetwork(nn.Module):
 class ActorCritic(object):
     def __init__(self, state_dim, action_dim):
         self.policy_net = PolicyNetwork(state_dim, action_dim)
-        self.q_net = QNetwork(state_dim, action_dim)
+        self.adv_net = AdvantageNetwork(state_dim, 1)
 
         self.policy_optimizer = optim.Adam(self.policy_net.parameters(), lr=self.policy_net.learning_rate)
-        self.q_optimizer = optim.Adam(self.q_net.parameters(), lr=self.q_net.learning_rate)
+        self.adv_optimizer = optim.Adam(self.adv_net.parameters(), lr=self.adv_net.learning_rate)
 
         self.gamma = DISCOUNT
 
@@ -78,7 +82,7 @@ class ActorCritic(object):
         self.next_reward = None
 
         self.policy_loss_hist = []
-        self.q_loss_hist = []
+        self.adv_loss_hist = []
 
 
     def choose_action(self, state):
@@ -94,8 +98,9 @@ class ActorCritic(object):
     def update_policy(self):
         if type(self.curr_state) == type(None):
             return
-        q_value = torch.index_select(self.q_net(self.curr_state), 0, self.curr_action)
-        policy_loss = torch.mul(self.curr_action_log_prob, q_value).mul(-1)
+        #adv_value = torch.index_select(self.adv_net(self.curr_state), 0, self.curr_action)
+        adv_value = torch.sum(self.adv_net(self.curr_state))
+        policy_loss = torch.mul(self.curr_action_log_prob, adv_value).mul(-1)
         self.policy_optimizer.zero_grad()
         policy_loss.backward()
         self.policy_optimizer.step()
@@ -106,16 +111,23 @@ class ActorCritic(object):
     def update_q(self):
         if type(self.curr_state) == type(None):
             return
-        curr_q_value = torch.index_select(self.q_net(self.curr_state), 0, self.curr_action)
-        next_q_value = torch.index_select(self.q_net(self.next_state), 0, self.next_action)
-        td_error = self.curr_reward + next_q_value.mul(self.gamma) - curr_q_value
-        q_loss = torch.mul(td_error, curr_q_value).mul(-1)
 
-        self.q_optimizer.zero_grad()
-        q_loss.backward()
-        self.q_optimizer.step()
 
-        self.q_loss_hist.append(q_loss.item())
+
+        # curr_adv_value = torch.index_select(self.adv_net(self.curr_state), 0, self.curr_action)
+        # next_adv_value = torch.index_select(self.adv_net(self.next_state), 0, self.next_action)
+        curr_adv_value = torch.sum(self.adv_net(self.curr_state))
+        next_adv_value = torch.sum(self.adv_net(self.next_state))
+        td_error = self.curr_reward + next_adv_value.mul(self.gamma) - curr_adv_value
+        adv_loss = torch.mul(td_error, curr_adv_value).mul(-1)
+
+
+
+        self.adv_optimizer.zero_grad()
+        adv_loss.backward()
+        self.adv_optimizer.step()
+
+        self.adv_loss_hist.append(adv_loss.item())
         # TODO: do appropriate storing here
 
 
@@ -130,7 +142,7 @@ class ActorCritic(object):
         self.next_reward = None
 
         if len(self.policy_loss_hist) > 0:
-            print('Current losses: {} {}'.format(self.policy_loss_hist[-1], self.q_loss_hist[-1]))
+            print('Current losses: {} {}'.format(self.policy_loss_hist[-1], self.adv_loss_hist[-1]))
 
     def record_reward(self, reward):
         self.next_reward = reward
