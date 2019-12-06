@@ -42,6 +42,7 @@ class ReinforcePolicyGradient(nn.Module):
             self.layer1,
             nn.Tanh(),
             self.layer2,
+            nn.Dropout(0.5)
             # nn.Softmax()
         )
         # return model(x)

@@ -47,6 +47,7 @@ class Model:
         person_hours_worked = [s.hours_worked for s in self.people]
         person_money_hist = [s.money_hist for s in self.people]
         firm_money_hist = [s.money_hist for s in self.firms]
+        firm_goods_hist = [s.goods_hist for s in self.firms]
         stats = compute_stats(
             self,
             firm_action_hist,
@@ -55,7 +56,8 @@ class Model:
             firm_money_paid,
             person_goods_recv,
             person_money_hist,
-            firm_money_hist
+            firm_money_hist,
+            firm_goods_hist
         )
 
         # End episode and reset agents.

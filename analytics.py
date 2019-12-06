@@ -9,12 +9,13 @@ sns.set(style="darkgrid")
 
 def compute_stats(m, firm_action_hist, person_action_hist, 
         firm_money_recv, firm_money_paid, person_goods_recv, person_money_hist,
-        firm_money_hist):
+        firm_money_hist, firm_goods_hist):
         stats = {}
 
         stats['person_skills'] = [p.skill for p in m.people]
 
         stats['firm_money_hists'] = firm_money_hist
+        stats['firm_goods_hists'] = firm_goods_hist
 
         # Frequency of prices offered by firms.
         price_hists = []
@@ -95,10 +96,11 @@ def save_plots_from_iteration(stats, iteration_num, name):
     plot_firm_money_hist(axs[0, 0], stats['firm_money_hists'])
     plot_human_money_hist(axs[0, 1], stats)
     plot_human_goods_hist(axs[1, 1], stats)
-    plot_gdp_smoothed(axs[1, 0], stats)
+    plot_gdp_smoothed(axs[2, 2], stats)
     plot_median_human_goods(axs[2, 1], stats)
     plot_total_money(axs[0, 2], stats)
     plot_gini_coef(axs[2, 0], stats)
+    plot_firm_goods(axs[1, 0], stats)
     plt.savefig('%s-iteration-%s' % (name, iteration_num), dpi=300)
 
 def plot_firm_money_hist(ax, firm_money_hists):
@@ -170,6 +172,13 @@ def plot_total_money(ax, stats):
     ax.set_xlabel("Iteration")
     ax.set_ylabel("Total Money")
 
+def plot_firm_goods(ax, stats):
+    fg = stats['firm_goods_hists']
+    for idx, firm_good_hist in enumerate(fg):
+        ax.plot(np.arange(len(firm_good_hist)), firm_good_hist, label='Firm %s' % idx)
+    ax.set_xlabel("Iteration")
+    ax.set_ylabel("Firm Goods")
+    ax.legend()
 
 def plot_human_wealth(ax, stats):
     #TODO: Rory, combine money + goods ==> wealth 
