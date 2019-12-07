@@ -101,11 +101,11 @@ def read_file(name):
 
     lines = [line.split() for line in lines]
 
-    pg_idx = lines[0].index('gini')
+    pg_idx = lines[0].index('gdp')
     data = [float(x[pg_idx]) for x in lines[1:]]
     data = smooth(data, 20)
 
-    with open('paper/smooth-gini.dat', 'w') as f:
+    with open('paper/smooth-gdp.dat', 'w') as f:
         for i in range(len(list(data))):
             f.write(str(i) + ' ' + str(list(data)[i]) + '\n')
     
@@ -126,4 +126,4 @@ def thing():
 
 
 if __name__ == "__main__":
-    thing()
+    read_file('paper/late.dat')
