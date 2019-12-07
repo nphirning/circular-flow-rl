@@ -69,10 +69,6 @@ def plot1_for_paper():
     #             '(' + str(round(x[0], 2)) + ';' + str(round(x[1], 2)) + ')' for x in price_hist
     #         ]) + '\n')
     
-
-
-
-
 def reinforce_test():
     m = model.Model(10000)
     m.create_firms(NUM_FIRMS, rltype=RLType.REINFORCE, demand_curve_shape=DemandCurveShape.LINEAR)
@@ -81,11 +77,11 @@ def reinforce_test():
     num_iters = 100
     for i in range(num_iters):
         stats, _, _ = m.run_episode(300, verbose=True)
-        save_plots_from_iteration(stats, i, 'plots/test10-lin2/test')
-        write_plots_to_file(m, stats, i, 'plots/test10-lin2/data')
+        save_plots_from_iteration(stats, i, 'plots/test-recession/test')
+        write_plots_to_file(m, stats, i, 'plots/test-recession/test')
 
     stats = m.run_episode(300)
-    save_plots_from_iteration(stats, i, 'plots/test10-lin2/test-final')
+    save_plots_from_iteration(stats, i+1, 'plots/test-recession/test')
     # print_stats(m, stats)
     # plot_wealth_histories(m, stats)
 
@@ -123,7 +119,5 @@ def thing():
         a = (int(a[0] * 255), int(a[1] * 255), int(a[2] * 255))
         print("rgb255(%s)=(%s, %s, %s);" % (counter, a[0], a[1], a[2]))
 
-
-
 if __name__ == "__main__":
-    read_file('paper/late.dat')
+    main()
