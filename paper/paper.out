@@ -2,9 +2,9 @@
 \BOOKMARK [1][-]{section.2}{Literature Review}{}% 2
 \BOOKMARK [1][-]{section.3}{Methods}{}% 3
 \BOOKMARK [2][-]{subsection.3.1}{Circular Flow Architecture}{section.3}% 4
-\BOOKMARK [2][-]{subsection.3.2}{RL Algorithms******}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.2}{RL Algorithms}{section.3}% 5
 \BOOKMARK [3][-]{subsubsection.3.2.1}{REINFORCE Policy Gradient}{subsection.3.2}% 6
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Q Actor-Critic}{subsection.3.2}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Actor-Critic}{subsection.3.2}% 7
 \BOOKMARK [1][-]{section.4}{Results and Data Analysis}{}% 8
 \BOOKMARK [2][-]{subsection.4.1}{Preliminary Results}{section.4}% 9
 \BOOKMARK [2][-]{subsection.4.2}{Investigating Economic Phenomena}{section.4}% 10

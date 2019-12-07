@@ -83,6 +83,11 @@ class Model:
             losses = (np.mean(person_losses), np.mean(firm_losses), np.mean(np.concatenate((person_losses, firm_losses))))
             print("Losses (P, F, T) = (%8.5f, %8.5f, %8.5f)" % losses)
 
+            # losses = (np.mean(person_losses), np.mean([f[0] for f in firm_losses]), np.mean([f[1] for f in firm_losses]))
+            # print("Losses (P, FP, FA) = (%8.5f, %8.5f, %8.5f)" % losses)
+
+            # print('{}, {}'.format(firm_losses[0][0], firm_losses[0][1]))
+
         return stats, firm_losses, person_losses
 
     def run(self, num_timesteps=100):

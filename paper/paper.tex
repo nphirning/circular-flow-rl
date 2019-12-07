@@ -46,7 +46,7 @@
 
 \usepackage[english]{babel} % Language hyphenation and typographical rules
 
-\usepackage[hmarginratio=1:1,top=25mm,columnsep=20pt,margin=0.75in]{geometry} % Document margins
+\usepackage[hmarginratio=1:1,top=25mm,columnsep=20pt,margin=0.5in, top=0.75in, bottom=0.75in]{geometry} % Document margins
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage{booktabs} % Horizontal rules in tables
 
@@ -129,7 +129,7 @@ In simple models of market economies, a common assumption is that each citizen w
 
 \medskip
 
-A simple model taught in introductory economics classes is the circular flow model. In this setup, there are two types of agents in the economy: firms (or businesses), and people (or households). These agents interact in two different markets, the goods market and the labor market. In the goods market, people pay currency to firms in exchange for goods. In the labor market, firms pay people for their labor to produce more goods. This basic model is diagrammed in figure \ref{fig:circularflow}. The name comes from the fact that currency flows clockwise in a circle between firms and people.
+A simple model taught in introductory economics classes is the circular flow model. In this setup, there are two types of agents in the economy: firms (or businesses), and people (or households). These agents interact in two different markets, the goods market and the labor market. In the goods market, people pay currency to firms in exchange for goods. In the labor market, firms pay people for their labor to produce more goods. This basic model is diagrammed in Figure \ref{fig:circularflow}. The name comes from the fact that currency flows clockwise in a circle between firms and people.
 
 \begin{figure}[h]
   \centering
@@ -183,7 +183,7 @@ Another relevant work by Tesauro \& Kephart involved investigation of the behavi
 
 \medskip 
 
-While there are relatively few examples of reinforcement learning applied to macroeconomic models, there are quite a few papers with relevant material on applying multi-agent models to various settings involving competition and collaboration. For example, a 2013 study by Bos et. al. found that reinforcement learning alone does not accurately model humans in competitive social environments, but it \textit{does} accurately model this when combined with biased reward representations \cite{vandenBos2137}. In a separate work, Bereby-Meyer and Roth experiment with reinforcement learning in game theoretic situations, such as the repeated prisoner's dilemma, when complicated by noise \cite{10.1257/aer.96.4.1029}. The authors conclude that noise slows learning and strongly negatively affects cooperative tendencies \cite{10.1257/aer.96.4.1029}. As such, even with simple multi-agent situations involving some randomness, strong cooperation is unlikely.
+While there are relatively few examples of reinforcement learning applied to macroeconomic models, there are quite a few papers with relevant material on applying multi-agent models to various settings involving competition and collaboration. For example, a 2013 study by Bos et. al. found that reinforcement learning alone does not accurately model humans (who deviate from rational behavior) in competitive social environments, but it \textit{does} accurately model this when combined with biased reward representations \cite{vandenBos2137}. In a separate work, Bereby-Meyer and Roth experiment with reinforcement learning in game theoretic situations, such as the repeated prisoner's dilemma, when complicated by noise \cite{10.1257/aer.96.4.1029}. The authors conclude that noise slows learning and strongly negatively affects cooperative tendencies \cite{10.1257/aer.96.4.1029}. As such, even with simple multi-agent situations involving some randomness, strong cooperation is unlikely.
 
 \medskip
 
@@ -220,7 +220,7 @@ At each timestep, every agent produces an action that determines how they behave
   \item \textbf{Demand Curve.} The demand curve is a vector. In the labor market, the $i$th entry of the demand curve corresponds to the price a firm will pay to produce its $i$th good. In the goods market, the $i$th entry of the demand curve corresponds to the price a human will pay for its $i$th good.
 \end{itemize}
 
-The space of all actions is vast. In order to make the problem tractable, the offered price and offered units are discretized into $P$ and $U$ values, respectively. In our simulations, we often set $P \approx 15$ and $U \approx 25$. Similarly, the demand curve was parameterized by families of functions. We experimented with two different families of curves: inverse and linear. The family of inverse curves $y = a/x + b$ is specified by the two parameters $a, b$ (in our simulations we used approximately 36 total possible configurations). The family of linear curves was specified by solely the $y$-intercept, as the $x$-intercept was a hyperparameter fixed before training (the $x$-intercept corresponds to the maximum number of goods that can be purchased or produced by a given human or firm in a single iteration). In practice, the linear family trained faster, but the inverse family led to better results. We use the family of inverse demand curves for all plots presented in this paper.
+The space of all actions is vast. In order to make the problem tractable, the offered price and offered units are discretized into $P$ and $U$ values, respectively. In our simulations, we often set $P \approx 15$ and $U \approx 25$. Similarly, the demand curve was parameterized by families of functions. We experimented with two different families of curves: inverse and linear. The family of inverse curves $y = a/x + b$ is specified by the two parameters $a, b$ (in our simulations we used approximately 36 total possible configurations). The family of linear curves was specified by solely the $y$-intercept, as the $x$-intercept was a hyperparameter fixed before training (the $x$-intercept corresponds to the maximum number of goods that can be purchased or produced by a given human or firm in a single iteration). In practice, the linear family trained faster, but the inverse family led to more realistic behavior. We use the family of inverse demand curves for all plots presented in this paper.
 
 \medskip
 
@@ -228,11 +228,28 @@ The state used to produce the action is the money and goods of all firms and the
 
 \medskip
 
-In addition to this setup, several additional features were added to enhance the simulations. All human agents' stored money is increased every iteration by an interest rate (generally $<1\%$). This has the benefit of preventing trivial policies in which humans provide all money to the firms, at which point the firms can no longer directly increase reward. Similarly, every iteration firms' stored money is decreased by fixed operational costs as well as costs that scale with the size of the firm (i.e., $m \mapsto r(m - f)$, where $f$ is a fixed cost and $r$ is a multiplicative decay just below $1$). Together, these additions allow for interesting model dynamics for the entirety of the experiment.
+In addition to this setup, several additional features were added to enhance the simulations. All human agents' stored money is increased every iteration by an interest rate (generally $<1\%$). This has the benefit of preventing trivial policies in which humans provide all money to the firms, at which point the firms can no longer directly increase reward. Similarly, every iteration firms' stored money is decreased by fixed operational costs. We added functionality to include costs that scale with the size of the firm (i.e., $m \mapsto r(m - f)$, where $f$ is a fixed cost and $r$ is a multiplicative decay just below $1$), but in practice these often led to unstable dynamics. Together, these additions allow for interesting model dynamics for the entirety of the experiment.
 
 
-\subsection{RL Algorithms******}
+\subsection{RL Algorithms}
 Both the learning algorithms chosen for the simulation were policy gradient methods. This was chosen due to previous literature, and because such methods have stronger convergence guarantees than value-based reinforcement learning methods (though potentially to non-global optima).
+
+\medskip
+
+
+In policy gradient methods, instead of approximating the value functions and using a separate exploration strategy for choosing actions, we directly compute the policy. Given a policy model parameterized by $\theta$, we compute probabilities $\pi_{\theta}(a|s)$. When training this model, we aim to minimize the loss function \cite{actor-critic}:
+\[
+J(\theta) = -\sum_{s \in S} P_{\pi}(s) \sum_{a\in A} \pi_{\theta}(a|s) Q^{\pi}(s, a)
+\]
+Intuitively, a low loss means that the agent outputs high probabilities for high $Q$-valued actions. Policy Gradient Theorem allows us to express the gradient of this loss in a tractable manner \cite{reinforce-lectures} \cite{actor-critic}:
+\[
+\nabla_{\theta} J(\theta) = \mathbb{E}_{\pi}[Q^{\pi}(s, a) \nabla_{\theta} \log \pi_{\theta}(a|s)]
+\]
+This means that over a trajectory, we simply need to compute the gradients:
+\[
+\left(\sum_{i=t}^T \gamma^{i-t} r_t\right) \nabla_{\theta} \log \pi_{\theta}(a_t|s_t)
+\]
+We can then use standard gradient descent methods to optimize $\theta$.
 
 \medskip
 
@@ -248,14 +265,14 @@ During training, the learning rate was set to $\alpha = 0.01$.
 \subsubsection{REINFORCE Policy Gradient}
 Perhaps the simplest policy gradient method is the REINFORCE algorithm. This algorithm uses a Monte Carlo approach to collecting training data. The length of the episode $T$ is manually specified, and we generally used $T \sim 100$.
 \begin{algorithm}
-\caption{REINFORCE Policy Gradient}\label{euclid}
+\caption{REINFORCE Policy Gradient \cite{reinforce-lectures}}\label{euclid}
 \begin{algorithmic}[1]
 \Procedure{REINFORCE}{}
 \State $\text{Initialize policy network parameters }\theta$
 \For {$i = 1, 2, \ldots, M$}
 \State $\text{Follow current policy to obtain trajectory }$\newline\phantom{======}$\{s_1, a_1, r_1, \ldots, s_T, a_T, r_T\}$.
 \For {$t = 1, 2, \ldots, T$}
-\State $\text{Compute }v_t = \sum_{i = t}^n \gamma^{i- t} r_i$.
+\State $\text{Compute }v_t = \sum_{i = t}^T \gamma^{i- t} r_i$.
 \State $\text{Update } \theta \leftarrow \theta + \alpha \nabla_{\theta}\log\pi_{\theta} (s_t, a_t) v_t$
 \EndFor
 \EndFor
@@ -266,13 +283,13 @@ Perhaps the simplest policy gradient method is the REINFORCE algorithm. This alg
 The runtime of this algorithm per episode is relatively short. However, often a significant number of episodes are required for the following reasons:
 \begin{itemize}
   \item Agents only update the parameters once per episode.
-  \item In many contexts, vanilla REINFORCE has been known to suffer from high variance in the losses from episode to episode.
+  \item In many contexts, vanilla REINFORCE has been known to suffer from high variance in the losses from episode to episode.\cite{reinforce-lectures}
   \item In our multi-agent problem, the environment dynamics constantly change as every agent responds to each timestep in the markets.
 \end{itemize}
 
 
-\subsubsection{Q Actor-Critic}
-An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the function $Q(s, a)$. We considered this set of algorithms because it carries the convergence advantages of general policy gradient methods while also approximating Q-values with higher sample efficiency. As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. 
+\subsubsection{Actor-Critic}
+An alternative family of policy gradient methods is the \textit{actor-critic} family. In these algorithms, the actor component computes the log probabilities $\log \pi_{\theta}(s, a)$ while the critic component approximates the performance of the action. We considered this set of algorithms because in theory, it carries the convergence advantages of general policy gradient methods while reducing the gradient variance \cite{actor-critic}. In this scenario, we tested Q Actor-Critic, in which the critic computes the Q-values $Q(s,a)$, as well as Advantage Actor-Critic (A2C), in which the critic computes the advantage $Q(s, a) - V(s)$; the idea of using the advantage vs the $Q$-value is to compare the quality of the action with a stable baseline, reducing variance.  As with REINFORCE, we again used neural networks with one hidden layer for both the actor and critic. Note also that we get to update the parameters after every action via TD learning.
 \begin{algorithm}
 \caption{Q Actor Critic}\label{euclid}
 \begin{algorithmic}[1]
@@ -292,12 +309,6 @@ An alternative family of policy gradient methods is the \textit{actor-critic} fa
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-In the current version we have implemented, the 
-
-[************** Q-network doesn't converge, maybe because we have an unstable target, requiring a target network]
-
-
-
 
 
 
@@ -311,18 +322,22 @@ To test the convergence of the learning and the ensure that the results were log
 
 \medskip 
 
-Recall that the loss function for the REINFORCE algorithm is of the following form:
+Recall that the gradient the REINFORCE algorithm is of the following form:
 \[
-  \mathcal{L} = -\sum_{t = 1}^T \left[\log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
+  \nabla_{\theta} J(\theta) = -\sum_{t = 1}^T \left[\nabla_{\theta} \log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
 \]
 
-In particular, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the losses approaching zero. This occurs in our preliminary simulation, as can be seen in figure \ref{plt:losstozero}.
+In our training, we designate a proxy for the loss to reflect this gradient:
+\[
+  J'(\theta) = -\sum_{t = 1}^T \left[\log \pi_\theta(s_t, a_t) \left( \sum_{i = t}^n \gamma^{i - t}r_i \right) \right].  
+\]
+Note that, as the policy converges, the probability of taking a given action $a_t$ from state $s_t$ should approach one, and so the $\log \pi_\theta$ term will approach zero. Therefore, convergence corresponds to the (proxy) losses approaching zero. This occurs in our preliminary simulation, as can be seen in Figure \ref{plt:losstozero}.
 
 \begin{figure}[h]
 \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
   \begin{axis}[
     xlabel=Episode,
-    ylabel=Loss,
+    ylabel=Loss (Proxy),
     legend style={at={(1,0)}, anchor=south east}
   ]
   \addplot table [y=fl, x=i]{prelims.dat};
@@ -335,7 +350,7 @@ In particular, as the policy converges, the probability of taking a given action
 \label{plt:losstozero}
 \end{figure}
 
-While this indicates that agents are able to converge to policies in this multi-agent environment, it does not necessarily indicate that the learned behavior leads to positive rewards. To investigate this, we can look at how the firm's profit changes over time and the actions that the firm is taking. As there is a single firm and multiple people, we might expect that the firm has more of an ability to monopolize the market, pushing the price of goods higher. As such, we expect the price at which the firm sells goods to rise. In figure \ref{plt:firmprofitincrease}, we see that the firm's profit is generally increasing over time from an initial average profit of approximately $\$23$ per iteration to an average profit of up to $\$50$ per iteration. The noisiness in the increase in profit may be due to the complex, changing environment (due to the changing actions of the human agents), or the fact that the reward is actually the future-discounted logarithmic profit.
+While this indicates that agents are able to converge to policies in this multi-agent environment, it does not necessarily indicate that the learned behavior leads to positive rewards. To investigate this, we can look at how the firm's profit changes over time and the actions that the firm is taking. As there is a single firm and multiple people, we might expect that the firm has more of an ability to monopolize the market, pushing the price of goods higher. As such, we expect the price at which the firm sells goods to rise. In Figure \ref{plt:firmprofitincrease}, we see that the firm's profit is generally increasing over time from an initial average profit of approximately $\$23$ per iteration to an average profit of up to $\$50$ per iteration. The noisiness in the increase in profit may be due to the complex, changing environment (due to the changing actions of the human agents), or the fact that the reward is actually the future-discounted logarithmic profit.
 
 \medskip 
 
@@ -375,9 +390,358 @@ Figure \ref{plt:firmactions} illustrates the frequency at which the firm chooses
   \label{plt:firmactions}
 \end{figure}
 
+We also attempted to run both Q Actor-Critic and A2C algorithms for the firm in the same monopoly situation as before (one firm with five people). However, while the policy networks would consistently converge (see Figure \ref{plt:acpolicyloss}), the critic networks would rarely converge, about 10\% of the time (see Figure \ref{plt:acadvloss}). For this reason, we chose to stick with REINFORCE as the reinforcement learning model for future simulations.
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Policy Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=pl, x=i]{a2c.dat};
+  \addlegendentry{Firm}
+  \end{axis}
+\end{tikzpicture}
+\caption{Policy Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's policy network loss converges rather quickly to 0 (note that the y-axis increments are rather small). Like in REINFORCE, when the policy becomes close to deterministic, the loss approaches zero.}
+\label{plt:acpolicyloss}
+\end{figure}
+
+\begin{figure}[h]
+\begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+  \begin{axis}[
+    xlabel=Episode,
+    ylabel=Critic Loss,
+    legend style={at={(1,0)}, anchor=south east}
+  ]
+  \addplot table [y=al, x=i]{a2c.dat};
+  \addlegendentry{Firm}
+  \end{axis}
+\end{tikzpicture}
+\caption{Critic Network Loss in Q Actor Critic Method: with one actor-critic firm agent and five human agents, the firm's critic loss does not converge, even with changing the learning rate. This was also true when we used A2C, which is supposed to address variance issues with a baseline. Note that the scale on the y-axis is quite large.}
+\label{plt:acadvloss}
+\end{figure}
+
+
+
+
 \subsection{Investigating Economic Phenomena}
 
+After verifying the preliminary results to evaluate the basic success of the RL algorithms, we began to analyze individual policies chosen by firms and people as well as the macroeconomic effects that resulted from multiple agents interacting in the environment under more complicated dynamics with government policies. 
+
+Under the standard dynamics, human agents tend to converge on fairly trivial dynamics, immediately spending earned money on goods. Since the acquisition of goods ultimately drives reward, there is no incentive to save money, no matter the discount factor used. A particularly sharp demand curve for goods can impose a soft limit on a person’s buying rate, but otherwise does not change the strategy of spending early and exorbitantly.
+
+A side effect of this phenomenon is a pronounced market collapse, or recession. When a person runs out of money due to excessive spending, they are unable to buy any additional goods. The firms, in turn, note the reduced demand for goods and begin to produce fewer goods. Accordingly, they employ fewer people to produce goods. As a result, unemployment increases, and lesser-skilled people can no longer find work. Without a source of income, they spend their remaining money and drop out of the market.
+
+We found such recessions to be inescapable — the system can almost never recover, and the eventual equilibrium is one in which a single skilled person makes and buys all the goods -- a particularly unrealistic outcome. Since firms always up-sell goods (that is, sell them at a profit), it always requires fewer people to produce a set of goods than to consume them. The difference between these populations is thus unemployed and eventually unable to buy goods at all, and the employment rate steadily drops. People who lose all their money rarely interact in the market any further -- a situation eerily analogous to death.
+
+Interestingly, although this outcome is not optimal for most people and firms, it proved to be very stable, and most randomly-initialized systems converged to a recession. To rectify this behavior, we increased the interest rate, thereby incentives the saving of money, which can purchase more goods after the accumulation of interest. Under this policy, we find that people naturally develop \textit{retirement policies}, under which they spend the first half of their lives saving more than they spend, and the latter half spending more than they save. Although such policies maximize people’s utility, they do not appear to be easy to converge to. Although many people happily save money and continually spend the accrued interest, relatively few people learn to truly ``enjoy'' their retirement -- dramatically increasing spending near the end of their lives.
+
+As an example, we included five firm agents and 25 human agents using REINFORCE with episodes of length 200. The interest rate for human agents was set to $0.2\%$ and the operational cost for the firms was set to $\$10$. The money of each human agent for the first episode is shown in Figure \ref{plt:init-ppl}, and the money of each firm agent for the first episode is shown in Figure \ref{plt:init-firms}. As noted above, the initial policies for human agents tended to buy goods greedily, while the initial policies for firm agents tended to sell greedily.
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      colormap={foo}{
+        % make a list of N colors
+        rgb255(1)=(0, 172, 168);
+        rgb255(2)=(0, 180, 164);
+        rgb255(3)=(0, 110, 199);
+        rgb255(4)=(0, 221, 144);
+        rgb255(5)=(0, 131, 189);
+        rgb255(6)=(0, 54, 227);
+        rgb255(7)=(0, 131, 189);
+        rgb255(8)=(0, 185, 162);
+        rgb255(9)=(0, 185, 162);
+        rgb255(10)=(0, 151, 179);
+        rgb255(11)=(0, 164, 172);
+        rgb255(12)=(0, 200, 154);
+        rgb255(13)=(0, 123, 193);
+        rgb255(14)=(0, 69, 220);
+        rgb255(15)=(0, 74, 217);
+        rgb255(16)=(0, 74, 217);
+        rgb255(17)=(0, 164, 172);
+        rgb255(18)=(0, 255, 127);
+        rgb255(19)=(0, 0, 255);
+        rgb255(20)=(0, 131, 189);
+        rgb255(21)=(0, 185, 162);
+        rgb255(22)=(0, 208, 150);
+        rgb255(23)=(0, 180, 164);
+        rgb255(24)=(0, 123, 193);
+        rgb255(25)=(0, 139, 185);
+      },
+      % use 0,...,N-1 
+      cycle list={[indices of colormap={0,...,24} of foo]},
+      xlabel=Iteration,
+      ylabel=Human Agent Money (\$)
+    ]
+    \addplot table [y=mp0, x=i]{init.dat};
+    \addplot table [y=mp1, x=i]{init.dat};
+    \addplot table [y=mp2, x=i]{init.dat};
+    \addplot table [y=mp3, x=i]{init.dat};
+    \addplot table [y=mp4, x=i]{init.dat};
+    \addplot table [y=mp5, x=i]{init.dat};
+    \addplot table [y=mp6, x=i]{init.dat};
+    \addplot table [y=mp7, x=i]{init.dat};
+    \addplot table [y=mp8, x=i]{init.dat};
+    \addplot table [y=mp9, x=i]{init.dat};
+    \addplot table [y=mp10, x=i]{init.dat};
+    \addplot table [y=mp11, x=i]{init.dat};
+    \addplot table [y=mp12, x=i]{init.dat};
+    \addplot table [y=mp13, x=i]{init.dat};
+    \addplot table [y=mp14, x=i]{init.dat};
+    \addplot table [y=mp15, x=i]{init.dat};
+    \addplot table [y=mp16, x=i]{init.dat};
+    \addplot table [y=mp17, x=i]{init.dat};
+    \addplot table [y=mp18, x=i]{init.dat};
+    \addplot table [y=mp19, x=i]{init.dat};
+    \addplot table [y=mp20, x=i]{init.dat};
+    \addplot table [y=mp21, x=i]{init.dat};
+    \addplot table [y=mp22, x=i]{init.dat};
+    \addplot table [y=mp23, x=i]{init.dat};
+    \addplot table [y=mp24, x=i]{init.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The money of each human agent during the first episode. All human agents appear to follow greedy policies, purchasing goods as quickly as possible before running out of money. The brighter colors correspond to higher skill levels.}
+  \label{plt:init-ppl}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=Firm Money (\$)
+    ]
+    \addplot +[mark=none] table [y=mf0, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf1, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf2, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf3, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf4, x=i]{init.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The money of each firm agent during the first episode. All firms appear to follow policies that are complementary to the greedy policies present in the human agents. Once the human agents run out of money around iteration 100, the firms are no longer profitable.}
+  \label{plt:init-firms}
+\end{figure}
+
+At episode 60, distinct policies have emerged. The same plots of money for human and firm agents is shown in Figure \ref{plt:late-ppl} and Figure \ref{plt:late-firms}. In particular, a pattern that emerges amongst the human agent policies is the concept of what we call a \textit{retirement policy}. In the retirement policy, a human agent aims to increase its money for the majority of its life (similar to saving money for retirement). Between iterations 100 and 150, the policy adjusts to begin using the money to purchase goods and increase utility. In this case, the most successful retirement policy is executed by the TODO. We can see the total goods consumed by each human agent in Figure \ref{plt:late-goodspeople}, which shows that this retirement policy yields the maximum number of goods of any human agent over the entire episode. It is also interesting to note that human agents that start out with more money do not generally learn these policies.
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      colormap={foo}{
+        % make a list of N colors
+        rgb255(1)=(0, 172, 168);
+        rgb255(2)=(0, 180, 164);
+        rgb255(3)=(0, 110, 199);
+        rgb255(4)=(0, 221, 144);
+        rgb255(5)=(0, 131, 189);
+        rgb255(6)=(0, 54, 227);
+        rgb255(7)=(0, 131, 189);
+        rgb255(8)=(0, 185, 162);
+        rgb255(9)=(0, 185, 162);
+        rgb255(10)=(0, 151, 179);
+        rgb255(11)=(0, 164, 172);
+        rgb255(12)=(0, 200, 154);
+        rgb255(13)=(0, 123, 193);
+        rgb255(14)=(0, 69, 220);
+        rgb255(15)=(0, 74, 217);
+        rgb255(16)=(0, 74, 217);
+        rgb255(17)=(0, 164, 172);
+        rgb255(18)=(0, 255, 127);
+        rgb255(19)=(0, 0, 255);
+        rgb255(20)=(0, 131, 189);
+        rgb255(21)=(0, 185, 162);
+        rgb255(22)=(0, 208, 150);
+        rgb255(23)=(0, 180, 164);
+        rgb255(24)=(0, 123, 193);
+        rgb255(25)=(0, 139, 185);
+      },
+      % use 0,...,N-1 
+      cycle list={[indices of colormap={0,...,24} of foo]},
+      xlabel=Iteration,
+      ylabel=Human Agent Money (\$)
+    ]
+    \addplot table [y=mp0, x=i]{late.dat};
+    \addplot table [y=mp1, x=i]{late.dat};
+    \addplot table [y=mp2, x=i]{late.dat};
+    \addplot table [y=mp3, x=i]{late.dat};
+    \addplot table [y=mp4, x=i]{late.dat};
+    \addplot table [y=mp5, x=i]{late.dat};
+    \addplot table [y=mp6, x=i]{late.dat};
+    \addplot table [y=mp7, x=i]{late.dat};
+    \addplot table [y=mp8, x=i]{late.dat};
+    \addplot table [y=mp9, x=i]{late.dat};
+    \addplot table [y=mp10, x=i]{late.dat};
+    \addplot table [y=mp11, x=i]{late.dat};
+    \addplot table [y=mp12, x=i]{late.dat};
+    \addplot table [y=mp13, x=i]{late.dat};
+    \addplot table [y=mp14, x=i]{late.dat};
+    \addplot table [y=mp15, x=i]{late.dat};
+    \addplot table [y=mp16, x=i]{late.dat};
+    \addplot table [y=mp17, x=i]{late.dat};
+    \addplot table [y=mp18, x=i]{late.dat};
+    \addplot table [y=mp19, x=i]{late.dat};
+    \addplot table [y=mp20, x=i]{late.dat};
+    \addplot table [y=mp21, x=i]{late.dat};
+    \addplot table [y=mp22, x=i]{late.dat};
+    \addplot table [y=mp23, x=i]{late.dat};
+    \addplot table [y=mp24, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The money of each human agent during episode 60. The human agents have learned various policies, including a retirement policy in which the agent saves money and then spends money. The brighter colors correspond to higher skill levels.}
+  \label{plt:late-ppl}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=Firm Money (\$)
+    ]
+    \addplot +[mark=none] table [y=mf0, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf1, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf2, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf3, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf4, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The money of each firm agent during episode 60. Despite being identical, the diversity in policies led to some firms generating large profits, while others experienced less success.}
+  \label{plt:late-firms}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      colormap={foo}{
+        % make a list of N colors
+        rgb255(1)=(0, 172, 168);
+        rgb255(2)=(0, 180, 164);
+        rgb255(3)=(0, 110, 199);
+        rgb255(4)=(0, 221, 144);
+        rgb255(5)=(0, 131, 189);
+        rgb255(6)=(0, 54, 227);
+        rgb255(7)=(0, 131, 189);
+        rgb255(8)=(0, 185, 162);
+        rgb255(9)=(0, 185, 162);
+        rgb255(10)=(0, 151, 179);
+        rgb255(11)=(0, 164, 172);
+        rgb255(12)=(0, 200, 154);
+        rgb255(13)=(0, 123, 193);
+        rgb255(14)=(0, 69, 220);
+        rgb255(15)=(0, 74, 217);
+        rgb255(16)=(0, 74, 217);
+        rgb255(17)=(0, 164, 172);
+        rgb255(18)=(0, 255, 127);
+        rgb255(19)=(0, 0, 255);
+        rgb255(20)=(0, 131, 189);
+        rgb255(21)=(0, 185, 162);
+        rgb255(22)=(0, 208, 150);
+        rgb255(23)=(0, 180, 164);
+        rgb255(24)=(0, 123, 193);
+        rgb255(25)=(0, 139, 185);
+      },
+      % use 0,...,N-1 
+      cycle list={[indices of colormap={0,...,24} of foo]},
+      xlabel=Iteration,
+      ylabel=Total Goods Consumed
+    ]
+    \addplot table [y=gp0, x=i]{late.dat};
+    \addplot table [y=gp1, x=i]{late.dat};
+    \addplot table [y=gp2, x=i]{late.dat};
+    \addplot table [y=gp3, x=i]{late.dat};
+    \addplot table [y=gp4, x=i]{late.dat};
+    \addplot table [y=gp5, x=i]{late.dat};
+    \addplot table [y=gp6, x=i]{late.dat};
+    \addplot table [y=gp7, x=i]{late.dat};
+    \addplot table [y=gp8, x=i]{late.dat};
+    \addplot table [y=gp9, x=i]{late.dat};
+    \addplot table [y=gp10, x=i]{late.dat};
+    \addplot table [y=gp11, x=i]{late.dat};
+    \addplot table [y=gp12, x=i]{late.dat};
+    \addplot table [y=gp13, x=i]{late.dat};
+    \addplot table [y=gp14, x=i]{late.dat};
+    \addplot table [y=gp15, x=i]{late.dat};
+    \addplot table [y=gp16, x=i]{late.dat};
+    \addplot table [y=gp17, x=i]{late.dat};
+    \addplot table [y=gp18, x=i]{late.dat};
+    \addplot table [y=gp19, x=i]{late.dat};
+    \addplot table [y=gp20, x=i]{late.dat};
+    \addplot table [y=gp21, x=i]{late.dat};
+    \addplot table [y=gp22, x=i]{late.dat};
+    \addplot table [y=gp23, x=i]{late.dat};
+    \addplot table [y=gp24, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Total goods consumed by each human agent during episode 60. The most successful policy corresponds to the human agent in Figure \ref{plt:late-ppl} which ends with the most money (following a retirement policy).}
+  \label{plt:late-goodspeople}
+\end{figure}
+
+We also investigate other relevant economic metrics in the model. For example, Figure \ref{plt:late-stockmarket} shows the average market price of a good for each iteration in the episode. Note that for this plots, as well as others, we have smoothed the results using a function adapted from the SciPy Cookbook \cite{scipy}. This curve is a rough estimate of the stock market in this economy. While the details of the curve are fairly chaotic, knowing the market price of a good is particularly useful because it allows us to estimate the total wealth of a given human agent at a given iteration. Wealth includes the current money of the human agent as well as the value of the goods owned by the human agent (as set by the current market price). From this, we compute the Gini coefficient for this population and plot it over time in Figure \ref{plt:late-gini}. We observe that inequality in this population tends ..
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=Average Market Price of Goods
+    ]
+    \addplot [draw opacity=0.2] table [y=pg, x=i]{late.dat};
+    \addplot +[mark=none] table [y=ssm, x=i]{smoothed.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The average market price of goods during episode 60. The transparent plot indicates the true values, and the superimposed red plot is a smoothed version.}
+  \label{plt:late-stockmarket}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=Gini Coefficient
+    ]
+    \addplot[draw opacity=0.2] table [y=gini, x=i]{late.dat};
+    \addplot +[mark=none] table [y=sgini, x=i]{smooth-gini.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The Gini coefficient during episode 60. The transparent plot indicates the true values, and the superimposed red plot is a smoothed version. The inequality in the population remains generally stable, but tends to trend upwards after 50 iterations.}
+  \label{plt:late-gini}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=GDP
+    ]
+    \addplot table [y=gdp, x=i]{late.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The population GDP during episode 60. The transparent plot indicates true values, and the superimposed red plot is a smoothed version.}
+  \label{plt:late-gdp}
+\end{figure}
+
+
 \section{Conclusion}
+
+We implemented the circular flow model using multi-agent reinforcement learning and demonstrated that the results were qualitatively correct and could be used to investigate more complex macroeconomic phenomena. In particular, we found reasonable results in a simple monopolization model with a single firm agent and five human agents. This model was tested with two different policy gradient algorithms: REINFORCE and actor critic. The latter's policy gradients converged faster, but the overall algorithm suffered from stability issues as compared to the former. Additionally, we simulated a more complex situation involving 5 firm agents and 25 human agents. The resulting dynamics had realistic features, including policies that corresponded to retirement behavior, slowly increasing wealth inequality, etc.
+
+\medskip 
+
+While this simulation is a successful proof-of-concept for using multi-agent reinforcement learning for  macroeconomic simulations, there are many extensions that can make the results more realistic and interpretable. We outline several of these extensions here:
+\begin{itemize}
+  \item \textbf{Government.} In practice, the GDP tended to decrease in our simulations. One way to combat this would be to add a government agent that can control the interest rates and taxes for firms and humans. The reward for the government agent would be related to increasing GDP, decreasing unemployment, and keeping the Gini coefficient in a desired range.
+  \item \textbf{Multiple Goods.} We only simulated one specific market on one type of good. By expanding to $n$ goods, each person could specialize in the good they were the best at (the skill of a person would become a $n$-vector of skills). Additionally, firms could either produce multiple goods or a single good. 
+  \item \textbf{Birth, Death, Bankruptcy.} In practice, people can die and wealth can be passed on within a family. Similarly, firms can go bankrupt and new firms can emerge. Adding a system by which firms and people can enter and leave markets would allow for more generalizable dynamics.
+  \item \textbf{Unions and Trusts.} Allowing cooperation amongst firms and humans would make the simulation even more realistic. This can be approximated by allowing one neural network to choose the actions for multiple people or multiple firms at once.
+  \item \textbf{Equity and the Stock Market.} One feature missing from the circular flow model is the existence of financial markets. One interesting addition would be allowing human agents to bet on the stock market or to own shares of a firm. However, this may require increasing the number of agents significantly in order to prevent a single person's actions from influencing the remainder of the market.
+\end{itemize}
+
+As computational power increases and the field of reinforcement learning progresses, the ability to create accurate economic simulations will continue to improve. In particular, economics is a field in which controlled experiments are extremely difficult to setup. We hope that the techniques presented in this paper may allow future economists to investigate niche phenomena and situations more easily.
+
+
 
 \section{Acknowledgments}
 
@@ -385,7 +749,7 @@ The authors feel that they all contributed equally to the work presented. In par
 
 \medskip
 
-The authors would like to thank the CS 238 staff for a really great time throughout this course \texttt{;)}.
+The authors would like to thank the CS 238 staff for a great time throughout this course.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST

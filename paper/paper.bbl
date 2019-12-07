@@ -30,4 +30,14 @@ Ville Könönen.
 \newblock {\em International Journal of Intelligent Systems}, 21(1):73--98,
   2006.
 
+\bibitem{actor-critic}
+Lilian Weng.
+\newblock Policy gradient algorithms, April 2018.
+\newblock
+  \url{https://lilianweng.github.io/lil-log/2018/04/08/policy-gradient-algorithms.html}.
+
+\bibitem{reinforce-lectures}
+Emma Brunskill.
+\newblock {CS 234 Lecture 8: Policy Gradient I}, February 2018.
+
 \end{thebibliography}
