@@ -40,4 +40,8 @@ Lilian Weng.
 Emma Brunskill.
 \newblock {CS 234 Lecture 8: Policy Gradient I}, February 2018.
 
+\bibitem{scipy}
+Scipy cookbook - smoothing of a 1d signal, July 2017.
+\newblock \url{https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html}.
+
 \end{thebibliography}

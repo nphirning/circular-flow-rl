@@ -111,7 +111,7 @@
 \date{} % Leave empty to omit a date
 \renewcommand{\maketitlehookd}{%
 \begin{abstract}
-While reinforcement learning has been widely used to model gameplay, its application to economics remains limited. In this work, we demonstrate how multi-agent reinforcement learning can be combined with a simple economic model to simulate and analyze macroeconomic phenomena under various conditions. In particular, we show how policy gradient learning algorithms yield qualitatively correct results in simple simulations, and we demonstrate nontrivial behavior in more complex scenarios involving over 30 separate agents. 
+While reinforcement learning has been widely used to model gameplay, its application to economics remains limited. In this work, we demonstrate how multi-agent reinforcement learning can be combined with a simple economic model to simulate and analyze macroeconomic phenomena under various conditions. In particular, we show how policy gradient learning algorithms yield qualitatively correct results in simple simulations, and we demonstrate nontrivial behavior in more complex scenarios involving up to 30 separate agents. 
 \end{abstract}
 }
 
@@ -146,11 +146,11 @@ A simple model taught in introductory economics classes is the circular flow mod
   \caption{Basic schematic of the circular flow model, a simple economic model in which society is composed of two types of agents (firms and people) that interact in two distinct markets.} \label{fig:circularflow}
 \end{figure}
 \medskip
-While the circular flow model does not include many important economic factors, it has the benefit of being simple enough to serve as a starting point for high-level analysis. For more in-depth economic phenomena, one would likely benefit from including more markets and agents; for example, the five-sector economy model includes government, financial markets, and overseas influences. However, as we aim to provide a proof-of-concept for modeling economies with multi-agent reinforcement learning, the circular flow model serves as a simple foundation that can potentially produce nontrivial dynamics.
+While the circular flow model does not include many important economic factors, it has the benefit of being simple enough to serve as a starting point for high-level analysis. For more in-depth economic phenomena, one would likely benefit from including more markets and agents; for example, the five-sector economy model includes government, financial markets, and overseas influences. However, as we aim to simply provide a proof-of-concept, the circular flow model is sufficient.
 
 \medskip
 
-In the following work, we explore how various economic phenomena can be simulated and analyzed by applying reinforcement learning to the circular flow model. While we are limited by the simplicity of the model, there are many economic metrics that manifest in such a model. For example, the gross domestic product (GDP) is widely touted as a comprehensive measure of a country's economic health. The GDP is defined by the following equation:
+In the following work, we explore how various economic phenomena can be simulated and analyzed by applying reinforcement learning to the circular flow model. There are many economic metrics that manifest in such a model. For example, the gross domestic product (GDP) is widely touted as a comprehensive measure of a country's economic health. The GDP is defined by the following equation:
 \[
   \text{GDP} = C + G + I + N,
 \]
@@ -158,7 +158,7 @@ where $C$ stands for consumer spending, $G$ for government spending, $I$ for pri
 
 \medskip
 
-Another important area of economics studies income and wealth inequality. A common approach to measuring these is to use the Gini coefficient. The Gini coefficient is a measure of the inequality of a distribution $p$ with mean $\mu$. Explicitly, the Gini coefficient is given by 
+Another important area of economics studies income and wealth inequality. A common approach to measuring these is to use the Gini coefficient: a measure of the inequality of a distribution $p$ with mean $\mu$. Explicitly, the Gini coefficient is given by 
 \[
   G = \frac{1}{2\mu} \iint p(x)p(y)|x - y|\, \mathrm{d}x\, \mathrm{d}y.
 \] 
@@ -187,7 +187,7 @@ While there are relatively few examples of reinforcement learning applied to mac
 
 \medskip
 
-One study performed by K\"on\"onen studied the situation of two competing brokers selling identical products under two different learning methods: modified gradient descent on the values and a policy gradient approach \cite{doi:10.1002/int.20121}. K\"on\"onen found success with both approaches, but found that the system would become intractable as the number of pricing actions increased \cite{doi:10.1002/int.20121}. To address this, the author suggested applying an MLP or other generalizable model as an extension. The suggestion to combine policy gradient algorithms and a generalizable action-choosing model significanlty influenced our design. 
+One study performed by K\"on\"onen studied the situation of two competing brokers selling identical products under two different learning methods: modified gradient descent on the values and a policy gradient approach \cite{doi:10.1002/int.20121}. K\"on\"onen found success with both approaches, but found that the system would become intractable as the number of pricing actions increased \cite{doi:10.1002/int.20121}. To address this, the author suggested applying an MLP or other generalizable model as an extension. The suggestion to combine policy gradient algorithms and a generalizable action-choosing model significantly influenced our design. 
 
 \section{Methods}
 
@@ -316,9 +316,12 @@ An alternative family of policy gradient methods is the \textit{actor-critic} fa
 
 We break the results down into two sections: preliminary results and a more complex simulation. The preliminary results are designed to verify that the system is working and producing correct results, while the more complex simulation allows more open-ended exploration of economic concepts.
 
+\medskip
+In all subsequently discussed simulations, several parameter choices were fixed. The discount was set to $\gamma = 0.99$. The initial money given to firm agents was chosen by drawing a number for each firm from $\mathcal{U}(0, 1)$ and giving each firm money proportional to its number such that the total money given to firm agents was $\$10000N$. A similar process was repeated for the human agents except that the total money given to human agents was $\$1000M$. The human agent skill levels were drawn from $\mathcal{N}(1, 0.1)$. The firm operational cost was set to $\$10$, and the human agent interest rate was set to $(5/M)\%$. For all simulations, inverse demand curves were chosen over linear demand curves and, unless specified otherwise, the REINFORCE algorithm was used for learning.
+
 \subsection{Preliminary Results}
 
-To test the convergence of the learning and the ensure that the results were logical, we created a scenario with one firm agent and five human agents. The dynamics discussed below are for a simulation in which all agents utilized the REINFORCE algorithm, all agents used inverse demand curves, the human agent interest rate was set to $1\%$, the firm operational cost was set to $\$10$, and the discount was $\gamma = 0.99$. The firm was initialized with $\$10000$, while the human agents were initialized to have uniform random initial money such that the total money given to human agents was $\$5000$. The human skill levels (goods per hour) were drawn from $N(1, 0.1)$. The simulation was run for 100 iterations. 
+To test the convergence of the learning and the ensure that the results were logical, we created a scenario with one firm agent and five human agents. The simulation was run for 100 iterations. 
 
 \medskip 
 
@@ -427,7 +430,7 @@ We also attempted to run both Q Actor-Critic and A2C algorithms for the firm in 
 
 \subsection{Investigating Economic Phenomena}
 
-After verifying the preliminary results, we simulated a more complex scenario and tracking more standard economic metrics. We included five firm agents and 25 human agents using REINFORCE with episodes of length 200. The interest rate for human agents was set to $0.2\%$ and the operational cost for the firms was set to $\$10$. The money of each human agent for the first episode is shown in Figure \ref{plt:init-ppl}, and the money of each firm agent for the first episode is shown in Figure \ref{plt:init-firms}. The initial policies for human agents tended to buy goods greedily, while the initial policies for firm agents tended to sell greedily.
+After verifying the preliminary results, we simulated a more complex scenario and tracking more standard economic metrics. We included five firm agents and 25 human agents with episodes of length 200. The money of each human agent for the first episode is shown in Figure \ref{plt:init-ppl}, and the money of each firm agent for the first episode is shown in Figure \ref{plt:init-firms}. The initial policies for human agents tended to buy goods greedily, while the initial policies for firm agents tended to sell greedily.
 
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
@@ -514,7 +517,8 @@ After verifying the preliminary results, we simulated a more complex scenario an
   \label{plt:init-firms}
 \end{figure}
 
-At episode 60, distinct policies have emerged. The same plots of money for human and firm agents is shown in Figure \ref{plt:late-ppl} and Figure \ref{plt:late-firms}. In particular, a pattern that emerges amongst the human agent policies is the concept of what we call a \textit{retirement policy}. In the retirement policy, a human agent aims to increase its money for the majority of its life (similar to saving money for retirement). Between iterations 100 and 150, the policy adjusts to begin using the money to purchase goods and increase utility. In this case, the most successful retirement policy is executed by the TODO. We can see the total goods consumed by each human agent in Figure \ref{plt:late-goodspeople}, which shows that this retirement policy yields the maximum number of goods of any human agent over the entire episode. It is also interesting to note that human agents that start out with more money do not generally learn these policies.
+\medskip
+At episode 60, distinct policies have emerged. The same plots of money for human and firm agents is shown in Figure \ref{plt:late-ppl} and Figure \ref{plt:late-firms}. In particular, a pattern that emerges amongst the human agent policies is the concept of what we call a \textit{retirement policy}. In a retirement policy, a human agent aims to increase its money for the majority of its life (similar to saving money for retirement). Between iterations 100 and 150, the policy adjusts to begin using the money to purchase goods and increase utility. In this case, the most successful retirement policy is executed by the green agent which has the most money of all agents at iteration 200. Further, we can see the total goods consumed by each human agent in Figure \ref{plt:late-goodspeople}, which shows that this retirement policy yields the maximum number of goods of any human agent over the entire episode. It is also interesting to note that human agents that start out with more money do not generally learn these policies.
 
 
 \begin{figure}[h]
@@ -664,10 +668,11 @@ At episode 60, distinct policies have emerged. The same plots of money for human
     \addplot table [y=gp24, x=i]{late.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{Total goods consumed by each human agent during episode 60. The most successful policy corresponds to the human agent in Figure \ref{plt:late-ppl} which ends with the most money (following a retirement policy).}
+  \caption{Total goods consumed by each human agent during episode 60. The most successful policy corresponds to the human agent in Figure \ref{plt:late-ppl}, which ends with the most money (following a retirement policy).}
   \label{plt:late-goodspeople}
 \end{figure}
 
+\medskip
 We also investigate other relevant economic metrics in the model. For example, Figure \ref{plt:late-stockmarket} shows the average market price of a good for each iteration in the episode. Note that for this plots, as well as others, we have smoothed the results using a function adapted from the SciPy Cookbook \cite{scipy}. This curve is a rough estimate of the stock market in this economy. While the details of the curve are fairly chaotic, knowing the market price of a good is particularly useful because it allows us to estimate the total wealth of a given human agent at a given iteration. Wealth includes the current money of the human agent as well as the value of the goods owned by the human agent (as set by the current market price). From this, we compute the Gini coefficient for this population and plot it over time in Figure \ref{plt:late-gini}. We observe that inequality in this population tends ..
 
 \begin{figure}[h]
@@ -706,10 +711,11 @@ We also investigate other relevant economic metrics in the model. For example, F
       xlabel=Iteration,
       ylabel=GDP
     ]
-    \addplot table [y=gdp, x=i]{late.dat};
+    \addplot [draw opacity=0.2] table [y=gdp, x=i]{late.dat};
+    \addplot +[mark=none] table [y=sgdp, x=i]{smooth-gdp.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{The population GDP during episode 60. The transparent plot indicates true values, and the superimposed red plot is a smoothed version.}
+  \caption{The population GDP during episode 60. The transparent plot indicates true values, and the superimposed red plot is a smoothed version. The GDP trends downwards due to some human agent policies purchasing fewer goods after running out of money}
   \label{plt:late-gdp}
 \end{figure}
 

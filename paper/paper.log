@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.10.0 (TeX Live 2019)  (format=lualatex 2019.5.8)  6 DEC 2019 16:00
+This is LuaTeX, Version 1.10.0 (TeX Live 2019)  (format=lualatex 2019.5.8)  6 DEC 2019 16:34
  restricted system commands enabled.
 **paper.tex
 (./paper.tex
@@ -48,7 +48,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.054 seconds
+luaotfload | main : initialization completed in 0.048 seconds
 (/usr/local/texlive/2019/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2018/09/03 v1.4i Standard LaTeX document class
 (/usr/local/texlive/2019/texmf-dist/tex/latex/base/size10.clo
@@ -1488,14 +1488,7 @@ PGFPlots: reading {late.dat}
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-LaTeX Warning: Citation `scipy' on page 6 undefined on input line 671.
-
-
-Underfull \vbox (badness 1383) has occurred while \output is active []
-
 PGFPlots: reading {late.dat}
-
 NOTE: coordinate (1,nan) has been dropped because it is unbounded (in y). (see a
 lso unbounded coords=jump). 
 PGFPlots: reading {smoothed.dat}
@@ -1572,6 +1565,7 @@ also unbounded coords=jump).
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 PGFPlots: reading {late.dat}
+PGFPlots: reading {smooth-gdp.dat}
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
@@ -1593,12 +1587,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--38
 []$\T1/lmtt/m/n/10 https://lilianweng.github.io/lil-[]log/2018/04/
  []
 
+
+Underfull \hbox (badness 4859) in paragraph at lines 44--46
+\T1/pplx/m/n/10 2017.  []$\T1/lmtt/m/n/10 https://scipy-[]cookbook.readthedocs.
+io/
+ []
+
 ) [8] [9]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 753.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 753.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 759.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 759.
  (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 753.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 753.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 759.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 759.
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: EDF4F07FD0F4FB8BBB331A7D1AB6E5C9;740.
 
@@ -1606,23 +1606,20 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 
-LaTeX Warning: There were undefined references.
-
-
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 753.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 759.
 )
 
 Here is how much of LuaTeX's memory you used:
- 37788 strings out of 494291
- 381538,1977958 words of node,token memory allocated
- 2481 words of node memory still in use:
-   6 hlist, 2 vlist, 2 rule, 1 dir, 2 glue, 244 kern, 1 glyph, 253 attribute, 61
- glue_spec, 128 attribute_list, 2 write, 1 pdf_action nodes
-   avail lists: 1:12,2:80673,3:23737,4:200,5:276,6:70,7:11459,8:91,9:1496,10:20,
-11:560
- 40086 multiletter control sequences out of 65536+600000
+ 37796 strings out of 494291
+ 381539,1977958 words of node,token memory allocated
+ 2509 words of node memory still in use:
+   6 hlist, 2 vlist, 2 rule, 1 dir, 2 glue, 246 kern, 1 glyph, 257 attribute, 61
+ glue_spec, 130 attribute_list, 2 write, 2 pdf_action nodes
+   avail lists: 1:11,2:76527,3:22358,4:196,5:288,6:67,7:11725,8:92,9:1500,10:20,
+11:558
+ 40089 multiletter control sequences out of 65536+600000
  163 fonts using 10109415 bytes
  69i,19n,103p,1274b,2342s stack positions out of 5000i,500n,10000p,200000b,100000s
 {/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/tex
@@ -1638,10 +1635,10 @@ pl/fplrc8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmtt10.
 pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></us
 r/local/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/
 texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on paper.pdf (9 pages, 365482 bytes).
+Output written on paper.pdf (9 pages, 351585 bytes).
 
-PDF statistics: 216 PDF objects out of 1000 (max. 8388607)
- 189 compressed objects within 2 object streams
- 45 named destinations out of 1000 (max. 131072)
+PDF statistics: 220 PDF objects out of 1000 (max. 8388607)
+ 193 compressed objects within 2 object streams
+ 46 named destinations out of 1000 (max. 131072)
  112 words of extra memory for PDF output out of 10000 (max. 100000000)
 
