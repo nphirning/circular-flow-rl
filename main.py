@@ -1,5 +1,6 @@
 import model
 import matplotlib.pyplot as plt
+from matplotlib import cm
 from constants import *
 from analytics import *
 from tqdm import tqdm
@@ -92,5 +93,37 @@ def main():
     reinforce_test()
     # plot1_for_paper()
 
+def read_file(name):
+    lines = []
+    with open(name, 'r') as f:
+        for line in f:
+            lines.append(line)
+
+    lines = [line.split() for line in lines]
+
+    pg_idx = lines[0].index('gini')
+    data = [float(x[pg_idx]) for x in lines[1:]]
+    data = smooth(data, 20)
+
+    with open('paper/smooth-gini.dat', 'w') as f:
+        for i in range(len(list(data))):
+            f.write(str(i) + ' ' + str(list(data)[i]) + '\n')
+    
+
+def thing():
+    colormap = cm.get_cmap('winter', 100)
+    skills = [1.06, 1.07, 0.97, 1.13, 1.0, 0.89, 1.0, 1.08, 1.08, 1.03, 1.05, 1.1, 0.99, 0.91, 0.92, 0.92, 1.05, 1.18, 0.81, 1.0, 1.08, 1.11, 1.07, 0.99, 1.01]
+    maxskill = max(skills)
+    minskill = min(skills)
+    dskill = maxskill - minskill
+    counter = 0
+    for skill in skills:
+        counter += 1
+        a = colormap((skill - minskill) / dskill)
+        a = (int(a[0] * 255), int(a[1] * 255), int(a[2] * 255))
+        print("rgb255(%s)=(%s, %s, %s);" % (counter, a[0], a[1], a[2]))
+
+
+
 if __name__ == "__main__":
-    main()
+    thing()

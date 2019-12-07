@@ -432,8 +432,38 @@ After verifying the preliminary results, we simulated a more complex scenario an
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
     \begin{axis}[
-      xlabel=Person Money (\$),
-      ylabel=Iteration
+      colormap={foo}{
+        % make a list of N colors
+        rgb255(1)=(0, 172, 168);
+        rgb255(2)=(0, 180, 164);
+        rgb255(3)=(0, 110, 199);
+        rgb255(4)=(0, 221, 144);
+        rgb255(5)=(0, 131, 189);
+        rgb255(6)=(0, 54, 227);
+        rgb255(7)=(0, 131, 189);
+        rgb255(8)=(0, 185, 162);
+        rgb255(9)=(0, 185, 162);
+        rgb255(10)=(0, 151, 179);
+        rgb255(11)=(0, 164, 172);
+        rgb255(12)=(0, 200, 154);
+        rgb255(13)=(0, 123, 193);
+        rgb255(14)=(0, 69, 220);
+        rgb255(15)=(0, 74, 217);
+        rgb255(16)=(0, 74, 217);
+        rgb255(17)=(0, 164, 172);
+        rgb255(18)=(0, 255, 127);
+        rgb255(19)=(0, 0, 255);
+        rgb255(20)=(0, 131, 189);
+        rgb255(21)=(0, 185, 162);
+        rgb255(22)=(0, 208, 150);
+        rgb255(23)=(0, 180, 164);
+        rgb255(24)=(0, 123, 193);
+        rgb255(25)=(0, 139, 185);
+      },
+      % use 0,...,N-1 
+      cycle list={[indices of colormap={0,...,24} of foo]},
+      xlabel=Iteration,
+      ylabel=Human Agent Money (\$)
     ]
     \addplot table [y=mp0, x=i]{init.dat};
     \addplot table [y=mp1, x=i]{init.dat};
@@ -462,7 +492,7 @@ After verifying the preliminary results, we simulated a more complex scenario an
     \addplot table [y=mp24, x=i]{init.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO.}
+  \caption{The money of each human agent during the first episode. All human agents appear to follow greedy policies, purchasing goods as quickly as possible before running out of money. The brighter colors correspond to higher skill levels.}
   \label{plt:init-ppl}
 \end{figure}
 
@@ -470,28 +500,58 @@ After verifying the preliminary results, we simulated a more complex scenario an
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
     \begin{axis}[
-      xlabel=Firm Money (\$),
-      ylabel=Iteration
+      xlabel=Iteration,
+      ylabel=Firm Money (\$)
     ]
-    \addplot table [y=mf0, x=i]{init.dat};
-    \addplot table [y=mf1, x=i]{init.dat};
-    \addplot table [y=mf2, x=i]{init.dat};
-    \addplot table [y=mf3, x=i]{init.dat};
-    \addplot table [y=mf4, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf0, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf1, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf2, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf3, x=i]{init.dat};
+    \addplot +[mark=none] table [y=mf4, x=i]{init.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO.}
+  \caption{The money of each firm agent during the first episode. All firms appear to follow policies that are complementary to the greedy policies present in the human agents. Once the human agents run out of money around iteration 100, the firms are no longer profitable.}
   \label{plt:init-firms}
 \end{figure}
 
-At episode 60, distinct policies have emerged. The same plots of money for human and firm agents is shown in Figure \ref{plt:late-ppl} and Figure \ref{plt:late-firms}. In particular, a pattern that emerges amongst the human agent policies is the concept of what we call a \textit{retirement policy}. In the retirement policy, a human agent aims to increase its money for the majority of its life (similar to saving money for retirement). Between iterations 100 and 150, the policy adjusts to begin using the money to purchase goods and increase utility. In this case, the most successful retirement policy is executed by the TODO. It is also interesting to note that human agents that start out with more money 
+At episode 60, distinct policies have emerged. The same plots of money for human and firm agents is shown in Figure \ref{plt:late-ppl} and Figure \ref{plt:late-firms}. In particular, a pattern that emerges amongst the human agent policies is the concept of what we call a \textit{retirement policy}. In the retirement policy, a human agent aims to increase its money for the majority of its life (similar to saving money for retirement). Between iterations 100 and 150, the policy adjusts to begin using the money to purchase goods and increase utility. In this case, the most successful retirement policy is executed by the TODO. We can see the total goods consumed by each human agent in Figure \ref{plt:late-goodspeople}, which shows that this retirement policy yields the maximum number of goods of any human agent over the entire episode. It is also interesting to note that human agents that start out with more money do not generally learn these policies.
 
 
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
     \begin{axis}[
-      xlabel=Person Money (\$),
-      ylabel=Iteration
+      colormap={foo}{
+        % make a list of N colors
+        rgb255(1)=(0, 172, 168);
+        rgb255(2)=(0, 180, 164);
+        rgb255(3)=(0, 110, 199);
+        rgb255(4)=(0, 221, 144);
+        rgb255(5)=(0, 131, 189);
+        rgb255(6)=(0, 54, 227);
+        rgb255(7)=(0, 131, 189);
+        rgb255(8)=(0, 185, 162);
+        rgb255(9)=(0, 185, 162);
+        rgb255(10)=(0, 151, 179);
+        rgb255(11)=(0, 164, 172);
+        rgb255(12)=(0, 200, 154);
+        rgb255(13)=(0, 123, 193);
+        rgb255(14)=(0, 69, 220);
+        rgb255(15)=(0, 74, 217);
+        rgb255(16)=(0, 74, 217);
+        rgb255(17)=(0, 164, 172);
+        rgb255(18)=(0, 255, 127);
+        rgb255(19)=(0, 0, 255);
+        rgb255(20)=(0, 131, 189);
+        rgb255(21)=(0, 185, 162);
+        rgb255(22)=(0, 208, 150);
+        rgb255(23)=(0, 180, 164);
+        rgb255(24)=(0, 123, 193);
+        rgb255(25)=(0, 139, 185);
+      },
+      % use 0,...,N-1 
+      cycle list={[indices of colormap={0,...,24} of foo]},
+      xlabel=Iteration,
+      ylabel=Human Agent Money (\$)
     ]
     \addplot table [y=mp0, x=i]{late.dat};
     \addplot table [y=mp1, x=i]{late.dat};
@@ -520,45 +580,62 @@ At episode 60, distinct policies have emerged. The same plots of money for human
     \addplot table [y=mp24, x=i]{late.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO.}
+  \caption{The money of each human agent during episode 60. The human agents have learned various policies, including a retirement policy in which the agent saves money and then spends money. The brighter colors correspond to higher skill levels.}
   \label{plt:late-ppl}
 \end{figure}
 
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
     \begin{axis}[
-      xlabel=Firm Money (\$),
-      ylabel=Iteration
+      xlabel=Iteration,
+      ylabel=Firm Money (\$)
     ]
-    \addplot table [y=mf0, x=i]{late.dat};
-    \addplot table [y=mf1, x=i]{late.dat};
-    \addplot table [y=mf2, x=i]{late.dat};
-    \addplot table [y=mf3, x=i]{late.dat};
-    \addplot table [y=mf4, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf0, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf1, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf2, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf3, x=i]{late.dat};
+    \addplot +[mark=none] table [y=mf4, x=i]{late.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO.}
+  \caption{The money of each firm agent during episode 60. Despite being identical, the diversity in policies led to some firms generating large profits, while others experienced less success.}
   \label{plt:late-firms}
 \end{figure}
 
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
     \begin{axis}[
-      xlabel=Average Market Price of Goods,
-      ylabel=Iteration
-    ]
-    \addplot table [y=pg, x=i]{late.dat};
-    \end{axis}
-  \end{tikzpicture}
-  \caption{TODO.}
-  \label{plt:late-stockmarket}
-\end{figure}
-
-\begin{figure}[h]
-  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
-    \begin{axis}[
-      xlabel=Total Goods Consumed,
-      ylabel=Iteration
+      colormap={foo}{
+        % make a list of N colors
+        rgb255(1)=(0, 172, 168);
+        rgb255(2)=(0, 180, 164);
+        rgb255(3)=(0, 110, 199);
+        rgb255(4)=(0, 221, 144);
+        rgb255(5)=(0, 131, 189);
+        rgb255(6)=(0, 54, 227);
+        rgb255(7)=(0, 131, 189);
+        rgb255(8)=(0, 185, 162);
+        rgb255(9)=(0, 185, 162);
+        rgb255(10)=(0, 151, 179);
+        rgb255(11)=(0, 164, 172);
+        rgb255(12)=(0, 200, 154);
+        rgb255(13)=(0, 123, 193);
+        rgb255(14)=(0, 69, 220);
+        rgb255(15)=(0, 74, 217);
+        rgb255(16)=(0, 74, 217);
+        rgb255(17)=(0, 164, 172);
+        rgb255(18)=(0, 255, 127);
+        rgb255(19)=(0, 0, 255);
+        rgb255(20)=(0, 131, 189);
+        rgb255(21)=(0, 185, 162);
+        rgb255(22)=(0, 208, 150);
+        rgb255(23)=(0, 180, 164);
+        rgb255(24)=(0, 123, 193);
+        rgb255(25)=(0, 139, 185);
+      },
+      % use 0,...,N-1 
+      cycle list={[indices of colormap={0,...,24} of foo]},
+      xlabel=Iteration,
+      ylabel=Total Goods Consumed
     ]
     \addplot table [y=gp0, x=i]{late.dat};
     \addplot table [y=gp1, x=i]{late.dat};
@@ -587,35 +664,55 @@ At episode 60, distinct policies have emerged. The same plots of money for human
     \addplot table [y=gp24, x=i]{late.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO.}
+  \caption{Total goods consumed by each human agent during episode 60. The most successful policy corresponds to the human agent in Figure \ref{plt:late-ppl} which ends with the most money (following a retirement policy).}
   \label{plt:late-goodspeople}
 \end{figure}
+
+We also investigate other relevant economic metrics in the model. For example, Figure \ref{plt:late-stockmarket} shows the average market price of a good for each iteration in the episode. Note that for this plots, as well as others, we have smoothed the results using a function adapted from the SciPy Cookbook \cite{scipy}. This curve is a rough estimate of the stock market in this economy. While the details of the curve are fairly chaotic, knowing the market price of a good is particularly useful because it allows us to estimate the total wealth of a given human agent at a given iteration. Wealth includes the current money of the human agent as well as the value of the goods owned by the human agent (as set by the current market price). From this, we compute the Gini coefficient for this population and plot it over time in Figure \ref{plt:late-gini}. We observe that inequality in this population tends ..
 
 \begin{figure}[h]
   \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
     \begin{axis}[
-      xlabel=GDP,
-      ylabel=Iteration
+      xlabel=Iteration,
+      ylabel=Average Market Price of Goods
+    ]
+    \addplot [draw opacity=0.2] table [y=pg, x=i]{late.dat};
+    \addplot +[mark=none] table [y=ssm, x=i]{smoothed.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The average market price of goods during episode 60. The transparent plot indicates the true values, and the superimposed red plot is a smoothed version.}
+  \label{plt:late-stockmarket}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=Gini Coefficient
+    ]
+    \addplot[draw opacity=0.2] table [y=gini, x=i]{late.dat};
+    \addplot +[mark=none] table [y=sgini, x=i]{smooth-gini.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The Gini coefficient during episode 60. The transparent plot indicates the true values, and the superimposed red plot is a smoothed version. The inequality in the population remains generally stable, but tends to trend upwards after 50 iterations.}
+  \label{plt:late-gini}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
+    \begin{axis}[
+      xlabel=Iteration,
+      ylabel=GDP
     ]
     \addplot table [y=gdp, x=i]{late.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO.}
+  \caption{The population GDP during episode 60. The transparent plot indicates true values, and the superimposed red plot is a smoothed version.}
   \label{plt:late-gdp}
 \end{figure}
 
-\begin{figure}[h]
-  \begin{tikzpicture}[every mark/.append style={mark size=1pt}]
-    \begin{axis}[
-      xlabel=Gini Coefficient,
-      ylabel=Iteration
-    ]
-    \addplot table [y=gini, x=i]{late.dat};
-    \end{axis}
-  \end{tikzpicture}
-  \caption{TODO.}
-  \label{plt:late-gdp}
-\end{figure}
 
 \section{Conclusion}
 
